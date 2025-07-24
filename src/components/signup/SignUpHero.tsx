@@ -104,7 +104,7 @@ export default function SignUpHero() {
 
         <span className="absolute top-[45px] left-[45px] h-[100px] w-[100px] overflow-hidden rounded-bl-2xl">
           <Image
-            src="/Group 5-2 2.svg"
+            src="/WorkR-Logo.svg"
             alt="photo"
             width={80}
             height={80}
