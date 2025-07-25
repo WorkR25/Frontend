@@ -5,16 +5,15 @@ import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import z from "zod";
+import { LogInFormSchema } from "@/schema/logIn.validator";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-type FormValues = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+
+type LogInFormValues = z.infer<typeof LogInFormSchema>;
 
 export default function LogInForm() {
-    const router = useRouter();
+  const router = useRouter();
   return (
     <div className="relative w-full h-full ">
       <div className=" top-0 left-0 p-6 pt-3">
@@ -39,7 +38,15 @@ export default function LogInForm() {
       </div>
       <div className=" bottom-0 flex items-center justify-center text-sm">
         <div>Dont have an account?</div>
-        <div className="text-[#467FA3] hover:cursor-pointer" onClick={()=>{router.push('/signup')}}> Sign Up</div>
+        <div
+          className="text-[#467FA3] hover:cursor-pointer"
+          onClick={() => {
+            router.push("/signup");
+          }}
+        >
+          {" "}
+          Sign Up
+        </div>
       </div>
     </div>
   );
@@ -50,11 +57,15 @@ function Form() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<LogInFormValues>(
+    {
+      resolver: zodResolver(LogInFormSchema)
+    }
+  );
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = (data: LogInFormValues) => {
     console.log("data");
     console.log(data);
   };
@@ -76,6 +87,9 @@ function Form() {
           className="w-full pl-10 pr-3 py-2 border border-[#E0E0E0] rounded-md focus:outline-none focus:ring-2 "
         />
       </div>
+      {errors.email?.message && (
+        <p className="text-[#E04B40] text-xs">Enter valid email</p>
+      )}
 
       <div className="relative">
         <Lock
@@ -87,7 +101,7 @@ function Form() {
           type={showPassword ? "text" : "password"}
           placeholder="Password"
           className={`w-full pl-10 pr-10 py-2 border border-[#E0E0E0] rounded-md focus:outline-none focus:ring-2 ${
-            errors.confirmPassword ? "border-[#E04B40]" : ""
+            errors.password ? "border-[#E04B40]" : ""
           }`}
         />
         <span
@@ -97,11 +111,14 @@ function Form() {
           {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
         </span>
       </div>
+      {errors.password?.message && (
+        <p className="text-[#E04B40] text-xs">{errors.password.message}</p>
+      )}
 
       <button
         type="submit"
         className={` border border-[#F0F0F0] w-full py-1.5 rounded-md font-bold ${
-          errors.confirmPassword
+          (errors.password || errors.email)
             ? "cursor-not-allowed text-[#DDDDDD] bg-[#F0F0F0]"
             : "bg-[#3177a7] cursor-pointer hover:bg-[#7ba1d0]"
         }`}
