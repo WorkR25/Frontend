@@ -97,8 +97,7 @@ export default function SignUpHero() {
           src="/Frame 1-5 1(1).svg"
           alt="photo"
           width={500}
-            height={500}
-        
+          height={500}
           priority
         />
 

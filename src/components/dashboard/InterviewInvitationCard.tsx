@@ -2,7 +2,7 @@ import { Check, MoreHorizontal, X } from "lucide-react";
 
 export default function InterviewInvitationCard () {
   return (
-    <div className="w-96 rounded-xl bg-[#0075C4] p-4 text-white space-y-4 shadow-md h-[220px]">
+    <div className="w-full sm:w-[55%] rounded-xl bg-[#0075C4] p-4 text-white space-y-4 shadow-md h-[220px]">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold text-base">You’ve got an invitation!</h2>
         <MoreHorizontal className="w-5 h-5 text-white" />

@@ -1,14 +1,14 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, User, Mail, Lock, Phone } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignUpFormSchema } from "@/schema/signUp.validator";
-
+import useSignup from "@/utils/useSignup";
 
 type FormValues = z.infer<typeof SignUpFormSchema>;
 
@@ -26,8 +26,8 @@ export default function SignUpForm() {
           priority
         />
       </div>
-      <div className="flex items-center justify-center ">
-        <div className=" w-[28vw] text-center mt-[4vh]">
+      <div className="flex items-center justify-center mt-[2vh]">
+        <div className=" w-[70vw] sm:w-[28vw] text-center mt-[4vh]">
           <div className="text-lg font-semibold">Create Your Account</div>
           <div className="text-sm">
             Welcome to Workr! Let’s get started by creating your Account
@@ -51,6 +51,8 @@ export default function SignUpForm() {
 }
 
 function Form() {
+  
+
   const {
     register,
     handleSubmit,
@@ -60,19 +62,14 @@ function Form() {
     resolver: zodResolver(SignUpFormSchema),
   });
   const password = watch("password");
-  const confirmPassword = watch("confirmPassword");
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const onSubmit = (data: FormValues) => {
-    if (password === confirmPassword) {
-      console.log("correct ");
-    }
-    console.log(errors);
+  const { mutate } = useSignup();
 
-    console.log("data");
-    console.log(data);
+  const onSubmit = (formData: FormValues) => {
+    mutate(formData);
   };
 
   return (
@@ -80,23 +77,37 @@ function Form() {
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-md mx-auto space-y-2 py-6 rounded-lg font-poppins text-sm "
     >
-
       <div className="relative">
         <User
           className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8E8E8E]"
           size={20}
         />
         <input
-          {...register("name", { required: true })}
+          {...register("fullName", { required: true })}
           type="text"
           placeholder="Haiiatama"
           className="w-full pl-10 pr-3 py-2 border border-[#E0E0E0] rounded-md focus:outline-none focus:ring-2 "
         />
       </div>
-      {errors.name?.message && (
+      {errors.fullName?.message && (
         <p className="text-[#E04B40] text-xs">Enter your name</p>
       )}
 
+      <div className="relative">
+        <Phone
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8E8E8E]"
+          size={20}
+        />
+        <input
+          {...register("phoneNo", { required: true })}
+          type="text"
+          placeholder="7847362567"
+          className="w-full pl-10 pr-3 py-2 border border-[#E0E0E0] rounded-md focus:outline-none focus:ring-2 "
+        />
+      </div>
+      {errors.phoneNo?.message && (
+        <p className="text-[#E04B40] text-xs">{errors.phoneNo.message}</p>
+      )}
 
       <div className="relative">
         <Mail
@@ -113,7 +124,6 @@ function Form() {
       {errors.email?.message && (
         <p className="text-[#E04B40] text-xs">Enter enter valid email</p>
       )}
-
 
       <div className="relative">
         <Lock
@@ -138,7 +148,6 @@ function Form() {
       {errors.password?.message && (
         <p className="text-[#E04B40] text-xs">{errors.password.message}</p>
       )}
-
 
       <div className="relative">
         <Lock
@@ -166,7 +175,7 @@ function Form() {
 
       <p
         className={`${
-          (errors.confirmPassword) ? "text-[#E04B40] text-xs" : "hidden"
+          errors.confirmPassword ? "text-[#E04B40] text-xs" : "hidden"
         }`}
       >
         Passwords do not match. Please ensure both passwords are the same.
@@ -175,7 +184,7 @@ function Form() {
       <button
         type="submit"
         className={` border border-[#F0F0F0] w-full py-1.5 rounded-md font-bold ${
-          (errors.confirmPassword)
+          errors.confirmPassword
             ? "cursor-not-allowed text-[#DDDDDD] bg-[#F0F0F0]"
             : "bg-[#3177a7] cursor-pointer hover:bg-[#7ba1d0]"
         }`}

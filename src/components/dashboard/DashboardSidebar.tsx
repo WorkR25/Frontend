@@ -1,11 +1,24 @@
-'use client'
+"use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { Bookmark, ChartPie, ChevronDown, Folder, Globe, MessageCircle, Search } from "lucide-react";
+import {
+  Bookmark,
+  ChartPie,
+  ChevronDown,
+  Folder,
+  Globe,
+  MessageCircle,
+  Search,
+} from "lucide-react";
+import UserProfileSidebar from "../UserProfileSidebar";
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar({
+  setIsSidebarOpen,
+}: {
+  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const [mainMenuCollapsed, setMainMenuCollapsed] = useState(false);
@@ -47,9 +60,10 @@ export default function DashboardSidebar() {
     { name: "Blog and article", icon: "", link: "/blog" },
     { name: "Help Center", icon: "", link: "/help-center" },
   ];
+
   return (
-    <div className="">
-      <div className="flex items-center justify-between py-2 ">
+    <div>
+      <div className="flex items-center justify-between py-4  ">
         <div>
           <Image
             src="/WorkR-Logo.svg"
@@ -60,7 +74,14 @@ export default function DashboardSidebar() {
             priority
           />
         </div>
-        <div>
+        <div
+          className="hover:cursor-pointer"
+          onClick={() => {
+            setIsSidebarOpen((prev) => {
+              return !prev;
+            });
+          }}
+        >
           <Image
             src="/Close Sidebar Icon.svg"
             alt="photo"
@@ -121,7 +142,7 @@ export default function DashboardSidebar() {
         </div>
       </aside>
 
-      <div>
+      <div className="mb-[40%]">
         <div className="text-xs text-gray-500 tracking-wide uppercase flex items-center justify-between z-20 bg-[#F5F5F5]">
           Others
           <ChevronDown
@@ -161,6 +182,7 @@ export default function DashboardSidebar() {
           </div>
         </div>
       </div>
+      <UserProfileSidebar />
     </div>
   );
 }

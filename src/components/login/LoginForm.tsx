@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import z from "zod";
 import { LogInFormSchema } from "@/schema/logIn.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import useLogin from "@/utils/useLogin";
 
 type LogInFormValues = z.infer<typeof LogInFormSchema>;
 
@@ -26,8 +26,8 @@ export default function LogInForm() {
           priority
         />
       </div>
-      <div className="flex items-center justify-center ">
-        <div className=" w-[28vw] text-center mt-[4vh]">
+      <div className="flex items-center justify-center mt-[10vh]">
+        <div className=" w-[70vw] sm:w-[28vw] text-center mt-[4vh]">
           <div className="text-lg font-semibold">Log In to Your Account</div>
           <div className="text-sm">
             Welcome to Workr ! Log In to get Started
@@ -57,18 +57,18 @@ function Form() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LogInFormValues>(
-    {
-      resolver: zodResolver(LogInFormSchema)
-    }
-  );
+  } = useForm<LogInFormValues>({
+    resolver: zodResolver(LogInFormSchema),
+  });
+
+  const { mutate } = useLogin();
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit = (data: LogInFormValues) => {
-    console.log("data");
-    console.log(data);
+  const onSubmit = (logInData: LogInFormValues) => {
+    mutate(logInData);
   };
+ 
 
   return (
     <form
@@ -118,7 +118,7 @@ function Form() {
       <button
         type="submit"
         className={` border border-[#F0F0F0] w-full py-1.5 rounded-md font-bold ${
-          (errors.password || errors.email)
+          errors.password || errors.email
             ? "cursor-not-allowed text-[#DDDDDD] bg-[#F0F0F0]"
             : "bg-[#3177a7] cursor-pointer hover:bg-[#7ba1d0]"
         }`}

@@ -1,13 +1,15 @@
 "use client";
 
+import TipsCard from "@/components/TipsCard";
 import { Crown, Ellipsis, Pencil } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 
 export default function DashboardRightside() {
   return (
-    <div className="basis-15/50 relative px-2 pb-2 mt-1 overflow-y-scroll h-[calc(100vh-84px)]">
+    <div className="sm:basis-15/50 relative sm:px-2 pb-2 mt-1 sm:overflow-y-scroll h-fit sm:h-[calc(100vh-84px)]">
       <ProfileCompletion />
       <Engagement />
+      <TipsCard/>
     </div>
   );
 }
@@ -43,7 +45,7 @@ function ProfileCompletion() {
 
 function Engagement() {
   return (
-    <div className="border border-[#F0F0F0] rounded-lg px-3 mt-2">
+    <div className="border border-[#F0F0F0] rounded-lg p-3 my-2">
       <div className="text-base py-2">Your Engagement</div>
       <div className="text-3xl font-semibold">29</div>
       <div className="text-[#929292] text-xs">Recuiter viewed your profile</div>

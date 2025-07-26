@@ -12,7 +12,7 @@ export default function JobCard({
   maxPay,
 }: JobCardParams) {
   return (
-    <div className="w-84 rounded-xl border border-gray-200 p-4 shadow-sm bg-white space-y-3">
+    <div className="w-full sm:w-[45%] mr-3 rounded-xl border border-gray-200 p-4 shadow-sm bg-white space-y-3">
       <div className="flex items-center justify-between text-sm">
         <span className="bg-green-100 text-green-600 px-2 py-0.5 rounded-full text-xs font-medium">
           Suit You Best!
@@ -54,10 +54,10 @@ export default function JobCard({
       </div>
 
       <div className="flex items-center justify-between">
-        <button className="bg-blue-600 hover:bg-blue-700 w-[250px] text-white text-sm font-medium px-6 py-2 rounded-md">
+        <button className="bg-blue-600 hover:bg-blue-700 basis-9/10 w-full text-white text-sm font-medium px-6 py-2 rounded-md">
           Apply
         </button>
-        <Bookmark className="w-5 h-5 text-gray-400" />
+        <Bookmark className="w-5 h-5 basis-1/10 text-gray-400" />
       </div>
     </div>
   );

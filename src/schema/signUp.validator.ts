@@ -2,8 +2,14 @@ import z from "zod";
 
 export const SignUpFormSchema = z
   .object({
-    name: z.string().min(1, "Name is required"),
+    fullName: z
+        .string({ message: 'Full name is required'})
+        .min(4, { message: 'Full name must be at least 4 characters' })
+        .max(50, { message: 'Full name must be less than 50 characters' }),
     email: z.string().email("Invalid email address"),
+    phoneNo: z
+        .string({ message: 'Phone number is required' })
+        .regex(/^[6-9]\d{9}$/, { message: 'Phone number must be a valid 10-digit Indian mobile number' }),
     password:z
         .string({ message: 'Password is required' })
         .min(8, { message: 'Password must be at least 8 characters' })

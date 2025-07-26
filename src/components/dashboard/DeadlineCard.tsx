@@ -2,7 +2,7 @@ import { Bookmark, MoreHorizontal } from "lucide-react";
 
 export default function DeadlineCard () {
   return (
-    <div className="w-80 rounded-xl border border-gray-200 p-4 shadow-sm bg-white space-y-3 h-[220px]">
+    <div className="w-full sm:w-[40%] rounded-xl border border-gray-200 p-4 shadow-sm bg-white space-y-3 h-[220px]">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold text-base">Deadline Today!</h2>
         <MoreHorizontal className="w-5 h-5 text-gray-500" />
