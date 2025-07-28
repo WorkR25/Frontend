@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -13,20 +13,38 @@ import {
   Search,
 } from "lucide-react";
 import UserProfileSidebar from "../UserProfileSidebar";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/store.config";
+import { mainMenuCollapsedToogle } from "@/features/mainMenuCollapsed/mainMenuCollapsed";
+import { otherMenuCollapsedToogle } from "@/features/otherMenuCollapsed/otherMenuCollapsedSlice";
+import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice";
 
-export default function DashboardSidebar({
-  setIsSidebarOpen,
-}: {
-  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
-}) {
+export default function DashboardSidebar() {
   const router = useRouter();
   const pathname = usePathname();
-  const [mainMenuCollapsed, setMainMenuCollapsed] = useState(false);
-  const [otherMenuCollapsed, setOtherMenuCollapsed] = useState(false);
   const [mainMenuActiveTab, setMainMenuActiveTab] = useState<number | null>(0);
   const [otherMenuActiveTab, setOtherMenuActiveTab] = useState<number | null>(
     null
   );
+
+  const mainMenuCollapsed = useSelector(
+    (state: RootState) => state.mainMenuCollapsed.value
+  );
+  const otherMenuCollapsed = useSelector(
+    (state: RootState) => state.otherMenuCollapsed.value
+  );
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const routeName = pathname.split("/")[2];
+    const mainMenuTabId: { [key: string]: number } = {
+      jobs: 1,
+    };
+    if (routeName) {
+      setMainMenuActiveTab(mainMenuTabId[routeName]);
+    }
+  }, [pathname]);
 
   const mainMenuTabs = [
     {
@@ -62,7 +80,7 @@ export default function DashboardSidebar({
   ];
 
   return (
-    <div>
+    <div className="">
       <div className="flex items-center justify-between py-4  ">
         <div>
           <Image
@@ -77,9 +95,7 @@ export default function DashboardSidebar({
         <div
           className="hover:cursor-pointer"
           onClick={() => {
-            setIsSidebarOpen((prev) => {
-              return !prev;
-            });
+            dispatch(isSidebarOpenToogle());
           }}
         >
           <Image
@@ -109,9 +125,7 @@ export default function DashboardSidebar({
               mainMenuCollapsed ? "transform rotate-180" : ""
             }`}
             onClick={() => {
-              setMainMenuCollapsed((prev) => {
-                return !prev;
-              });
+              dispatch(mainMenuCollapsedToogle());
             }}
           />
         </div>
@@ -126,7 +140,7 @@ export default function DashboardSidebar({
                 key={index}
                 onClick={() => {
                   setMainMenuActiveTab(index);
-                  router.push(`${pathname}${tab.link}`);
+                  router.replace(`/dashboard/${tab.link}`);
                 }}
                 className={`py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300  rounded-md hover:cursor-pointer ${
                   mainMenuActiveTab === index
@@ -150,9 +164,7 @@ export default function DashboardSidebar({
               otherMenuCollapsed ? "transform rotate-180" : ""
             }`}
             onClick={() => {
-              setOtherMenuCollapsed((prev) => {
-                return !prev;
-              });
+              dispatch(otherMenuCollapsedToogle());
             }}
           />
         </div>

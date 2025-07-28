@@ -1,4 +1,5 @@
 import { JobCardParams } from "@/types/JobCard";
+import { cn } from "@/utils/cn";
 import { BadgeDollarSign, Bookmark, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
 
@@ -10,9 +11,15 @@ export default function JobCard({
   country,
   minPay,
   maxPay,
+  className,
 }: JobCardParams) {
   return (
-    <div className="w-full sm:w-[45%] mr-3 rounded-xl border border-gray-200 p-4 shadow-sm bg-white space-y-3">
+    <div
+      className={cn(
+        "w-full rounded-xl border border-gray-200 p-4 shadow-sm bg-white space-y-3",
+        "sm:w-[45%]", className
+      )}
+    >
       <div className="flex items-center justify-between text-sm">
         <span className="bg-green-100 text-green-600 px-2 py-0.5 rounded-full text-xs font-medium">
           Suit You Best!
@@ -22,14 +29,14 @@ export default function JobCard({
 
       <div className="flex items-start space-x-3">
         <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center">
-            <Image
-              src="/google-icon-logo-svgrepo-com.svg"
-              alt="photo"
-              width={40}
-              height={40}
-              objectFit="cover"
-              priority
-            />
+          <Image
+            src="/google-icon-logo-svgrepo-com.svg"
+            alt="photo"
+            width={40}
+            height={40}
+            objectFit="cover"
+            priority
+          />
         </div>
         <div>
           <div className="font-semibold text-sm">{title}</div>

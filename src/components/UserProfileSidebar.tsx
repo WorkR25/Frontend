@@ -1,15 +1,25 @@
 'use client';
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { ChevronUp } from "lucide-react";
 import { useGetUser } from "@/utils/useGetUser";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/store.config";
+import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 
 export default function UserProfileSidebar() {
-  const [authJwtToken, setAuthJwtToken] = useState<string | null>(null);
+
+  const authJwtToken = useSelector((state: RootState)=> state.authJwtToken.value)
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setAuthJwtToken(localStorage.getItem("AuthJwtToken"));
+      const jwt = localStorage.getItem("AuthJwtToken")
+      console.log("user prof :", jwt)
+      if(jwt){
+        dispatch(setAuthJwtToken(jwt))
+      }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -17,7 +27,7 @@ export default function UserProfileSidebar() {
 
   console.log("rendered")
   return (
-    <div className="sticky bottom-0 ">
+    <div className=" w-full bottom-0 ">
       <div className="flex items-center gap-3 p-3 bg-gray-100 rounded-lg w-full shadow-sm">
         <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-700 font-bold text-lg">
           {data?.fullName[0]}

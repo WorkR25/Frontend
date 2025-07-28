@@ -7,4 +7,5 @@ export type JobCardParams = {
   country: string;
   minPay: string;
   maxPay: string;
+  className?: string;
 };

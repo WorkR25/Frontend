@@ -1,25 +1,32 @@
+import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice";
 import { AlignJustify, Bell, Calendar } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import { useDispatch } from "react-redux";
+
+const headers: { [key: string]: string } = {
+  "default": "Overview",
+  "jobs": "Explore Jobs"
+};
 
 export default function DashboardTopbar({
-  setIsSidebarOpen,
+  pathName 
 }: {
-  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
+  pathName: string,
 }) {
+
+  const dispatch = useDispatch();
   return (
-    <div className="flex items-center justify-between px-4 pt-2 overflow-hidden mb-5">
+    <div className="flex items-center justify-between px-4 pt-2 overflow-hidden mb-2 sm:mb-5">
       <div className="text-xl flex items-center text-center gap-x-7 font-semibold">
         <div
           className="sm:hidden hover:cursor-pointer"
           onClick={() => {
-            setIsSidebarOpen((prev) => {
-              return !prev;
-            });
+            dispatch(isSidebarOpenToogle());
+           
           }}
         >
           <AlignJustify />
         </div>
-        <div>Overview</div>
+        <div>{headers[pathName] || headers["default"]}</div>
       </div>
       <div className="flex items-center gap-3">
         <div className="pr-4">
