@@ -35,7 +35,7 @@ export default function SignUpHero() {
         />
       </span>
 
-      <span className="absolute top-[10vh] left-[3vw] h-[10vh] w-[10vh] overflow-hidden rounded-bl-2xl">
+      <div className="absolute top-[10vh] left-[3vw] w-[10vh] flex gap-2">
         <Image
           src="/Vector 56.svg"
           alt="photo"
@@ -43,35 +43,29 @@ export default function SignUpHero() {
           height={100}
           priority
         />
-      </span>
-      <span className="absolute top-[10vh] left-[8vw] h-[1vh] w-[1vh] overflow-hidden rounded-bl-2xl">
         <Image
           src="/Ellipse 34.svg"
           alt="photo"
-          width={100}
-          height={100}
+          width={10}
+          height={10}
           priority
         />
-      </span>
-      <span className="absolute top-[10vh] left-[9vw] h-[1vh] w-[1vh] overflow-hidden rounded-bl-2xl">
         <Image
           src="/Ellipse 34.svg"
           alt="photo"
-          width={100}
-          height={100}
+          width={10}
+          height={10}
           priority
-        />
-      </span>
-      <span className="absolute top-[10vh] left-[10vw] h-[1vh] w-[1vh] overflow-hidden rounded-bl-2xl">
-        <Image
+        /><Image
           src="/Ellipse 34.svg"
           alt="photo"
-          width={100}
-          height={100}
+          width={10}
+          height={10}
           priority
         />
-      </span>
+      </div>
 
+      
       <span className="absolute bottom-0 left-0 h-[20vh] w-[20vh] overflow-hidden rounded-bl-2xl">
         <Image
           src="/Ellipse 36.svg"
@@ -92,25 +86,14 @@ export default function SignUpHero() {
         />
       </span>
 
-      <span className="absolute top-[200px] right-[-160px] h-[650px] w-[650px] overflow-hidden rounded-bl-2xl">
+      <span className=" absolute bottom-[-200px] right-auto left-[100px] lg:left-auto lg:right-[-90px] h-[650px] w-[650px] overflow-hidden rounded-bl-2xl">
         <Image
-          src="/Frame 1-5 1(1).svg"
+          src="/Frame 3.png"
           alt="photo"
-          width={500}
-          height={500}
+          width={600}
+          height={600}
           priority
         />
-
-        <span className="absolute top-[45px] left-[45px] h-[100px] w-[100px] overflow-hidden rounded-bl-2xl">
-          <Image
-            src="/WorkR-Logo.svg"
-            alt="photo"
-            width={80}
-            height={80}
-            objectFit="cover"
-            priority
-          />
-        </span>
       </span>
     </div>
   );

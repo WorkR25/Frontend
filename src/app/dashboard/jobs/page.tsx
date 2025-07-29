@@ -3,98 +3,102 @@ import { SlidersHorizontal } from "lucide-react";
 import OptionButton from "@/components/OptionButton";
 import { Search, MapPin } from "lucide-react";
 import JobCard from "@/components/JobCard";
+import DashboardTopbar from "@/components/dashboard/DashboardTopbar";
 
 export default function Page() {
   return (
-    <div className=" overflow-y-scroll h-[calc(100vh-74px))]">
-      <div className=" px-2 ">
-        <div className="py-2 bg-white sticky top-0">
-          <JobSearchBanner />
-        </div>
-        <div className="flex p-2 items-center justify-between">
-          <div className="font-semibold text-lg">Jobs for you</div>
-          <div className="flex items-center justify-center gap-x-2">
-            <SortButton />
-            <FilterButton />
+    <div className="text-black p-2 bg-[#FFFF] h-full pb-0 ">
+      <DashboardTopbar pageName="Jobs" />
+      <div className=" overflow-y-scroll h-[calc(100vh-74px))]">
+        <div className=" px-2 ">
+          <div className="py-2 bg-white sticky top-0">
+            <JobSearchBanner />
           </div>
-        </div>
-        <div className=" space-x-3 mt-3 mr-3 overflow-x-scroll flex hide-scrollbar">
-          <OptionButton name={"For you"} isActive={false} />
-          <OptionButton name={"Trending jobs"} isActive={false} />
-          <OptionButton name={"New this week"} isActive={false} />
-          <OptionButton name={"Urgently hiring"} isActive={false} />
-        </div>
-        <div className="flex flex-wrap items-center justify-center-safe my-2 mx-auto gap-2 gap-y-3.5">
-          <JobCard
-            title="SWE"
-            company="Google"
-            employmentType="Full-time"
-            city="kolkata"
-            country="India"
-            minPay="100,000"
-            maxPay="200,000"
-            className="sm:w-[30%]"
-          />
-          <JobCard
-            title="SWE"
-            company="Google"
-            employmentType="Full-time"
-            city="kolkata"
-            country="India"
-            minPay="100,000"
-            maxPay="200,000"
-            className="sm:w-[30%]"
-          />
-          <JobCard
-            title="SWE"
-            company="Google"
-            employmentType="Full-time"
-            city="kolkata"
-            country="India"
-            minPay="100,000"
-            maxPay="200,000"
-            className="sm:w-[30%]"
-          />
-          <JobCard
-            title="SWE"
-            company="Google"
-            employmentType="Full-time"
-            city="kolkata"
-            country="India"
-            minPay="100,000"
-            maxPay="200,000"
-            className="sm:w-[30%]"
-          />
-          <JobCard
-            title="SWE"
-            company="Google"
-            employmentType="Full-time"
-            city="kolkata"
-            country="India"
-            minPay="100,000"
-            maxPay="200,000"
-            className="sm:w-[30%]"
-          />
-          <JobCard
-            title="SWE"
-            company="Google"
-            employmentType="Full-time"
-            city="kolkata"
-            country="India"
-            minPay="100,000"
-            maxPay="200,000"
-            className="sm:w-[30%]"
-          />
-          <JobCard
-            title="SWE"
-            company="Google"
-            employmentType="Full-time"
-            city="kolkata"
-            country="India"
-            minPay="100,000"
-            maxPay="200,000"
-            className="sm:w-[30%]"
-          />
+          <div className="flex p-2 items-center justify-between">
+            <div className="font-semibold text-lg">Jobs for you</div>
+            <div className="flex items-center justify-center gap-x-2">
+              <SortButton />
+              <FilterButton />
+            </div>
+          </div>
+          <div className=" space-x-3 mt-3 mr-3 overflow-x-scroll flex hide-scrollbar">
+            <OptionButton name={"For you"} isActive={false} />
+            <OptionButton name={"Trending jobs"} isActive={false} />
+            <OptionButton name={"New this week"} isActive={false} />
+            <OptionButton name={"Urgently hiring"} isActive={false} />
+          </div>
+          <div className="flex flex-wrap items-center justify-center-safe my-2 mx-auto gap-2 gap-y-3.5">
+            <JobCard
+              title="SWE"
+              company="Google"
+              employmentType="Full-time"
+              city="kolkata"
+              country="India"
+              minPay="100,000"
+              maxPay="200,000"
+              className="sm:w-[30%]"
+            />
+            <JobCard
+              title="SWE"
+              company="Google"
+              employmentType="Full-time"
+              city="kolkata"
+              country="India"
+              minPay="100,000"
+              maxPay="200,000"
+              className="sm:w-[30%]"
+            />
+            <JobCard
+              title="SWE"
+              company="Google"
+              employmentType="Full-time"
+              city="kolkata"
+              country="India"
+              minPay="100,000"
+              maxPay="200,000"
+              className="sm:w-[30%]"
+            />
+            <JobCard
+              title="SWE"
+              company="Google"
+              employmentType="Full-time"
+              city="kolkata"
+              country="India"
+              minPay="100,000"
+              maxPay="200,000"
+              className="sm:w-[30%]"
+            />
+            <JobCard
+              title="SWE"
+              company="Google"
+              employmentType="Full-time"
+              city="kolkata"
+              country="India"
+              minPay="100,000"
+              maxPay="200,000"
+              className="sm:w-[30%]"
+            />
+            <JobCard
+              title="SWE"
+              company="Google"
+              employmentType="Full-time"
+              city="kolkata"
+              country="India"
+              minPay="100,000"
+              maxPay="200,000"
+              className="sm:w-[30%]"
+            />
+            <JobCard
+              title="SWE"
+              company="Google"
+              employmentType="Full-time"
+              city="kolkata"
+              country="India"
+              minPay="100,000"
+              maxPay="200,000"
+              className="sm:w-[30%]"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -113,7 +117,6 @@ function JobSearchBanner() {
       </p>
 
       <div className="flex flex-col sm:flex-row items-stretch bg-white rounded-lg overflow-hidden shadow-md px-2 py-1 gap-2 sm:gap-0">
-        {/* Job title input */}
         <div className="flex items-center flex-1 px-3">
           <Search className="text-gray-400 w-5 h-5" />
           <input
@@ -123,7 +126,6 @@ function JobSearchBanner() {
           />
         </div>
 
-        {/* Location input */}
         <div className="flex items-center flex-1 px-3 border-t sm:border-t-0 sm:border-l border-gray-200">
           <MapPin className="text-gray-400 w-5 h-5" />
           <input
@@ -133,7 +135,6 @@ function JobSearchBanner() {
           />
         </div>
 
-        {/* Button */}
         <button className="bg-blue-600 hidden sm:inline hover:bg-blue-700 text-white text-sm px-6 py-2 rounded-lg whitespace-nowrap">
           Find Job
         </button>

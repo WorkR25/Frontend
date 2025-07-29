@@ -1,16 +1,12 @@
+'use client';
 import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice";
 import { AlignJustify, Bell, Calendar } from "lucide-react";
 import { useDispatch } from "react-redux";
 
-const headers: { [key: string]: string } = {
-  "default": "Overview",
-  "jobs": "Explore Jobs"
-};
-
 export default function DashboardTopbar({
-  pathName 
+  pageName,
 }: {
-  pathName: string,
+  pageName:string,
 }) {
 
   const dispatch = useDispatch();
@@ -26,7 +22,7 @@ export default function DashboardTopbar({
         >
           <AlignJustify />
         </div>
-        <div>{headers[pathName] || headers["default"]}</div>
+        <div>{pageName}</div>
       </div>
       <div className="flex items-center gap-3">
         <div className="pr-4">

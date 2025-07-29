@@ -6,10 +6,10 @@ export default function Page() {
   return (
     <div className="text-black bg-white font-poppins ">
       <div className="flex w-screen h-screen p-2 gap-x-2">
-        <div className="sm:basis-40/100 w-full sm:w-auto flex items-center justify-center border rounded-2xl shadow-sm shadow-black overflow-y-scroll">
+        <div className="sm:basis-45/100 w-full sm:w-auto flex items-center justify-center rounded-2xl shadow-xs shadow-black overflow-y-scroll">
           <SignupForm/>
         </div>
-        <div className="bg-[#E7F2F8] basis-60/100  sm:flex hidden items-center justify-center  rounded-2xl overflow-hidden">
+        <div className="bg-[#E7F2F8] basis-55/100  sm:flex hidden items-center justify-center shadow-xs shadow-black rounded-2xl overflow-hidden">
           <SignUpHero />
         </div>
       </div>

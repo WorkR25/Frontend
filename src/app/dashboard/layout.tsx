@@ -1,14 +1,11 @@
 "use client";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
-import DashboardTopbar from "@/components/dashboard/DashboardTopbar";
 import { RootState } from "@/lib/store.config";
-import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 
 export default function DashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const pathname = usePathname();
   const isSidebarOpen = useSelector((state: RootState) => {return state.isSidebarOpen.value});
 
   return (
@@ -30,11 +27,8 @@ export default function DashboardLayout({
           <DashboardSidebar />
         </div>
         <div className="sm:basis-4/5 rounded-lg overflow-hidden">
-          <div className="text-black p-2 bg-[#FFFF] h-full pb-0 ">
-            <DashboardTopbar pathName={pathname.split('/')[2]}/>
-              {children}
-            
-          </div>
+        {children}
+          
         </div>
       </div>
     </div>

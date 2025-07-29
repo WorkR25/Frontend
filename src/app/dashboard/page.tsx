@@ -1,5 +1,6 @@
 "use client";
 import DashboardRightside from "@/components/dashboard/DashboardRightside";
+import DashboardTopbar from "@/components/dashboard/DashboardTopbar";
 import DeadlineCard from "@/components/dashboard/DeadlineCard";
 import InterviewInvitationCard from "@/components/dashboard/InterviewInvitationCard";
 import JobCard from "@/components/JobCard";
@@ -8,19 +9,22 @@ import { RootState } from "@/lib/store.config";
 import { useSelector } from "react-redux";
 
 export default function Page() {
-  const jwt = useSelector((state: RootState)=> state.authJwtToken.value)
+  const jwt = useSelector((state: RootState) => state.authJwtToken.value);
   console.log("jobs page: ", jwt);
   return (
-    <div className="flex m-4 h-full">
-      <div className="sm:basis-35/50 h-[calc(100vh-84px)] overflow-y-scroll  ">
-        <ApplicationSummary />
-        <div className="sm:hidden h-fit mt-4">
+    <div className="text-black p-2 bg-[#FFFF] h-full pb-0 ">
+      <DashboardTopbar pageName="Overview" />
+      <div className="flex m-4 h-full">
+        <div className="sm:basis-35/50 h-[calc(100vh-84px)] overflow-y-scroll  ">
+          <ApplicationSummary />
+          <div className="sm:hidden h-fit mt-4">
+            <DashboardRightside />
+          </div>
+          <JobRecommendation />
+        </div>
+        <div className="hidden sm:block">
           <DashboardRightside />
         </div>
-        <JobRecommendation />
-      </div>
-      <div className="hidden sm:block">
-        <DashboardRightside/>
       </div>
     </div>
   );
@@ -33,15 +37,15 @@ function JobRecommendation() {
         <div className="font-semibold text-xl">Job Recommendation</div>
         <div className="text-[#28668B]">See All</div>
       </div>
-        <div className=" space-x-3 mt-3 mr-3 overflow-x-scroll flex hide-scrollbar">
-          <OptionButton name="For you" isActive={true} />
-          <OptionButton name="Trending" isActive={false} />
-          <OptionButton name="New This Week" isActive={false} />
-          <OptionButton name="Nearby Opportunities" isActive={false} />
-          <OptionButton name="Urgently Hiring" isActive={false} />
-          <OptionButton name="Urgently Hiring" isActive={false} />
-          <OptionButton name="Urgently Hiring" isActive={false} />
-        </div>
+      <div className=" space-x-3 mt-3 mr-3 overflow-x-scroll flex hide-scrollbar">
+        <OptionButton name="For you" isActive={true} />
+        <OptionButton name="Trending" isActive={false} />
+        <OptionButton name="New This Week" isActive={false} />
+        <OptionButton name="Nearby Opportunities" isActive={false} />
+        <OptionButton name="Urgently Hiring" isActive={false} />
+        <OptionButton name="Urgently Hiring" isActive={false} />
+        <OptionButton name="Urgently Hiring" isActive={false} />
+      </div>
       <div className="flex gap-2 flex-wrap items-center justify-evenly mt-3">
         <JobCard
           title="SWE"

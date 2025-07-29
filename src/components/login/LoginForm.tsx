@@ -27,7 +27,7 @@ export default function LogInForm() {
         />
       </div>
       <div className="flex items-center justify-center mt-[10vh]">
-        <div className=" w-[70vw] sm:w-[28vw] text-center mt-[4vh]">
+        <div className=" w-[70vw] sm:w-[35vw] text-center mt-[4vh]">
           <div className="text-lg font-semibold">Log In to Your Account</div>
           <div className="text-sm">
             Welcome to Workr ! Log In to get Started
@@ -73,7 +73,7 @@ function Form() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="max-w-md mx-auto space-y-2 py-6 rounded-lg font-poppins text-sm "
+      className="max-w-md mx-auto space-y-2 py-6 rounded-lg font-poppins text-sm px-8 "
     >
       <div className="relative">
         <Mail
