@@ -1,8 +1,9 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import InputField from "../InputField";
+import {  useForm } from "react-hook-form";
 import { Eye, EyeOff, User, Mail, Lock, Phone } from "lucide-react";
-import { useState } from "react";
+import {  useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import z from "zod";
@@ -50,9 +51,8 @@ export default function SignUpForm() {
   );
 }
 
-function Form() {
-  
 
+function Form() {
   const {
     register,
     handleSubmit,
@@ -70,6 +70,7 @@ function Form() {
 
   const onSubmit = (formData: FormValues) => {
     mutate(formData);
+    console.log(formData);
   };
 
   return (
@@ -77,102 +78,76 @@ function Form() {
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-md mx-auto space-y-2 py-6 rounded-lg font-poppins text-sm px-8"
     >
-      <div className="relative">
-        <User
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8E8E8E]"
-          size={20}
-        />
-        <input
-          {...register("fullName", { required: true })}
-          type="text"
-          placeholder="Haiiatama"
-          className="w-full pl-10 pr-3 py-2 border border-[#E0E0E0] rounded-md focus:outline-none focus:ring-2 "
-        />
-      </div>
+
+      <InputField
+        register={register}
+        fieldName="fullName"
+        placeholder="Haiiatama"
+        type="text"
+        icon={<User size={20} />}
+      />
       {errors.fullName?.message && (
         <p className="text-[#E04B40] text-xs">Enter your name</p>
       )}
 
-      <div className="relative">
-        <Phone
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8E8E8E]"
-          size={20}
-        />
-        <input
-          {...register("phoneNo", { required: true })}
-          type="text"
-          placeholder="7847362567"
-          className="w-full pl-10 pr-3 py-2 border border-[#E0E0E0] rounded-md focus:outline-none focus:ring-2 "
-        />
-      </div>
+      <InputField
+        register={register}
+        fieldName="phoneNo"
+        placeholder="9087654321"
+        type="text"
+        icon={<Phone size={20} />}
+      />
       {errors.phoneNo?.message && (
         <p className="text-[#E04B40] text-xs">{errors.phoneNo.message}</p>
       )}
 
-      <div className="relative">
-        <Mail
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8E8E8E]"
-          size={20}
-        />
-        <input
-          {...register("email", { required: true })}
-          type="email"
-          placeholder="haikaa@example.com"
-          className="w-full pl-10 pr-3 py-2 border border-[#E0E0E0] rounded-md focus:outline-none focus:ring-2 "
-        />
-      </div>
-      {errors.email?.message && (
-        <p className="text-[#E04B40] text-xs">Enter enter valid email</p>
-      )}
 
-      <div className="relative">
-        <Lock
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8E8E8E]"
-          size={20}
+      <InputField
+        register={register}
+        fieldName="email"
+        placeholder="haikaa@example.com"
+        type="email"
+        icon={<Mail size={20} />}
         />
-        <input
-          {...register("password", { required: true })}
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          className={`w-full pl-10 pr-10 py-2 border border-[#E0E0E0] rounded-md focus:outline-none focus:ring-2 ${
-            errors.confirmPassword ? "border-[#E04B40]" : ""
-          }`}
-        />
-        <span
-          className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-          onClick={() => setShowPassword(!showPassword)}
-        >
-          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-        </span>
-      </div>
+        {errors.email?.message && (
+          <p className="text-[#E04B40] text-xs">Enter enter valid email</p>
+        )}
+
+      <InputField
+        register={register}
+        fieldName="password"
+        placeholder="Password"
+        type={showPassword ? "text" : "password"}
+        icon={<Lock size={20} />}
+        other={
+          <span
+            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </span>
+        }
+      />
       {errors.password?.message && (
         <p className="text-[#E04B40] text-xs">{errors.password.message}</p>
       )}
 
-      <div className="relative">
-        <Lock
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8E8E8E]"
-          size={20}
-        />
-        <input
-          {...register("confirmPassword", {
-            required: true,
-            validate: (value) => value === password,
-          })}
-          type={showConfirm ? "text" : "password"}
-          placeholder="Confirm Password"
-          className={`w-full pl-10 pr-10 py-2 border border-[#E0E0E0]${
-            errors.confirmPassword ? "border-[#E04B40]" : ""
-          } rounded-md focus:outline-none focus:ring-2 `}
-        />
-        <span
-          className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer "
-          onClick={() => setShowConfirm(!showConfirm)}
-        >
-          {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
-        </span>
-      </div>
-
+      <InputField
+        register={register}
+        fieldName="confirmPassword"
+        placeholder="Confirm Password"
+        type={showConfirm ? "text" : "password"}
+        icon={<Lock size={20} />}
+        other={
+          <span
+            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer "
+            onClick={() => setShowConfirm(!showConfirm)}
+          >
+            {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
+          </span>
+        }
+        validate={(value) => value === password}
+      />
       <p
         className={`${
           errors.confirmPassword ? "text-[#E04B40] text-xs" : "hidden"
@@ -183,8 +158,15 @@ function Form() {
 
       <button
         type="submit"
+        disabled={
+          !!errors.confirmPassword ||
+          !!errors.password ||
+          !!errors.email ||
+          !!errors.fullName ||
+          !!errors.phoneNo
+        }
         className={` border border-[#F0F0F0] w-full py-1.5 rounded-md font-bold ${
-          errors.confirmPassword
+          errors.confirmPassword || errors.password || errors.email || errors.fullName || errors.phoneNo
             ? "cursor-not-allowed text-[#DDDDDD] bg-[#F0F0F0]"
             : "bg-[#3177a7] cursor-pointer hover:bg-[#7ba1d0]"
         }`}

@@ -1,10 +1,10 @@
 'use client';
 import React, { useEffect } from "react";
 import { ChevronUp } from "lucide-react";
-import { useGetUser } from "@/utils/useGetUser";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store.config";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
+import useGetUser from "@/utils/useGetUser";
 
 export default function UserProfileSidebar() {
 
