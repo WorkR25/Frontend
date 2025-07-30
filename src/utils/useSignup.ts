@@ -8,11 +8,15 @@ type FormValues = z.infer<typeof SignUpFormSchema>;
 const useSignup = () =>
   useMutation({
     mutationFn: async (signupData: FormValues) => {
-      const response = await api.post("/auth/register", signupData);
+      try {
+        const response = await api.post("/auth/register", signupData);
       return response.data;
+      } catch (error) {
+        throw error ;
+      }
     },
     onError: (error) => {
-      console.error("Signup error:", error);
+      console.log("Signup error:", error);
     },
     onSuccess: (data) => {
       const jwtToken = data.data;

@@ -18,11 +18,14 @@ import { RootState } from "@/lib/store.config";
 import { mainMenuCollapsedToogle } from "@/features/mainMenuCollapsed/mainMenuCollapsed";
 import { otherMenuCollapsedToogle } from "@/features/otherMenuCollapsed/otherMenuCollapsedSlice";
 import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice";
+const mainMenuTabId: { [key: string]: number } = {
+  jobs: 1,
+};
 
 export default function DashboardSidebar() {
   const router = useRouter();
   const pathname = usePathname();
-  const [mainMenuActiveTab, setMainMenuActiveTab] = useState<number | null>(0);
+  const [mainMenuActiveTab, setMainMenuActiveTab] = useState<number | null>(mainMenuTabId[pathname.split("/")[2]]);
   const [otherMenuActiveTab, setOtherMenuActiveTab] = useState<number | null>(
     null
   );
@@ -38,9 +41,6 @@ export default function DashboardSidebar() {
 
   useEffect(() => {
     const routeName = pathname.split("/")[2];
-    const mainMenuTabId: { [key: string]: number } = {
-      jobs: 1,
-    };
     if (routeName) {
       setMainMenuActiveTab(mainMenuTabId[routeName]);
     }
@@ -140,6 +140,7 @@ export default function DashboardSidebar() {
                 key={index}
                 onClick={() => {
                   setMainMenuActiveTab(index);
+                  router.prefetch(`/dashboard/${tab.link}`)
                   router.replace(`/dashboard/${tab.link}`);
                 }}
                 className={`py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300  rounded-md hover:cursor-pointer ${

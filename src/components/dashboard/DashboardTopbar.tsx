@@ -1,17 +1,20 @@
-'use client';
+'use client'
 import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice";
+import { cn } from "@/utils/cn";
 import { AlignJustify, Bell, Calendar } from "lucide-react";
 import { useDispatch } from "react-redux";
 
 export default function DashboardTopbar({
   pageName,
+  className,
 }: {
   pageName:string,
+  className?: string,
 }) {
 
   const dispatch = useDispatch();
   return (
-    <div className="flex items-center justify-between px-4 pt-2 overflow-hidden mb-2 sm:mb-5">
+    <div className={cn("flex items-center justify-between px-4 pt-2 overflow-hidden mb-2 sm:mb-5", className)}>
       <div className="text-xl flex items-center text-center gap-x-7 font-semibold">
         <div
           className="sm:hidden hover:cursor-pointer"
