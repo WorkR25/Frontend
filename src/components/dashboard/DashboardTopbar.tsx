@@ -19,8 +19,7 @@ export default function DashboardTopbar({
         <div
           className="sm:hidden hover:cursor-pointer"
           onClick={() => {
-            dispatch(isSidebarOpenToogle());
-           
+            dispatch(isSidebarOpenToogle(true));
           }}
         >
           <AlignJustify />

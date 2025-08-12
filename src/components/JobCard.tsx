@@ -1,9 +1,13 @@
+"use client";
 import { JobCardParams } from "@/types/JobCard";
 import { cn } from "@/utils/cn";
 import { BadgeDollarSign, Bookmark, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function JobCard({
+  id,
+  img,
   title,
   company,
   employmentType,
@@ -12,13 +16,20 @@ export default function JobCard({
   minPay,
   maxPay,
   className,
+  applyLink,
 }: JobCardParams) {
+  const router = useRouter();
+
   return (
     <div
       className={cn(
         "w-full rounded-xl border border-gray-200 p-4 shadow-sm bg-white space-y-3",
-        "sm:w-[45%]", className
+        "sm:w-[45%] hover:cursor-pointer hover:shadow-xl",
+        className
       )}
+      onClick={() => {
+        router.push("/dashboard/jobs/" + id);
+      }}
     >
       <div className="flex items-center justify-between text-sm">
         <span className="bg-green-100 text-green-600 px-2 py-0.5 rounded-full text-xs font-medium">
@@ -30,7 +41,7 @@ export default function JobCard({
       <div className="flex items-start space-x-3">
         <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center">
           <Image
-            src="/google-icon-logo-svgrepo-com.svg"
+            src={img ? img : "/google-icon-logo-svgrepo-com.svg"}
             alt="photo"
             width={40}
             height={40}
@@ -60,12 +71,14 @@ export default function JobCard({
         <div className="bg-gray-100 px-2 py-1 rounded-md text-xs">+2</div>
       </div>
 
-      <div className="flex items-center justify-between">
-        <button className="bg-blue-600 hover:bg-blue-700 basis-9/10 w-full text-white text-sm font-medium px-6 py-2 rounded-md">
-          Apply
-        </button>
-        <Bookmark className="w-5 h-5 basis-1/10 text-gray-400" />
-      </div>
+      {applyLink && (
+        <div className="flex items-center justify-between">
+          <button className=" bg-blue-600 hover:bg-blue-700 basis-9/10 w-full text-white text-sm font-medium px-6 py-2 rounded-md">
+            Apply
+          </button>
+          <Bookmark className="w-5 h-5 basis-1/10 text-gray-400" />
+        </div>
+      )}
     </div>
   );
 }

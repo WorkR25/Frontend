@@ -1,0 +1,257 @@
+"use client";
+
+import { CreateJobFormSchema } from "@/schema/createJob.validator";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import InputField from "../InputField";
+import { useEffect, useState } from "react";
+import useCreateJob from "@/utils/useCreateJob";
+import useGetUser from "@/utils/useGetUser";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/store.config";
+import useGetJobTitle from "@/utils/useGetJobTitle";
+import useGetCity from "@/utils/useGetCity";
+import useGetEmploymentType from "@/utils/useGetEmploymentType";
+import useGetExperienceLevel from "@/utils/useGetExperienceLevel";
+import useGetCompany from "@/utils/useGetCompany";
+import useGetUserRoles from "@/utils/useGetUserRoles";
+import { useRouter } from "next/navigation";
+import { cn } from "@/utils/cn";
+import { toogleShowJobCreateForm } from "@/features/showJobCreateForm/showJobCreateForm";
+import { Minus, X } from "lucide-react";
+import DebouncedDropdown from "./DebouncedDropdown";
+
+import Dropdown from "./Dropdown";
+import SkillsDropdown from "./SkillsDropdown";
+
+
+type CreateJobFormValues = z.infer<typeof CreateJobFormSchema>;
+
+export type OptionType = {
+  id: number;
+  name: string;
+};
+
+export default function CreateJobForm({ className }: { className?: string }) {
+  const router = useRouter();
+  const test = useSelector((state: RootState) => {
+    return state.jobId.value;
+  });
+  const dispatch = useDispatch();
+
+  const [jwtToken, setJwtToken] = useState<string | null>("");
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  useEffect(() => {
+    console.log("test :", test);
+    setJwtToken(localStorage.getItem("AuthJwtToken"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const { data } = useGetUser(jwtToken);
+  const { data: employmentType } = useGetEmploymentType(jwtToken);
+  const { data: experienceLevel } = useGetExperienceLevel(jwtToken);
+  const { data: userRoles } = useGetUserRoles(jwtToken, data?.id);
+
+  useEffect(() => {
+    if (userRoles && !userRoles?.includes("admin")) {
+      router.replace("/dashboard");
+    } else {
+      setIsAuthorized(true);
+    }
+  }, [userRoles, router]);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<CreateJobFormValues>({
+    resolver: zodResolver(CreateJobFormSchema),
+  });
+
+  const onSubmit = (createData: CreateJobFormValues) => {
+    mutate({ createJobData: createData, authJwtToken: jwtToken });
+  };
+  setValue("recuiter_id", Number(data?.id));
+  const { mutate } = useCreateJob();
+
+  if (!isAuthorized || !userRoles || !userRoles.includes("admin")) {
+    return <div className="flex justify-center w-full">Authorizing...</div>;
+  }
+
+  return (
+    <div className={cn("justify-center sm:flex ", className)}>
+      <div
+        className="absolute top-2 right-2 hover:cursor-pointer "
+        onClick={() => {
+          dispatch(toogleShowJobCreateForm());
+        }}
+      >
+        {" "}
+        <X width={20} />{" "}
+      </div>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="text-gray-400 hide-scrollbar w-full justify-center flex flex-col space-y-2 py-4  h-fit"
+      >
+        <div className="text-black text-center font-semibold text-xl">
+          Create Job
+        </div>
+        <div className="sm:flex gap-2">
+          <div className="basis-1/2 ">
+            <div className="font-bold text-md mt-2 text-black">Company *</div>
+            {/* <DebouncedDropdown
+              placeholder="Select a company"
+              setValue={setValue}
+              fieldName="company_id"
+              error={errors.company_id}
+              jwtToken={jwtToken}
+              useQueryFn={useGetCompany}
+            /> */}
+
+            <DebouncedDropdown<CreateJobFormValues, OptionType>
+              placeholder="Select a company"
+              setValue={setValue}
+              fieldName="company_id"
+              error={errors.company_id}
+              jwtToken={jwtToken}
+              useQueryFn={useGetCompany}
+              getOptionLabel={(company) => company.name}
+              getOptionValue={(company) => company.id}
+            />
+
+            <div className="font-bold text-md mt-2 text-black">Job Title *</div>
+            <DebouncedDropdown<CreateJobFormValues, OptionType>
+              placeholder="Select a Job title"
+              fieldName="title_id"
+              error={errors.title_id}
+              setValue={setValue}
+              jwtToken={jwtToken}
+              useQueryFn={useGetJobTitle}
+              getOptionLabel={(jobTitle) => jobTitle.name}
+              getOptionValue={(jobTitle) => jobTitle.id}
+            />
+
+            <div className="font-bold text-md  mt-2 text-black">Job City *</div>
+            <DebouncedDropdown<CreateJobFormValues, OptionType>
+              placeholder="Select a city"
+              jwtToken={jwtToken}
+              error={errors.city_id}
+              fieldName="city_id"
+              setValue={setValue}
+              useQueryFn={useGetCity}
+              getOptionLabel={(city) => `${city.name}`}
+              getOptionValue={(city) => city.id}
+            />
+          </div>
+
+          <div className="basis-1/2">
+            <div className="font-bold text-md mt-2 text-black">
+              Employment Type *
+            </div>
+            <Dropdown<CreateJobFormValues, OptionType>
+              fieldName="employment_type_id"
+              setValue={setValue}
+              error={errors.employment_type_id}
+              optionArray={employmentType}
+              placeholder="Select Employment Type"
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.id}
+            />
+
+            <div className="font-bold text-md mt-2 text-black">
+              Experience *
+            </div>
+            <Dropdown<CreateJobFormValues, OptionType>
+              setValue={setValue}
+              fieldName="experience_level_id"
+              error={errors.experience_level_id}
+              optionArray={experienceLevel}
+              placeholder="Select Experience Level"
+              getOptionLabel={(option) => option.name}
+              getOptionValue={(option) => option.id}
+            />
+
+            <div className="flex h-[42px] items-center mt-[24px]">
+              <div className="font-bold text-md text-center text-black basis-1/3">
+                Is Remote *
+              </div>
+              <InputField
+                register={register}
+                fieldName="is_remote"
+                placeholder={"is remote"}
+                type={"checkbox"}
+                error={errors.is_remote}
+                icon={<></>}
+                className="basis-2/3 justify-start outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="font-bold text-md mt-2 text-black">Apply Link*</div>
+        <InputField
+          register={register}
+          fieldName="apply_link"
+          placeholder={"apply link"}
+          type={"text"}
+          error={errors.apply_link}
+          icon={<></>}
+        />
+
+        <div className="flex justify-center text-center items-center">
+          <div className="">
+            <div className="font-bold text-md mt-2 text-black">
+              Minimum Salary *
+            </div>
+            <InputField
+              register={register}
+              fieldName="salary_min"
+              placeholder={"min salary"}
+              type={"text"}
+              error={errors.salary_min}
+              icon={<></>}
+              setValueFn={(v) => (v === "" ? undefined : Number(v))}
+            />
+          </div>
+          <div>
+            <Minus />
+          </div>
+          <div>
+            <div className="font-bold text-md mt-2 text-black">
+              Maximum salary *
+            </div>
+            <InputField
+              register={register}
+              fieldName="salary_max"
+              placeholder={"max salary"}
+              type={"text"}
+              error={errors.salary_max}
+              icon={<></>}
+              setValueFn={(v) => (v === "" ? undefined : Number(v))}
+            />
+          </div>
+        </div>
+
+        <div className="font-bold text-md mt-2 text-black">Add Skills *</div>
+        <SkillsDropdown
+          setValue={setValue}
+          error={errors.skillIds}
+          jwtToken={jwtToken}
+          fieldName="skillIds"
+        />
+
+        <button
+          onClick={() => {
+            console.log("object", errors);
+          }}
+          type="submit"
+          className="bg-blue-600 hover:cursor-pointer text-white px-4 py-2 rounded"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  );
+}

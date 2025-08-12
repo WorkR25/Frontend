@@ -1,16 +1,13 @@
 "use client";
+
 import DashboardRightside from "@/components/dashboard/DashboardRightside";
 import DashboardTopbar from "@/components/dashboard/DashboardTopbar";
 import DeadlineCard from "@/components/dashboard/DeadlineCard";
 import InterviewInvitationCard from "@/components/dashboard/InterviewInvitationCard";
 import JobCard from "@/components/JobCard";
 import OptionButton from "@/components/OptionButton";
-import { RootState } from "@/lib/store.config";
-import { useSelector } from "react-redux";
 
-export default function Page() {
-  const jwt = useSelector((state: RootState) => state.authJwtToken.value);
-  console.log("jobs page: ", jwt);
+export default function Page() {  
   return (
     <div className="text-black p-2 bg-[#FFFF] h-full pb-0 ">
       <DashboardTopbar pageName="Overview" />
@@ -48,6 +45,7 @@ function JobRecommendation() {
       </div>
       <div className="flex gap-2 flex-wrap items-center justify-evenly mt-3">
         <JobCard
+          id={1}
           title="SWE"
           company="Google"
           employmentType="Full-time"
@@ -55,8 +53,10 @@ function JobRecommendation() {
           country="India"
           minPay="100,000"
           maxPay="200,000"
+          applyLink="www.google.com"
         />
         <JobCard
+          id={2}
           title="Full Stack"
           company="Amazon"
           employmentType="Part-time"
@@ -64,6 +64,7 @@ function JobRecommendation() {
           country="India"
           minPay="10,000"
           maxPay="20,000"
+          applyLink="www.google.com"
         />
       </div>
     </div>

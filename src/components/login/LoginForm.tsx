@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import z from "zod";
@@ -10,6 +10,7 @@ import { LogInFormSchema } from "@/schema/logIn.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useLogin from "@/utils/useLogin";
 import InputField from "../InputField";
+import ErrorPopup from "../ErrorPopup";
 
 type LogInFormValues = z.infer<typeof LogInFormSchema>;
 
@@ -61,8 +62,16 @@ function Form() {
   } = useForm<LogInFormValues>({
     resolver: zodResolver(LogInFormSchema),
   });
+  const router = useRouter()
 
-  const { mutate } = useLogin();
+  const { mutate, isError, isPending, isSuccess } = useLogin();
+  console.log(isPending)
+  
+  useEffect(()=>{
+    if(isSuccess){
+    router.replace('/dashboard');
+  }
+  }, [isSuccess, router])
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -75,6 +84,7 @@ function Form() {
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-md mx-auto space-y-2 py-6 rounded-lg font-poppins text-sm px-8 "
     >
+      {isError ? (<ErrorPopup message="Error while logging in" />):(<></>)}
       
       <InputField
         register={register}
@@ -118,7 +128,7 @@ function Form() {
             : "bg-[#3177a7] cursor-pointer hover:bg-[#7ba1d0]"
         }`}
       >
-        Log In
+        {isPending || isSuccess ? " Logging in " : " Log in "}
       </button>
     </form>
   );

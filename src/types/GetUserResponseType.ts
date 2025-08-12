@@ -1,4 +1,5 @@
 export type GetUserResponseType = {
+  id: number;
   fullName: string;
   email: string;
   phoneNo: string;

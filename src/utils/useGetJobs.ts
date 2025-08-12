@@ -1,0 +1,29 @@
+import { jobServiceApi } from "@/lib/axios.config";
+import { Job } from "@/types/GetJobType";
+import { useQuery } from "@tanstack/react-query";
+
+const useGetJobs = (authJwtToken: string | null) => {
+  return useQuery<Job[]>({
+    queryKey: ["jobList"],
+    queryFn: () => {
+      return getJobs(authJwtToken);
+    },
+    enabled: !!authJwtToken,
+  });
+};
+
+const getJobs = async (authJwtToken: string | null) => {
+  try {
+    const response = await jobServiceApi.get("/job", {
+      headers: {
+        Authorization: authJwtToken,
+      },
+    });
+    console.log("get jobs: ", response);
+    return response.data.data as Job[];
+  } catch (error) {
+    throw error;
+  }
+};
+
+export default useGetJobs ;

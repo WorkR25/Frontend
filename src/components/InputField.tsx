@@ -1,5 +1,6 @@
 import { InputFieldProps } from "@/types/InputFieldProps";
 import { cn } from "@/utils/cn";
+import { useState } from "react";
 import { FieldValues } from "react-hook-form";
 
 export default function InputField<T extends FieldValues>({
@@ -12,7 +13,10 @@ export default function InputField<T extends FieldValues>({
   other,
   error,
   className = "",
+  setValueFn,
+  fieldValue,
 }: InputFieldProps<T>) {
+  const [inputValue, setInputValue]= useState(fieldValue?? "");
   return (
     <div className={cn("relative w-full", className)}>
       {icon && (
@@ -21,9 +25,11 @@ export default function InputField<T extends FieldValues>({
         </div>
       )}
       <input
-        {...register(fieldName, { required: true, validate: validate })}
+        {...register(fieldName, { required: true, validate: validate, setValueAs: setValueFn })}
         type={type}
         placeholder={placeholder}
+        value={inputValue}
+        onChange={(e)=>{setInputValue(e.target.value)}}
         aria-invalid={!!error}
         className={`w-full pl-10 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
           error ? "border-red-500" : "border-[#E0E0E0]"

@@ -1,4 +1,4 @@
-import { api } from "@/lib/axios.config";
+import { userServiceApi } from "@/lib/axios.config";
 import { SignUpFormSchema } from "@/schema/signUp.validator";
 import { useMutation } from "@tanstack/react-query";
 import z from "zod";
@@ -9,7 +9,7 @@ const useSignup = () =>
   useMutation({
     mutationFn: async (signupData: FormValues) => {
       try {
-        const response = await api.post("/auth/register", signupData);
+        const response = await userServiceApi.post("/auth/register", signupData);
       return response.data;
       } catch (error) {
         throw error ;
