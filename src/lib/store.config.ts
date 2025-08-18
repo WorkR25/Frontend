@@ -7,7 +7,7 @@ import jobId from '../features/jobId/jobId'
 import jobDetails from '../features/jobDetails/jobDetails'
 import showJobCreateForm from '../features/showJobCreateForm/showJobCreateForm'
 import showJobUpdateForm from '../features/showJobUpdateForm/showJobUpdateForm'
-
+import showJobApplicantsSlice from '../features/showJobApplicants/showJobApplicantsSlice'
 
 export const store= configureStore({
   reducer: {
@@ -19,6 +19,7 @@ export const store= configureStore({
     jobDetails: jobDetails,
     showJobCreateForm: showJobCreateForm,
     showJobUpdateForm: showJobUpdateForm,
+    showJobApplicants: showJobApplicantsSlice,
   },
 });
 

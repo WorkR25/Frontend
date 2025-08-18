@@ -7,21 +7,21 @@ import JobSearchBanner from "@/components/dashboard/JobSearchBanner";
 
 export default function Page() {
   return (
-    <div className="text-black p-2 bg-[#FFFF] h-full pb-0 ">
+    <div className="job-page text-black p-2 bg-[#FFFF] h-full pb-0 ">
       <DashboardTopbar pageName="Jobs" />
-      <div className=" overflow-y-scroll h-[calc(100vh-74px))]">
-        <div className=" px-2 ">
-          <div className="py-2 bg-white sticky top-0">
+      <div className="job-page overflow-y-scroll h-[calc(100vh-74px))]">
+        <div className="job-page px-2 ">
+          <div className="job-page hidden py-2 bg-white sticky top-0">
             <JobSearchBanner />
           </div>
-          <div className="flex p-2 items-center justify-between">
-            <div className="font-semibold text-lg">Jobs for you</div>
-            <div className="flex items-center justify-center gap-x-2">
+          <div className="job-page flex p-2 items-center justify-between">
+            <div className="job-page font-semibold text-lg">Jobs for you</div>
+            <div className="job-page flex items-center justify-center gap-x-2">
               <SortButton />
               <FilterButton />
             </div>
           </div>
-          <div className=" space-x-3 mt-3 mr-3 overflow-x-scroll flex hide-scrollbar">
+          <div className="job-page space-x-3 mt-3 mr-3 overflow-x-scroll flex hide-scrollbar">
             <OptionButton name={"For you"} isActive={false} />
             <OptionButton name={"Trending jobs"} isActive={false} />
             <OptionButton name={"New this week"} isActive={false} />

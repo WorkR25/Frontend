@@ -4,6 +4,7 @@ import ConfirmDeleteDialog from "@/components/ConfirmDelete";
 import DashboardTopbar from "@/components/dashboard/DashboardTopbar";
 import JobCard from "@/components/JobCard";
 import { setJobId } from "@/features/jobId/jobId";
+import { setShowJobApplicants } from "@/features/showJobApplicants/showJobApplicantsSlice";
 import { setShowJobupdateForm } from "@/features/showJobUpdateForm/showJobUpdateForm";
 import useDeleteJob from "@/utils/useDeleteJob";
 import useGetJobs from "@/utils/useGetJobs";
@@ -46,13 +47,13 @@ export default function Page() {
   }
 
   return (
-    <div className="text-black p-2 bg-[#FFFF] h-full pb-0 overflow-y-scroll py-3">
+    <div className="all-jobs-page text-black p-2 bg-[#FFFF] h-full pb-0 overflow-y-scroll py-3">
       <DashboardTopbar pageName="All Jobs" />
-      <div className="sm:flex flex-wrap gap-2">
+      <div className="all-jobs-page sm:flex flex-wrap gap-2">
         {jobList?.map((job) => {
           return (
             <div
-              className="w-full sm:w-[45%] flex h-fit border border-gray-100 rounded-lg p-2 hover:shadow-lg "
+              className="all-jobs-page  w-full sm:w-[45%] flex h-fit border border-gray-100 rounded-lg p-2 hover:shadow-lg "
               key={job.id}
             >
               <JobCard
@@ -65,15 +66,15 @@ export default function Page() {
                 country={job.country}
                 minPay={job.salary_min}
                 maxPay={job.salary_max}
-                className="w-[30vw] basis-4/5"
+                className="all-jobs-page w-[30vw] basis-4/5"
               />
-              <div className="justify-center flex flex-col gap-2 px-2 basis-1/5">
+              <div className="all-jobs-page justify-center flex flex-col gap-2 px-2 basis-1/5">
                 <button
                   onClick={() => {
                     dispatch(setJobId(String(job.id)));
                     dispatch(setShowJobupdateForm(true));
                   }}
-                  className="border rounded-lg py-1 px-0.5 bg-[#32db97]"
+                  className="all-jobs-page border rounded-lg py-1 px-0.5 bg-[#32db97]"
                 >
                   Update
                 </button>
@@ -81,7 +82,7 @@ export default function Page() {
                   onClick={() => {
                     setConfirmDelete(true);
                   }}
-                  className="border rounded-lg py-1 px-0.5 bg-[#b83588]"
+                  className="all-jobs-page border rounded-lg py-1 px-0.5 bg-[#b83588]"
                 >
                   Delete
                 </button>
@@ -100,6 +101,15 @@ export default function Page() {
                   message="Are you sure you want to delete this job posting ?"
                   title="Confirm delete ?"
                 />
+                <button
+                  onClick={() => {
+                    dispatch(setShowJobApplicants(true));
+                    dispatch(setJobId(String(job.id)))
+                  }}
+                  className="all-jobs-page border rounded-lg py-1 px-0.5 bg-[#32db97]"
+                >
+                  View applicants
+                </button>
               </div>
             </div>
           );

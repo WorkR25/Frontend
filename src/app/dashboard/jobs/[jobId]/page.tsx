@@ -9,6 +9,7 @@ import { use, useEffect } from "react";
 import { setJobId } from "@/features/jobId/jobId";
 import { RootState } from "@/lib/store.config";
 import useGetJobDetails from "@/utils/useGetJobDetails";
+import { ToastContainer } from "react-toastify";
 
 export default function Page({
   params,
@@ -36,25 +37,26 @@ export default function Page({
   }
 
   return (
-    <div className="text-black bg-white h-screen flex flex-col p-2">
-      <div className="flex items-center ">
-        <div className="basis-[5%] ">
+    <div className="jobId-page text-black bg-white h-screen flex flex-col p-2">
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="jobId-page flex items-center ">
+        <div className="jobId-page basis-[5%] ">
           <BackButton />
         </div>
         <DashboardTopbar className="basis-[95%]" pageName="Job Details" />
       </div>
-      <JobDetailsCard
+       <JobDetailsCard
         img={jobDetails?.companyId.logo}
         title={jobDetails.jobTitle.title}
         companyName={jobDetails?.companyId.name}
         city={jobDetails.city.name}
-        applyLink={jobDetails.apply_link}
+        jobId={Number(jobId)}
       />
-      <div className="flex flex-1 overflow-hidden">
-        <div className="basis-35/50 overflow-y-auto p-4 min-h-0">
+      <div className="jobId-page flex flex-1 overflow-hidden">
+        <div className="jobId-page basis-35/50 overflow-y-auto p-4 min-h-0">
           <JobDescription />
         </div>
-        <div className="basis-15/50 overflow-y-auto p-4 min-h-0">
+        <div className="jobId-page basis-15/50 overflow-y-auto p-4 min-h-0">
           <JobSpecification
             experienceLevel={jobDetails.experienceLevel.name}
             employmentType={jobDetails.employmentType.name}
