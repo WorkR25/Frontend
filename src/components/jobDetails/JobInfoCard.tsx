@@ -12,7 +12,7 @@ export default function JobInfoCard({
   return (
     <div
       className={cn(
-        "rounded-xl border border-gray-200 flex flex-col text-center items-center justify-center  bg-white h-[15vh]",
+        "rounded-xl border border-gray-200 flex flex-col text-center items-center justify-center  bg-white h-[10vh] sm:h-[15vh]",
         className
       )}
     >

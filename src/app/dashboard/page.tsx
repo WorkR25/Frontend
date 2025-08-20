@@ -6,8 +6,50 @@ import DeadlineCard from "@/components/dashboard/DeadlineCard";
 import InterviewInvitationCard from "@/components/dashboard/InterviewInvitationCard";
 import JobCard from "@/components/JobCard";
 import OptionButton from "@/components/OptionButton";
+import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
+import useGetUser from "@/utils/useGetUser";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
-export default function Page() {  
+export default function Page() {
+  const router = useRouter();
+  const [jwtToken, setJwtToken] = useState<string | null>("");
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const token = localStorage.getItem("AuthJwtToken");
+    if (token !== null) {
+      setJwtToken(token);
+      dispatch(setAuthJwtToken(token));
+    }else{
+      router.push("/login");
+    }
+  }, [dispatch, router]);
+
+  const { isPending, isError } = useGetUser(jwtToken);
+
+  useEffect(() => {
+    if (isError) {
+      router.push("/login");
+    }
+  }, [isError, router]);
+
+  if (isPending ) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-lg font-medium">Loading...</p>
+      </div>
+    );
+  }
+
+  if( isError ){
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-lg font-medium">Redirecting...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="text-black p-2 bg-[#FFFF] h-full pb-0 ">
       <DashboardTopbar pageName="Overview" />

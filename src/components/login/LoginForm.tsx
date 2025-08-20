@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import z from "zod";
@@ -60,23 +60,24 @@ function Form() {
     handleSubmit,
     formState: { errors },
   } = useForm<LogInFormValues>({
+    mode: "onChange",      
+    reValidateMode: "onBlur",
     resolver: zodResolver(LogInFormSchema),
   });
   const router = useRouter()
 
   const { mutate, isError, isPending, isSuccess } = useLogin();
   console.log(isPending)
-  
-  useEffect(()=>{
-    if(isSuccess){
-    router.replace('/dashboard');
-  }
-  }, [isSuccess, router])
 
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = (logInData: LogInFormValues) => {
-    mutate(logInData);
+    mutate(logInData, {
+      onSuccess: ()=>{
+        console.log("login successfull")
+        router.push('/dashboard');
+      }
+    });
   };
 
   return (

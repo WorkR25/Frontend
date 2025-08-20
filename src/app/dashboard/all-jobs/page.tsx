@@ -47,13 +47,13 @@ export default function Page() {
   }
 
   return (
-    <div className="all-jobs-page text-black p-2 bg-[#FFFF] h-full pb-0 overflow-y-scroll py-3">
+    <div className="all-jobs-page absolute w-[calc(100%-1/5)] top-0 text-black p-2 bg-[#FFFF] h-full pb-0 overflow-y-scroll py-3">
       <DashboardTopbar pageName="All Jobs" />
       <div className="all-jobs-page sm:flex flex-wrap gap-2">
         {jobList?.map((job) => {
           return (
             <div
-              className="all-jobs-page  w-full sm:w-[45%] flex h-fit border border-gray-100 rounded-lg p-2 hover:shadow-lg "
+              className="all-jobs-page w-full sm:w-[45%] flex h-fit border border-gray-100 rounded-lg p-2 hover:shadow-lg "
               key={job.id}
             >
               <JobCard
@@ -66,6 +66,7 @@ export default function Page() {
                 country={job.country}
                 minPay={job.salary_min}
                 maxPay={job.salary_max}
+                created_at={job.created_at}
                 className="all-jobs-page w-[30vw] basis-4/5"
               />
               <div className="all-jobs-page justify-center flex flex-col gap-2 px-2 basis-1/5">
@@ -103,6 +104,7 @@ export default function Page() {
                 />
                 <button
                   onClick={() => {
+                    console.log("view applicants called")
                     dispatch(setShowJobApplicants(true));
                     dispatch(setJobId(String(job.id)))
                   }}

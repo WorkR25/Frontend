@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
+  Building2,
   ChartPie,
   ChevronDown,
   Folder,
@@ -20,7 +21,14 @@ import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import useGetUser from "@/utils/useGetUser";
 import useGetUserRoles from "@/utils/useGetUserRoles";
-import { toogleShowJobCreateForm } from "@/features/showJobCreateForm/showJobCreateForm";
+import {
+  onClickAllJobs,
+  onClickCreateCompany,
+  onClickCreateJob,
+  onClickExploreJob,
+  onClickOverview,
+} from "./dashboard.utils";
+// import { toogleShowJobCreateForm } from "@/features/showJobCreateForm/showJobCreateForm";
 const mainMenuTabId: { [key: string]: number } = {
   jobs: 1,
   "create-job": 2,
@@ -47,7 +55,9 @@ export default function DashboardSidebar() {
   const otherMenuCollapsed = useSelector(
     (state: RootState) => state.otherMenuCollapsed.value
   );
-  const showJobCreateForm = useSelector((state: RootState)=> state.showJobCreateForm.value)
+  const showJobCreateForm = useSelector(
+    (state: RootState) => state.showJobCreateForm.value
+  );
 
   const { data: userData } = useGetUser(jwtToken);
   const { data: userRoles } = useGetUserRoles(jwtToken, userData?.id);
@@ -69,11 +79,11 @@ export default function DashboardSidebar() {
   useEffect(() => {
     const routeName = pathname.split("/")[2];
 
-    if(showJobCreateForm){
+    if (showJobCreateForm) {
       setMainMenuActiveTab(2);
-    }else if (routeName) {
+    } else if (routeName) {
       setMainMenuActiveTab(mainMenuTabId[routeName]);
-    } 
+    }
   }, [pathname, showJobCreateForm]);
 
   const mainMenuTabs = [
@@ -82,24 +92,35 @@ export default function DashboardSidebar() {
       icon: <ChartPie className="w-5 h-5 mr-2" />,
       link: "/",
       auth: ["admin", "user"],
+      onClickFn: onClickOverview,
     },
     {
       name: "Explore Jobs",
       icon: <Globe className="w-5 h-5 mr-2" />,
       link: "/jobs",
       auth: ["admin", "user"],
+      onClickFn: onClickExploreJob,
     },
     {
       name: "Create Job",
       icon: <MessageCircle className="w-5 h-5 mr-2" />,
-      link: "/create-job",
+      link: null,
       auth: ["admin"],
+      onClickFn: onClickCreateJob,
     },
     {
       name: "All jobs",
       icon: <Folder className="w-5 h-5 mr-2" />,
       link: "/all-jobs",
       auth: ["admin"],
+      onClickFn: onClickAllJobs,
+    },
+    {
+      name: "Create Company",
+      icon: <Building2 className="w-5 h-5 mr-2" />,
+      link: null,
+      auth: ["admin"],
+      onClickFn: onClickCreateCompany,
     },
   ];
 
@@ -110,7 +131,6 @@ export default function DashboardSidebar() {
 
   return (
     <div className="hide-scrollbar">
-      
       <div className="flex items-center justify-between py-4  ">
         <div>
           <Image
@@ -170,14 +190,9 @@ export default function DashboardSidebar() {
                 <button
                   key={index}
                   onClick={() => {
-                    dispatch(isSidebarOpenToogle(false));
                     setMainMenuActiveTab(index);
-                    console.log("dashboard sidebar : ", index);
-                    if (index != 2) {
-                      router.replace(`/dashboard/${tab.link}`);
-                    } else {
-                      dispatch(toogleShowJobCreateForm());
-                    }
+                    dispatch(isSidebarOpenToogle(false));
+                    tab.onClickFn(dispatch, router, tab.link);
                   }}
                   className={`py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300  rounded-md hover:cursor-pointer ${
                     mainMenuActiveTab === index

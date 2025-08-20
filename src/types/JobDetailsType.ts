@@ -25,4 +25,6 @@ export type JobDetails = {
   salary_max: string;
   salary_min: string;
   skills: Skills[];
+  description: string ;
+  created_at: Date;
 };

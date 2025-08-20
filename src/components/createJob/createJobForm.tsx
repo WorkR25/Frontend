@@ -2,7 +2,7 @@
 
 import { CreateJobFormSchema } from "@/schema/createJob.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import InputField from "../InputField";
 import { useEffect, useState } from "react";
@@ -24,7 +24,8 @@ import DebouncedDropdown from "./DebouncedDropdown";
 
 import Dropdown from "./Dropdown";
 import SkillsDropdown from "./SkillsDropdown";
-
+import { toast } from "react-toastify";
+import MarkdownEditor from "./MarkdownEditor";
 
 type CreateJobFormValues = z.infer<typeof CreateJobFormSchema>;
 
@@ -61,24 +62,43 @@ export default function CreateJobForm({ className }: { className?: string }) {
     }
   }, [userRoles, router]);
 
+  const useFormMethods = useForm<CreateJobFormValues>({
+    mode: "onChange",
+    reValidateMode: "onBlur",
+    resolver: zodResolver(CreateJobFormSchema),
+  });
+
   const {
     register,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
-  } = useForm<CreateJobFormValues>({
-    resolver: zodResolver(CreateJobFormSchema),
-  });
+  } = useFormMethods;
 
   const onSubmit = (createData: CreateJobFormValues) => {
-    mutate({ createJobData: createData, authJwtToken: jwtToken });
+    mutate(
+      { createJobData: createData, authJwtToken: jwtToken },
+      {
+        onSuccess: () => {
+          toast.success("Job created successfully");
+        },
+      }
+    );
   };
+
+  const onError = () => {
+    toast.error("Fill all the required fields to continue");
+  };
+
   setValue("recuiter_id", Number(data?.id));
   const { mutate } = useCreateJob();
 
   if (!isAuthorized || !userRoles || !userRoles.includes("admin")) {
     return <div className="flex justify-center w-full">Authorizing...</div>;
   }
+
+  console.log("error in crate jon schema", errors, getValues());
 
   return (
     <div className={cn("justify-center sm:flex ", className)}>
@@ -88,20 +108,20 @@ export default function CreateJobForm({ className }: { className?: string }) {
           dispatch(toogleShowJobCreateForm());
         }}
       >
-        {" "}
-        <X width={20} />{" "}
+        <X width={20} />
       </div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="text-gray-400 hide-scrollbar w-full justify-center flex flex-col space-y-2 py-4  h-fit"
-      >
-        <div className="text-black text-center font-semibold text-xl">
-          Create Job
-        </div>
-        <div className="sm:flex gap-2">
-          <div className="basis-1/2 ">
-            <div className="font-bold text-md mt-2 text-black">Company *</div>
-            {/* <DebouncedDropdown
+      <FormProvider {...useFormMethods}>
+        <form
+          onSubmit={handleSubmit(onSubmit, onError)}
+          className="text-gray-400 hide-scrollbar w-full justify-center flex flex-col space-y-2 py-4  h-fit"
+        >
+          <div className="text-black text-center font-semibold text-xl">
+            Create Job
+          </div>
+          <div className="sm:flex gap-2">
+            <div className="basis-1/2 ">
+              <div className="font-bold text-md mt-2 text-black">Company *</div>
+              {/* <DebouncedDropdown
               placeholder="Select a company"
               setValue={setValue}
               fieldName="company_id"
@@ -110,148 +130,172 @@ export default function CreateJobForm({ className }: { className?: string }) {
               useQueryFn={useGetCompany}
             /> */}
 
-            <DebouncedDropdown<CreateJobFormValues, OptionType>
-              placeholder="Select a company"
-              setValue={setValue}
-              fieldName="company_id"
-              error={errors.company_id}
-              jwtToken={jwtToken}
-              useQueryFn={useGetCompany}
-              getOptionLabel={(company) => company.name}
-              getOptionValue={(company) => company.id}
-            />
+              <DebouncedDropdown<CreateJobFormValues, OptionType>
+                placeholder="Select a company"
+                setValue={setValue}
+                fieldName="company_id"
+                error={errors.company_id}
+                jwtToken={jwtToken}
+                useQueryFn={useGetCompany}
+                getOptionLabel={(company) => company.name}
+                getOptionValue={(company) => company.id}
+              />
 
-            <div className="font-bold text-md mt-2 text-black">Job Title *</div>
-            <DebouncedDropdown<CreateJobFormValues, OptionType>
-              placeholder="Select a Job title"
-              fieldName="title_id"
-              error={errors.title_id}
-              setValue={setValue}
-              jwtToken={jwtToken}
-              useQueryFn={useGetJobTitle}
-              getOptionLabel={(jobTitle) => jobTitle.name}
-              getOptionValue={(jobTitle) => jobTitle.id}
-            />
+              <div className="font-bold text-md mt-2 text-black">
+                Job Title *
+              </div>
+              <DebouncedDropdown<CreateJobFormValues, OptionType>
+                placeholder="Select a Job title"
+                fieldName="title_id"
+                error={errors.title_id}
+                setValue={setValue}
+                jwtToken={jwtToken}
+                useQueryFn={useGetJobTitle}
+                getOptionLabel={(jobTitle) => jobTitle.name}
+                getOptionValue={(jobTitle) => jobTitle.id}
+              />
 
-            <div className="font-bold text-md  mt-2 text-black">Job City *</div>
-            <DebouncedDropdown<CreateJobFormValues, OptionType>
-              placeholder="Select a city"
-              jwtToken={jwtToken}
-              error={errors.city_id}
-              fieldName="city_id"
-              setValue={setValue}
-              useQueryFn={useGetCity}
-              getOptionLabel={(city) => `${city.name}`}
-              getOptionValue={(city) => city.id}
-            />
+              <div className="font-bold text-md  mt-2 text-black">
+                Job City *
+              </div>
+              <DebouncedDropdown<CreateJobFormValues, OptionType>
+                placeholder="Select a city"
+                jwtToken={jwtToken}
+                error={errors.city_id}
+                fieldName="city_id"
+                setValue={setValue}
+                useQueryFn={useGetCity}
+                getOptionLabel={(city) => `${city.name}`}
+                getOptionValue={(city) => city.id}
+              />
+            </div>
+
+            <div className="basis-1/2">
+              <div className="font-bold text-md mt-2 text-black">
+                Employment Type *
+              </div>
+              <Dropdown<CreateJobFormValues, OptionType>
+                fieldName="employment_type_id"
+                setValue={setValue}
+                error={errors.employment_type_id}
+                optionArray={employmentType}
+                placeholder="Select Employment Type"
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option.id}
+              />
+
+              <div className="font-bold text-md mt-2 text-black">
+                Experience *
+              </div>
+              <Dropdown<CreateJobFormValues, OptionType>
+                setValue={setValue}
+                fieldName="experience_level_id"
+                error={errors.experience_level_id}
+                optionArray={experienceLevel}
+                placeholder="Select Experience Level"
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option.id}
+              />
+
+              <div className="flex h-[42px] items-center mt-[24px]">
+                <div className="font-bold text-md text-center text-black basis-1/3">
+                  Is Remote *
+                </div>
+                <InputField
+                  register={register}
+                  fieldName="is_remote"
+                  placeholder={"is remote"}
+                  type={"checkbox"}
+                  error={errors.is_remote}
+                  icon={<></>}
+                  className="basis-2/3 justify-start outline-none"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="basis-1/2">
-            <div className="font-bold text-md mt-2 text-black">
-              Employment Type *
-            </div>
-            <Dropdown<CreateJobFormValues, OptionType>
-              fieldName="employment_type_id"
-              setValue={setValue}
-              error={errors.employment_type_id}
-              optionArray={employmentType}
-              placeholder="Select Employment Type"
-              getOptionLabel={(option) => option.name}
-              getOptionValue={(option) => option.id}
-            />
+          <div className="font-bold text-md mt-2 text-black">Apply Link*</div>
+          <InputField
+            register={register}
+            fieldName="apply_link"
+            placeholder={"apply link"}
+            type={"text"}
+            error={errors.apply_link}
+            icon={<></>}
+          />
 
-            <div className="font-bold text-md mt-2 text-black">
-              Experience *
-            </div>
-            <Dropdown<CreateJobFormValues, OptionType>
-              setValue={setValue}
-              fieldName="experience_level_id"
-              error={errors.experience_level_id}
-              optionArray={experienceLevel}
-              placeholder="Select Experience Level"
-              getOptionLabel={(option) => option.name}
-              getOptionValue={(option) => option.id}
-            />
-
-            <div className="flex h-[42px] items-center mt-[24px]">
-              <div className="font-bold text-md text-center text-black basis-1/3">
-                Is Remote *
+          <div className="flex justify-center text-center items-center">
+            <div className="">
+              <div className="font-bold text-md mt-2 text-black">
+                Minimum Salary *
               </div>
               <InputField
                 register={register}
-                fieldName="is_remote"
-                placeholder={"is remote"}
-                type={"checkbox"}
-                error={errors.is_remote}
+                fieldName="salary_min"
+                placeholder={
+                  employmentType?.find(
+                    (type: OptionType) =>
+                      type.id === getValues("employment_type_id")
+                  )?.name === "Internship"
+                    ? "In thousands"
+                    : "In LPA"
+                }
+                type={"text"}
+                error={errors.salary_min}
                 icon={<></>}
-                className="basis-2/3 justify-start outline-none"
+                setValueFn={(v) => (v === "" ? undefined : Number(v))}
+              />
+            </div>
+            <div>
+              <Minus />
+            </div>
+            <div>
+              <div className="font-bold text-md mt-2 text-black">
+                Maximum salary *
+              </div>
+              <InputField
+                register={register}
+                fieldName="salary_max"
+                placeholder={
+                  employmentType?.find(
+                    (type: OptionType) =>
+                      type.id === getValues("employment_type_id")
+                  )?.name === "Internship"
+                    ? "In thousands "
+                    : "In LPA"
+                }
+                type={"text"}
+                error={errors.salary_max}
+                icon={<></>}
+                setValueFn={(v) => (v === "" ? undefined : Number(v))}
               />
             </div>
           </div>
-        </div>
 
-        <div className="font-bold text-md mt-2 text-black">Apply Link*</div>
-        <InputField
-          register={register}
-          fieldName="apply_link"
-          placeholder={"apply link"}
-          type={"text"}
-          error={errors.apply_link}
-          icon={<></>}
-        />
+          <div className="font-bold text-md mt-2 text-black">Add Skills *</div>
+          <SkillsDropdown
+            setValue={setValue}
+            error={errors.skillIds}
+            jwtToken={jwtToken}
+            fieldName="skillIds"
+          />
 
-        <div className="flex justify-center text-center items-center">
-          <div className="">
-            <div className="font-bold text-md mt-2 text-black">
-              Minimum Salary *
-            </div>
-            <InputField
-              register={register}
-              fieldName="salary_min"
-              placeholder={"min salary"}
-              type={"text"}
-              error={errors.salary_min}
-              icon={<></>}
-              setValueFn={(v) => (v === "" ? undefined : Number(v))}
-            />
+          <div className="font-bold text-md mt-2 text-black">
+            Job Description{" "}
           </div>
-          <div>
-            <Minus />
-          </div>
-          <div>
-            <div className="font-bold text-md mt-2 text-black">
-              Maximum salary *
-            </div>
-            <InputField
-              register={register}
-              fieldName="salary_max"
-              placeholder={"max salary"}
-              type={"text"}
-              error={errors.salary_max}
-              icon={<></>}
-              setValueFn={(v) => (v === "" ? undefined : Number(v))}
-            />
-          </div>
-        </div>
+          <MarkdownEditor name={"description"} />
 
-        <div className="font-bold text-md mt-2 text-black">Add Skills *</div>
-        <SkillsDropdown
-          setValue={setValue}
-          error={errors.skillIds}
-          jwtToken={jwtToken}
-          fieldName="skillIds"
-        />
-
-        <button
-          onClick={() => {
-            console.log("object", errors);
-          }}
-          type="submit"
-          className="bg-blue-600 hover:cursor-pointer text-white px-4 py-2 rounded"
-        >
-          Submit
-        </button>
-      </form>
+          <button
+            onClick={() => {
+              console.log("object", errors);
+            }}
+            type="submit"
+            className="bg-blue-600 hover:cursor-pointer text-white px-4 py-2 rounded"
+          >
+            Submit
+          </button>
+        </form>
+      </FormProvider>
     </div>
   );
 }

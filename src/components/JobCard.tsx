@@ -1,6 +1,7 @@
 "use client";
 import { JobCardParams } from "@/types/JobCard";
 import { cn } from "@/utils/cn";
+import { timeAgo } from "@/utils/getTime";
 import { BadgeDollarSign, Bookmark, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -17,6 +18,7 @@ export default function JobCard({
   maxPay,
   className,
   applyLink,
+  created_at,
 }: JobCardParams) {
   const router = useRouter();
 
@@ -35,7 +37,7 @@ export default function JobCard({
         <span className="bg-green-100 text-green-600 px-2 py-0.5 rounded-full text-xs font-medium">
           Suit You Best!
         </span>
-        <span className="text-gray-400 text-xs">3d ago</span>
+        <span className="text-gray-400 text-xs">{created_at? timeAgo(String(created_at)): "3 days ago"}</span>
       </div>
 
       <div className="flex items-start space-x-3">

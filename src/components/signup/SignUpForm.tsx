@@ -60,6 +60,8 @@ function Form() {
     watch,
     formState: { errors },
   } = useForm<FormValues>({
+    mode: "onChange",      
+    reValidateMode: "onBlur",
     resolver: zodResolver(SignUpFormSchema),
   });
 

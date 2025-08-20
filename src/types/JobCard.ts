@@ -11,4 +11,5 @@ export type JobCardParams = {
   maxPay: string;
   applyLink?: string;
   className?: string;
+  created_at?: Date; 
 };

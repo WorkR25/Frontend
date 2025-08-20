@@ -1,16 +1,16 @@
 import CompanyCard from "./CompanyCard";
 import JobInfoCard from "./JobInfoCard";
 
-type JobSpecificationProps= {
-  experienceLevel: string,
-  employmentType: string,
-  salaryMin: string,
-  salaryMax: string,
-  workType: boolean,
-  img: string,
-  city: string,
-  companyName: string
-} 
+type JobSpecificationProps = {
+  experienceLevel: string;
+  employmentType: string;
+  salaryMin: string;
+  salaryMax: string;
+  workType: boolean;
+  img: string;
+  city: string;
+  companyName: string;
+};
 
 export default function JobSpecification({
   experienceLevel,
@@ -20,24 +20,42 @@ export default function JobSpecification({
   workType,
   img,
   city,
-  companyName
+  companyName,
 }: JobSpecificationProps) {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
-        <JobInfoCard label="Level" value="Mid Senior" className="w-[98%] sm:w-[48%] " />
-        <JobInfoCard label="Experience" value={experienceLevel} className="w-[98%] sm:w-[48%]" />
-        <JobInfoCard label="Job Type" value={employmentType} className="w-[98%] sm:w-[48%]" />
-        <JobInfoCard label="Work Type" value={workType? "Remote" : "On-site"} className="w-[98%] sm:w-[48%]" />
+        <JobInfoCard label="Level" value="Mid Senior" className="w-[48%] " />
+        <JobInfoCard
+          label="Experience"
+          value={experienceLevel}
+          className="w-[48%]"
+        />
+        <JobInfoCard
+          label="Job Type"
+          value={employmentType}
+          className="w-[48%]"
+        />
+        <JobInfoCard
+          label="Work Type"
+          value={workType ? "Remote" : "On-site"}
+          className="w-[48%]"
+        />
         <JobInfoCard
           label="Salary Range"
-          value={`${salaryMin}-${salaryMax}`}
+          value={
+            employmentType === "Internship"
+              ? `${Number(salaryMin) / 1000}K-${Number(salaryMax) / 1000}K`
+              : `${Number(salaryMin) / 100000}LPA-${
+                  Number(salaryMax) / 100000
+                }LPA`
+          }
           className="w-[96%]"
         />
       </div>
 
       <CompanyCard
-        logoUrl={img? img: "/google-icon-logo-svgrepo-com.svg"}
+        logoUrl={img ? img : "/google-icon-logo-svgrepo-com.svg"}
         name={companyName}
         location={city}
         industry="Technology Information"

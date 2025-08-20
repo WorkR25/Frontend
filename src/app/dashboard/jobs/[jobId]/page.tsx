@@ -45,18 +45,31 @@ export default function Page({
         </div>
         <DashboardTopbar className="basis-[95%]" pageName="Job Details" />
       </div>
-       <JobDetailsCard
+      <JobDetailsCard
         img={jobDetails?.companyId.logo}
         title={jobDetails.jobTitle.title}
         companyName={jobDetails?.companyId.name}
         city={jobDetails.city.name}
         jobId={Number(jobId)}
+        created_at={jobDetails.created_at}
       />
-      <div className="jobId-page flex flex-1 overflow-hidden">
-        <div className="jobId-page basis-35/50 overflow-y-auto p-4 min-h-0">
+      <div className="jobId-page sm:flex flex-1 overflow-y-scroll sm:overflow-hidden">
+        <div className="jobId-page sm:hidden overflow-y-auto p-4 min-h-0">
+          <JobSpecification
+            experienceLevel={jobDetails.experienceLevel.name}
+            employmentType={jobDetails.employmentType.name}
+            salaryMax={jobDetails.salary_max}
+            salaryMin={jobDetails.salary_min}
+            workType={jobDetails.is_remote}
+            img={jobDetails.companyId.logo}
+            city={jobDetails.city.name}
+            companyName={jobDetails.companyId.name}
+          />
+        </div>
+        <div className="jobId-page sm:basis-35/50 overflow-y-auto p-4 min-h-0">
           <JobDescription />
         </div>
-        <div className="jobId-page basis-15/50 overflow-y-auto p-4 min-h-0">
+        <div className="jobId-page hidden sm:block sm:basis-15/50 overflow-y-auto p-4 min-h-0">
           <JobSpecification
             experienceLevel={jobDetails.experienceLevel.name}
             employmentType={jobDetails.employmentType.name}

@@ -16,6 +16,7 @@ export type Job = {
   salary_min: string;
   salary_max: string;
   apply_link: string;
+  created_at: Date;
 };
 
 export type JobResponse= {

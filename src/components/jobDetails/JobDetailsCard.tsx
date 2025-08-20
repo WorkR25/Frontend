@@ -1,5 +1,6 @@
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { RootState } from "@/lib/store.config";
+import { timeAgo } from "@/utils/getTime";
 import useCreateApplication from "@/utils/useCreateApplication";
 import { Bookmark, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
@@ -12,6 +13,7 @@ type JobDetailsCardProps= {
   title: string;
   companyName: string;
   city: string;
+  created_at: Date;
 }
 export default function JobDetailsCard({
   jobId, 
@@ -19,6 +21,7 @@ export default function JobDetailsCard({
   title,
   companyName,
   city,
+  created_at
 }: JobDetailsCardProps) {
   console.log( "job details job id", jobId)
   const dispatch = useDispatch();
@@ -30,11 +33,11 @@ export default function JobDetailsCard({
       dispatch(setAuthJwtToken(String(jwt)))
     }
   }, [dispatch, jwtToken])
-
+  console.log("created job details", created_at);
   const { mutate }=  useCreateApplication() ;
   return (
-    <div className="components-jobDetails-JobDetailsCard bg-gradient-to-r from-[#0052CC] to-[#0073E6] text-white p-4 rounded-xl flex items-center justify-between shadow-md w-full ">
-      <div className="components-jobDetails-JobDetailsCard flex items-center gap-4">
+    <div className="components-jobDetails-JobDetailsCard bg-gradient-to-r from-[#0052CC] to-[#0073E6] text-white p-4 rounded-xl space-y-3 sm:flex items-center justify-between shadow-md w-full ">
+      <div className="components-jobDetails-JobDetailsCard flex  items-center gap-12 sm:gap-4">
         <div className="components-jobDetails-JobDetailsCard w-12 h-12 rounded-md overflow-hidden bg-white p-1">
           <Image
             src={img ? img : "/google-icon-logo-svgrepo-com.svg"}
@@ -47,13 +50,12 @@ export default function JobDetailsCard({
 
         <div className="components-jobDetails-JobDetailsCard space-y-1">
           <div className="components-jobDetails-JobDetailsCard text-sm text-white/80">
-            3 days ago · 294 applicants
+            {
+              created_at ? timeAgo(String(created_at)) : ""
+            }
           </div>
           <div className="components-jobDetails-JobDetailsCard font-semibold text-lg flex items-center gap-2">
             {title}
-            <span className="components-jobDetails-JobDetailsCard text-xs bg-yellow-400 text-blue-800 px-2 py-0.5 rounded-full">
-              Closed Hiring
-            </span>
           </div>
           <div className="components-jobDetails-JobDetailsCard text-sm text-white/90">
             {companyName+` ,  `} {city}
@@ -61,13 +63,13 @@ export default function JobDetailsCard({
         </div>
       </div>
       <div className="components-jobDetails-JobDetailsCard flex items-center gap-2">
-        <button className="components-jobDetails-JobDetailsCard bg-white/20 hover:bg-white/30 p-2 rounded-md">
+        {/* <button className="components-jobDetails-JobDetailsCard bg-white/20 hover:bg-white/30 p-2 rounded-md">
           <Bookmark size={16} />
         </button>
         <button className="components-jobDetails-JobDetailsCard bg-white/20 hover:bg-white/30 p-2 rounded-md">
           <MoreHorizontal size={16} />
-        </button>
-        <button onClick={()=>{mutate({jobId, jwtToken})}} className="components-jobDetails-JobDetailsCard hover:cursor-pointer hover:bg-[#cedcf1] ml-3 bg-white text-[#0052CC] px-4 py-1.5 rounded-md text-sm  cursor-not-allowed">
+        </button> */}
+        <button onClick={()=>{mutate({jobId, jwtToken})}} className="components-jobDetails-JobDetailsCard w-full hover:cursor-pointer hover:bg-[#cedcf1] ml-3 bg-white text-[#0052CC] px-4 py-1.5 rounded-md text-sm  cursor-not-allowed">
           Apply Now
         </button>
       </div>

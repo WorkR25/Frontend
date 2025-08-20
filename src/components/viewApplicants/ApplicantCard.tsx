@@ -22,7 +22,7 @@ export default function ApplicantCard({
         <p className="component-viewApplicants-ApplicantCard text-gray-500">{city}</p>
       </div>
       <div className="component-viewApplicants-ApplicantCard items-center flex ">
-        {!resumeUrl ? <a className="font-medium text-md bg-blue-300 py-1.5 px-2 rounded-lg" href={"resumeUrl"}> Resume</a> : <div>No resume</div>}
+        {resumeUrl ? <a className="font-medium text-md bg-blue-300 py-1.5 px-2 rounded-lg" href={resumeUrl} target="_blank"> Resume</a> : <div>No resume</div>}
       </div>
     </div>
   );
