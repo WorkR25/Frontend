@@ -5,6 +5,7 @@ import { OptionType } from "@/components/createJob/CreateJobForm";
 import SkillsDropdown from "@/components/createJob/SkillsDropdown";
 import TextAreaInput from "@/components/createJob/TextAreaInput";
 import InputField from "@/components/InputField";
+import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { RootState } from "@/lib/store.config";
 import { UpdateProfileSchema } from "@/schema/updateProfile.validator";
 import useCreateUserSkill from "@/utils/useCreateUserSkill";
@@ -15,7 +16,7 @@ import useUploadUserResume from "@/utils/useUploadUserResume";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import z from "zod";
 
 type UpdateProfileType = z.infer<typeof UpdateProfileSchema>;
@@ -25,6 +26,17 @@ export default function Page() {
   const jwtToken = useSelector((state: RootState) => {
     return state.authJwtToken.value;
   });
+
+  const dispatch = useDispatch();
+
+
+  useEffect(()=>{
+    const token = localStorage.getItem("AuthJwtToken");
+    if (token) {
+        dispatch(setAuthJwtToken(token));
+    }
+  }, [dispatch]);
+
   const { data: userDetails } = useGetUser(jwtToken);
   const { mutate: createUserSkill } = useCreateUserSkill();
   const { mutate: deleteUserSkill } = useDeleteUserSkill();
