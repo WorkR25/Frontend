@@ -1,11 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const isSidebarOpenSlice = createSlice({
     name: "isSidebarOpen",
     initialState: {value : false},
     reducers: {
-        isSidebarOpenToogle: (state)=>{
-            state.value = !state.value;
+        isSidebarOpenToogle: (state, action: PayloadAction<boolean>)=>{
+            state.value = action? action.payload : !state.value;
         }
     } 
 });

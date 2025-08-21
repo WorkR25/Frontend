@@ -3,13 +3,14 @@
 import InputField from "../InputField";
 import {  useForm } from "react-hook-form";
 import { Eye, EyeOff, User, Mail, Lock, Phone } from "lucide-react";
-import {  useState } from "react";
+import {  useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignUpFormSchema } from "@/schema/signUp.validator";
 import useSignup from "@/utils/useSignup";
+import ErrorPopup from "../ErrorPopup";
 
 type FormValues = z.infer<typeof SignUpFormSchema>;
 
@@ -59,14 +60,26 @@ function Form() {
     watch,
     formState: { errors },
   } = useForm<FormValues>({
+    mode: "onChange",      
+    reValidateMode: "onBlur",
     resolver: zodResolver(SignUpFormSchema),
   });
+
+  const router = useRouter()
   const password = watch("password");
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const { mutate } = useSignup();
+  const { mutate, isError, isPending, isSuccess } = useSignup();
+
+  useEffect(()=>{
+      if(isSuccess){
+      router.replace('/dashboard');
+    }
+    }, [isSuccess, router])
+
+
 
   const onSubmit = (formData: FormValues) => {
     mutate(formData);
@@ -78,6 +91,7 @@ function Form() {
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-md mx-auto space-y-2 py-6 rounded-lg font-poppins text-sm px-8"
     >
+      {isError ? (<ErrorPopup message="Error while Siging up" />):(<></>)}
 
       <InputField
         register={register}
@@ -171,7 +185,7 @@ function Form() {
             : "bg-[#3177a7] cursor-pointer hover:bg-[#7ba1d0]"
         }`}
       >
-        Submit
+        {isPending|| isSuccess ? "Signing Up" :"Sign up"}
       </button>
     </form>
   );

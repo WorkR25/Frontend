@@ -1,31 +1,49 @@
-'use client';
+"use client";
 import React, { useEffect } from "react";
 import { ChevronUp } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store.config";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import useGetUser from "@/utils/useGetUser";
+import { useRouter } from "next/navigation";
 
 export default function UserProfileSidebar() {
-
-  const authJwtToken = useSelector((state: RootState)=> state.authJwtToken.value)
+  const router = useRouter();
+  const authJwtToken = useSelector(
+    (state: RootState) => state.authJwtToken.value
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const jwt = localStorage.getItem("AuthJwtToken")
-      console.log("user prof :", jwt)
-      if(jwt){
-        dispatch(setAuthJwtToken(jwt))
+      const jwt = localStorage.getItem("AuthJwtToken");
+
+      if (!jwt) {
+        router.replace("/login");
+      }
+
+      if (jwt) {
+        dispatch(setAuthJwtToken(jwt));
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch, router]);
 
+  const { data, isSuccess, isError } = useGetUser(authJwtToken);
+  console.log("user profile : ", authJwtToken);
 
-  const { data } = useGetUser(authJwtToken);  
+  // useEffect(() => {
+  //   console.log("errror", isError);
+  //   if (isError) {
+  //     router.replace("/login");
+  //   }
+  // }, [data, isError, router]);
 
-  console.log("rendered")
+  console.log("rendered", isSuccess, isError);
+
+  if (!data) {
+    return <div className="text-center">Loading user...</div>;
+  }
+
   return (
     <div className=" w-full bottom-0 ">
       <div className="flex items-center gap-3 p-3 bg-gray-100 rounded-lg w-full shadow-sm">

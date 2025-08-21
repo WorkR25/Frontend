@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
-  Bookmark,
+  Building2,
   ChartPie,
   ChevronDown,
   Folder,
@@ -18,14 +18,33 @@ import { RootState } from "@/lib/store.config";
 import { mainMenuCollapsedToogle } from "@/features/mainMenuCollapsed/mainMenuCollapsed";
 import { otherMenuCollapsedToogle } from "@/features/otherMenuCollapsed/otherMenuCollapsedSlice";
 import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice";
+import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
+import useGetUser from "@/utils/useGetUser";
+import useGetUserRoles from "@/utils/useGetUserRoles";
+import {
+  onClickAllJobs,
+  onClickCreateCompany,
+  onClickCreateJob,
+  onClickExploreJob,
+  onClickOverview,
+} from "./dashboard.utils";
+// import { toogleShowJobCreateForm } from "@/features/showJobCreateForm/showJobCreateForm";
 const mainMenuTabId: { [key: string]: number } = {
   jobs: 1,
+  "create-job": 2,
+  "all-jobs": 3,
 };
 
 export default function DashboardSidebar() {
   const router = useRouter();
+  const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
+  const dispatch = useDispatch();
   const pathname = usePathname();
-  const [mainMenuActiveTab, setMainMenuActiveTab] = useState<number | null>(mainMenuTabId[pathname.split("/")[2]]);
+
+  const [mainMenuActiveTab, setMainMenuActiveTab] = useState<number | null>(
+    mainMenuTabId[pathname.split("/")[2]] ?? 0
+  );
+  const [role, setRole] = useState("user");
   const [otherMenuActiveTab, setOtherMenuActiveTab] = useState<number | null>(
     null
   );
@@ -36,41 +55,72 @@ export default function DashboardSidebar() {
   const otherMenuCollapsed = useSelector(
     (state: RootState) => state.otherMenuCollapsed.value
   );
+  const showJobCreateForm = useSelector(
+    (state: RootState) => state.showJobCreateForm.value
+  );
 
-  const dispatch = useDispatch();
+  const { data: userData } = useGetUser(jwtToken);
+  const { data: userRoles } = useGetUserRoles(jwtToken, userData?.id);
+
+  useEffect(() => {
+    console.log(mainMenuTabId[pathname.split("/")[2]]);
+    if (userRoles?.includes("admin")) {
+      setRole("admin");
+    }
+  }, [userRoles, pathname]);
+
+  useEffect(() => {
+    const jwtToken = localStorage.getItem("AuthJwtToken");
+    if (jwtToken) {
+      dispatch(setAuthJwtToken(jwtToken));
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     const routeName = pathname.split("/")[2];
-    if (routeName) {
+
+    if (showJobCreateForm) {
+      setMainMenuActiveTab(2);
+    } else if (routeName) {
       setMainMenuActiveTab(mainMenuTabId[routeName]);
     }
-  }, [pathname]);
+  }, [pathname, showJobCreateForm]);
 
   const mainMenuTabs = [
     {
       name: "Overview",
       icon: <ChartPie className="w-5 h-5 mr-2" />,
       link: "/",
+      auth: ["admin", "user"],
+      onClickFn: onClickOverview,
     },
     {
       name: "Explore Jobs",
       icon: <Globe className="w-5 h-5 mr-2" />,
       link: "/jobs",
+      auth: ["admin", "user"],
+      onClickFn: onClickExploreJob,
     },
     {
-      name: "Inbox",
+      name: "Create Job",
       icon: <MessageCircle className="w-5 h-5 mr-2" />,
-      link: "/inbox",
+      link: null,
+      auth: ["admin"],
+      onClickFn: onClickCreateJob,
     },
     {
-      name: "My Applications",
+      name: "All jobs",
       icon: <Folder className="w-5 h-5 mr-2" />,
-      link: "/applications",
+      link: "/all-jobs",
+      auth: ["admin"],
+      onClickFn: onClickAllJobs,
     },
     {
-      name: "Saved Jobs",
-      icon: <Bookmark className="w-5 h-5 mr-2" />,
-      link: "/saved-jobs",
+      name: "Create Company",
+      icon: <Building2 className="w-5 h-5 mr-2" />,
+      link: null,
+      auth: ["admin"],
+      onClickFn: onClickCreateCompany,
     },
   ];
 
@@ -80,7 +130,7 @@ export default function DashboardSidebar() {
   ];
 
   return (
-    <div className="">
+    <div className="hide-scrollbar">
       <div className="flex items-center justify-between py-4  ">
         <div>
           <Image
@@ -95,7 +145,7 @@ export default function DashboardSidebar() {
         <div
           className="hover:cursor-pointer"
           onClick={() => {
-            dispatch(isSidebarOpenToogle());
+            dispatch(isSidebarOpenToogle(false));
           }}
         >
           <Image
@@ -135,24 +185,28 @@ export default function DashboardSidebar() {
           }`}
         >
           <div className="flex flex-col">
-            {mainMenuTabs.map((tab, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setMainMenuActiveTab(index);
-                  router.prefetch(`/dashboard/${tab.link}`)
-                  router.replace(`/dashboard/${tab.link}`);
-                }}
-                className={`py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300  rounded-md hover:cursor-pointer ${
-                  mainMenuActiveTab === index
-                    ? "border-blue-500 text-[#D8FFFF] bg-[#0470B8]"
-                    : "border-transparent text-gray-500 hover:text-blue-500"
-                }`}
-              >
-                {tab.icon}
-                {tab.name}
-              </button>
-            ))}
+            {mainMenuTabs.map((tab, index) =>
+              tab.auth?.includes(role) ? (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setMainMenuActiveTab(index);
+                    dispatch(isSidebarOpenToogle(false));
+                    tab.onClickFn(dispatch, router, tab.link);
+                  }}
+                  className={`py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300  rounded-md hover:cursor-pointer ${
+                    mainMenuActiveTab === index
+                      ? "border-blue-500 text-[#D8FFFF] bg-[#0470B8]"
+                      : "border-transparent text-gray-500 hover:text-blue-500"
+                  }`}
+                >
+                  {tab.icon}
+                  {tab.name}
+                </button>
+              ) : (
+                <div key={index}></div>
+              )
+            )}
           </div>
         </div>
       </aside>
