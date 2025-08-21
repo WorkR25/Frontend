@@ -63,7 +63,6 @@ export default function DashboardSidebar() {
   const { data: userRoles } = useGetUserRoles(jwtToken, userData?.id);
 
   useEffect(() => {
-    console.log(mainMenuTabId[pathname.split("/")[2]]);
     if (userRoles?.includes("admin")) {
       setRole("admin");
     }

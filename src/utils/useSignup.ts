@@ -1,6 +1,7 @@
 import { userServiceApi } from "@/lib/axios.config";
 import { SignUpFormSchema } from "@/schema/signUp.validator";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 import z from "zod";
 
 type FormValues = z.infer<typeof SignUpFormSchema>;
@@ -15,8 +16,8 @@ const useSignup = () =>
         throw error ;
       }
     },
-    onError: (error) => {
-      console.log("Signup error:", error);
+    onError: () => {
+      toast.error("Signup failed. Please check your details.");
     },
     onSuccess: (data) => {
       const jwtToken = data.data;

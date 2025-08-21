@@ -19,7 +19,6 @@ const getUserDetils = async (authJwtToken: string | null) => {
         Authorization: authJwtToken,
       },
     });
-    console.log("useGetUSer called");
     return response.data.data as GetUserResponseType;
   } catch (error) {
     throw error;

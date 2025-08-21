@@ -24,8 +24,7 @@ const  useCreateApplication= ()=>{
                 throw error ;
             }
         },
-        onError: (error)=>{
-            console.log(error)
+        onError: ()=>{
             toast.error("Error applying for job ")
         },
         onSuccess: ()=>{

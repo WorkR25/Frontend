@@ -37,7 +37,6 @@ export default function SkillsDropdown<TFormValues extends FieldValues>({
 
   useEffect(() => setMounted(true), []);
 
-  console.log("skills: ",fieldValue);
   const [skillIdArray, setSkillIdArray] = useState<number[]>(
     fieldValue
       ? fieldValue.map((v) => {
@@ -51,8 +50,6 @@ export default function SkillsDropdown<TFormValues extends FieldValues>({
   const [toggle, setToggle] = useState(false);
 
   useEffect(()=>{
-    console.log("id arr", skillIdArray);
-    console.log("name arr", skillNameArray)
   },[skillNameArray, skillIdArray])
 
   const [skills, setSkills] = useState<OptionType[]>([]);

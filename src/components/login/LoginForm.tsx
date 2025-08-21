@@ -67,14 +67,12 @@ function Form() {
   const router = useRouter()
 
   const { mutate, isError, isPending, isSuccess } = useLogin();
-  console.log(isPending)
 
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = (logInData: LogInFormValues) => {
     mutate(logInData, {
       onSuccess: ()=>{
-        console.log("login successfull")
         router.push('/dashboard');
       }
     });

@@ -21,7 +21,6 @@ const getUserRoles = async (authJwtToken: string | null, userId: string | undefi
         Authorization: authJwtToken,
       },
     });
-    console.log("Response roles",response.data.data)
     return response.data.data as string[];
   } catch (error) {
     throw error;

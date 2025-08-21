@@ -23,7 +23,6 @@ export default function JobDetailsCard({
   city,
   created_at
 }: JobDetailsCardProps) {
-  console.log( "job details job id", jobId)
   const dispatch = useDispatch();
   const jwtToken = useSelector((state: RootState)=> {return state.authJwtToken.value})
   
@@ -33,7 +32,6 @@ export default function JobDetailsCard({
       dispatch(setAuthJwtToken(String(jwt)))
     }
   }, [dispatch, jwtToken])
-  console.log("created job details", created_at);
   const { mutate }=  useCreateApplication() ;
   return (
     <div className="components-jobDetails-JobDetailsCard bg-gradient-to-r from-[#0052CC] to-[#0073E6] text-white p-4 rounded-xl space-y-3 sm:flex items-center justify-between shadow-md w-full ">
@@ -63,12 +61,12 @@ export default function JobDetailsCard({
         </div>
       </div>
       <div className="components-jobDetails-JobDetailsCard flex items-center gap-2">
-        {/* <button className="components-jobDetails-JobDetailsCard bg-white/20 hover:bg-white/30 p-2 rounded-md">
+        <button className="hidden components-jobDetails-JobDetailsCard bg-white/20 hover:bg-white/30 p-2 rounded-md">
           <Bookmark size={16} />
         </button>
         <button className="components-jobDetails-JobDetailsCard bg-white/20 hover:bg-white/30 p-2 rounded-md">
           <MoreHorizontal size={16} />
-        </button> */}
+        </button>
         <button onClick={()=>{mutate({jobId, jwtToken})}} className="components-jobDetails-JobDetailsCard w-full hover:cursor-pointer hover:bg-[#cedcf1] ml-3 bg-white text-[#0052CC] px-4 py-1.5 rounded-md text-sm  cursor-not-allowed">
           Apply Now
         </button>

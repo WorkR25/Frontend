@@ -41,7 +41,6 @@ export default function Page() {
   const { mutate: createUserSkill } = useCreateUserSkill();
   const { mutate: deleteUserSkill } = useDeleteUserSkill();
 
-  console.log("user details", userDetails);
   const methods = useForm<UpdateProfileType>({
     defaultValues: {
       fullName: "",
@@ -81,16 +80,13 @@ export default function Page() {
     register,
     handleSubmit,
     watch,
-    getValues,
     setValue,
     formState: { errors },
   } = methods;
-  console.log("skills in me page", watch("skillIds"));
 
   const { mutate: updateUser } = useUpdateUser();
 
   const onSubmit: SubmitHandler<UpdateProfileType> = async (data) => {
-    console.log("Form submitted:", data);
     updateUser({
       userDirty,
       userProfileDirty,
@@ -268,7 +264,6 @@ export default function Page() {
           <div
             className="w-full mt-4"
             onClick={() => {
-              console.log("form values ", getValues());
             }}
           >
             <button

@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { cn } from "@/utils/cn";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Minus, X } from "lucide-react";
 import DebouncedDropdown from "../createJob/DebouncedDropdown";
 import { OptionType } from "../createJob/CreateJobForm";
@@ -23,6 +23,8 @@ import InputField from "../InputField";
 import SkillsDropdown from "../createJob/SkillsDropdown";
 import useUpdateJobs from "@/utils/useUpdateJob";
 import { setShowJobupdateForm } from "@/features/showJobUpdateForm/showJobUpdateForm";
+import { RootState } from "@/lib/store.config";
+import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 
 type UpdateFormValues = z.infer<typeof UpdateJobSchema>;
 
@@ -33,21 +35,22 @@ export default function UpdateJobForm({
   id: number;
   className?: string;
 }) {
-  console.log("current job id", id);
   const dispatch = useDispatch();
-  useEffect(() => {}, []);
-  const jwtToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiZW1haWwiOiJ1c2VyN0BnbWFpbC5jb20iLCJpYXQiOjE3NTQ5MDAzMDgsImV4cCI6MTc1NDk4NjcwOH0.2aVCGufN65l5Ny9QZipZ1hn6mRCMQC1GXRPE52hLvtQ";
+  useEffect(() => {
+    const token = localStorage.getItem("AuthJwtToken");
+    if (token) {
+      dispatch(setAuthJwtToken(token));
+    }
+  }, [dispatch]);
+  const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
 
   const { data } = useGetUser(jwtToken);
   const { data: employmentType } = useGetEmploymentType(jwtToken);
   const { data: experienceLevel } = useGetExperienceLevel(jwtToken);
-  const { data: userRoles } = useGetUserRoles(jwtToken, data?.id);
+  useGetUserRoles(jwtToken, data?.id);
   const { data: jobDetails } = useGetJobDetails(jwtToken, String(id));
 
   const { mutate } = useUpdateJobs();
-  console.log(jobDetails);
-  console.log(userRoles);
 
   const {
     register,
@@ -65,7 +68,6 @@ export default function UpdateJobForm({
   setValue('skillIds',skillIdArray);
 
   function onSubmit(updateData: UpdateFormValues) {
-    console.log("updateData", updateData);
     mutate({ authJwtToken: jwtToken, updateJobData: updateData });
   }
 
@@ -237,9 +239,6 @@ export default function UpdateJobForm({
         />
 
         <button
-          onClick={() => {
-            console.log("object", errors);
-          }}
           type="submit"
           className="bg-blue-600 hover:cursor-pointer text-white px-4 py-2 rounded"
         >

@@ -8,14 +8,10 @@ export default function JobList() {
   const jwtToken = useSelector((state: RootState) => {
     return state.authJwtToken.value;
   });
-  const { data, isError } = useGetJobs(jwtToken);
-  console.log("joblist");
-  console.log(data);
-  console.log(isError);
+  const { data } = useGetJobs(jwtToken);
   return (
     <div className="flex flex-wrap items-center justify-center-safe my-2 mx-auto gap-2 gap-y-3.5">
       {data?.map((job) => {
-        console.log(job.apply_link)
         return (
           <JobCard
             key={job.id}

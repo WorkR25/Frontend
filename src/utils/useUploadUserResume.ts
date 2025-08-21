@@ -6,7 +6,6 @@ const useUploadUserResume = () => {
     mutationFn: async ({ file, authJwtToken }: { authJwtToken: string | null; file: File }) => {
       const formData = new FormData();
       formData.append("file", file);
-      console.log("file", file);
       try {
         const response = await userServiceApi.post(
           "/users/upload-resume",

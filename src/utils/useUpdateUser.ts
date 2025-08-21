@@ -21,8 +21,7 @@ const useUpdateUser = () => {
       id: string;
     }) => {
       const { linkedinUrl, currentCtc, yearsOfExperience, ...rest } = data;
-      if (userDirty) {
-        console.log("user dirty", )
+      if (userProfileDirty) {
         await userServiceApi.put(
           `/users/update-profile/${id}`,
           {
@@ -39,8 +38,7 @@ const useUpdateUser = () => {
           }
         );
       }
-      if(userProfileDirty){
-        console.log("userProfileDirty")
+      if(userDirty){
         await userServiceApi.put(
         `/users/update/${id}`,
         {
@@ -53,7 +51,6 @@ const useUpdateUser = () => {
         }
       );
       }
-      console.log("user profile");
       return true;
     },
   });

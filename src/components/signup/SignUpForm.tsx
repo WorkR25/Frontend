@@ -83,7 +83,6 @@ function Form() {
 
   const onSubmit = (formData: FormValues) => {
     mutate(formData);
-    console.log(formData);
   };
 
   return (
