@@ -11,6 +11,7 @@ import z from "zod";
 import InputField from "../InputField";
 import useCreateCompany from "@/utils/useCreateCompany";
 import DragAndDropFile from "./DragAndDropFile";
+import useUploadLogo from "@/utils/useUploadLogo";
 
 export type CreateCompanyFormType = z.infer<typeof CreateCompanySchema>;
 
@@ -75,6 +76,8 @@ export default function CreateCompanyForm() {
           <div>Upload company logo</div>
 
           <DragAndDropFile
+          fieldName="logo"
+          useMutationFn={useUploadLogo}
           jwtToken={jwtToken}
             fileExtension={[".png"]}
             maxFileSize={3}

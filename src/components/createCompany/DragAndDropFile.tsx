@@ -1,20 +1,27 @@
 import React, { useState, DragEvent } from "react";
 import { useFormContext } from "react-hook-form";
-import useUploadLogo from "@/utils/useUploadLogo";
 
 interface DragAndDropFileProps {
   maxFileSize: number; // MB
   fileExtension: string[];
   jwtToken: string | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useMutationFn: any;
+  fieldName: string ;
+  onChangeFn?: ()=> void
 }
 
 export default function DragAndDropFile({
   maxFileSize,
   fileExtension,
   jwtToken,
+  useMutationFn,
+  fieldName,
+  onChangeFn,
 }: DragAndDropFileProps) {
   const { setValue } = useFormContext();
-  const { mutate: uploadLogo, isPending } = useUploadLogo();
+  const { mutate: uploadLogo, isPending } = useMutationFn();
+
   const [dragActive, setDragActive] = useState(false);
 
   const validateFile = (file: File) => {
@@ -37,7 +44,7 @@ export default function DragAndDropFile({
         { authJwtToken: jwtToken, file },
         {
           onSuccess: (data: { data: { fileUrl: string } }) => {
-            setValue("logo", String(data.data.fileUrl), {
+            setValue(fieldName, String(data.data.fileUrl), {
               shouldValidate: true,
               shouldDirty: true,
             });
@@ -70,6 +77,7 @@ export default function DragAndDropFile({
         onChange={(e) => {
           const file = e.target.files?.[0];
           if (file) handleFileUpload(file);
+          onChangeFn?.();
         }}
         className="components-createCompany-DragAndDropFile border w-full rounded-lg p-4 hover:cursor-pointer "
         id="upload-input"

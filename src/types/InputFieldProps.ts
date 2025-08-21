@@ -14,4 +14,6 @@ export type InputFieldProps<T extends FieldValues> = {
   setValueFn?: (value: string)=>any ;
   fieldValue?: PathValue<T, Path<T>>;
   className?: string;
+  disabled?: boolean | null;
+  onChangeFn?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
