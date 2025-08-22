@@ -71,6 +71,7 @@ export default function UserDetailForm() {
       <div>
         <div className="font-semibold text-lg mt-3">User Details</div>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4 border rounded-lg shadow-md w-full">
+          <div>Full Name</div>
           <InputField
             register={register}
             fieldName="fullName"
@@ -80,6 +81,7 @@ export default function UserDetailForm() {
             error={errors.fullName}
             fieldValue= {userData?.fullName || watch("fullName")}
           />
+          <div>Email</div>
           <InputField
             register={register}
             fieldName="email"
@@ -89,6 +91,7 @@ export default function UserDetailForm() {
             error={errors.email}
             fieldValue= {userData?.email || watch('email')}
           />
+          <div>Phone No</div>
           <InputField
             register={register}
             fieldName="phoneNo"
