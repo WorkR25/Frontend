@@ -25,7 +25,7 @@ export default function InputField<T extends FieldValues>({
     <div>
       <div className={cn("relative w-full", className)}>
         {icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8E8E8E] pointer-events-none">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8E8E8E] ">
             {icon}
           </div>
         )}

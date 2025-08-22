@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query"
 const useDeleteUserSkill =()=>{
     return useMutation({
         mutationFn: async({authJwtToken, skillId}: {authJwtToken: string | null, skillId: number})=>{
-            const response = await userServiceApi.delete("/user-skill/"+ skillId, {
+            const response = await userServiceApi.delete("/user-skills/"+ skillId, {
                 headers: {
                     Authorization: `${authJwtToken}`
                 }

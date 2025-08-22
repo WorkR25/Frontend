@@ -31,7 +31,7 @@ export default function SkillsDropdown<TFormValues extends FieldValues>({
   jwtToken: string | null;
   fieldValue?: Skills[];
   handleSkillDelete?: (id: number)=> void;
-  handleSkillAdd?: (id: number)=> void;
+  handleSkillAdd?: (id: number, name: string)=> void;
 }) {
   const [mounted, setMounted] = useState(false);
 
@@ -101,7 +101,7 @@ export default function SkillsDropdown<TFormValues extends FieldValues>({
   setSkillIdArray(updated);                     
   setValue(fieldName, updated as PathValue<TFormValues, Path<TFormValues>>); 
 
-  handleSkillAdd?.(skill.id);
+  handleSkillAdd?.(skill.id, skill.name);
 };
   // const handleRemoveSkill = (id: number) => {
   //   setSkillIdArray((prev) => {
