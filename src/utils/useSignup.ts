@@ -1,6 +1,7 @@
 import { userServiceApi } from "@/lib/axios.config";
 import { SignUpFormSchema } from "@/schema/signUp.validator";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { toast } from "react-toastify";
 import z from "zod";
 
@@ -16,8 +17,12 @@ const useSignup = () =>
         throw error ;
       }
     },
-    onError: () => {
-      toast.error("Signup failed. Please check your details.");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Error occured while signing up");
+      } else {
+        toast.error("Error occured while signing up");
+      }
     },
     onSuccess: (data) => {
       const jwtToken = data.data;

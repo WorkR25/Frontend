@@ -2,6 +2,7 @@ import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { userServiceApi } from "@/lib/axios.config";
 import { LogInFormSchema } from "@/schema/logIn.validator";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import z from "zod";
@@ -20,8 +21,12 @@ const useLogin = () =>{
         throw error;
       }
     },
-    onError: () => {
-      toast.error("Login failed. Please check your credentials.");
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Error occured while logging in");
+      } else {
+        toast.error("Error occured while logging in");
+      }
     },
     onSuccess: (data) => {
       const jwtToken = data.data;
