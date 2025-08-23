@@ -15,6 +15,8 @@ export default function InputField<T extends FieldValues>({
   className = "",
   setValueFn,
   fieldValue,
+  disabled,
+  onChangeFn,
 }: InputFieldProps<T>) {
   const [inputValue, setInputValue] = useState<string | undefined>(
     fieldValue ?? undefined
@@ -23,7 +25,7 @@ export default function InputField<T extends FieldValues>({
     <div>
       <div className={cn("relative w-full", className)}>
         {icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8E8E8E] pointer-events-none">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8E8E8E] ">
             {icon}
           </div>
         )}
@@ -37,12 +39,14 @@ export default function InputField<T extends FieldValues>({
           placeholder={placeholder}
           value={inputValue ?? ""}
           onChange={(e) => {
+            onChangeFn?.(e);
             setInputValue(e.target.value);
           }}
           aria-invalid={!!error}
           className={`w-full pl-10 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
             error ? "border-red-500" : "border-[#E0E0E0]"
           }`}
+          disabled={disabled ? disabled : false}
         />
         {other}
       </div>

@@ -18,7 +18,6 @@ const getEmploymentType = async (authJwtToken: string | null) => {
         Authorization: authJwtToken,
       },
     });
-    console.log(response.data.data);
     
     return response.data?.data;
   } catch (error) {

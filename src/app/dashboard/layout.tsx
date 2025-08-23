@@ -2,6 +2,7 @@
 import CreateCompanyForm from "@/components/createCompany/CreateCompanyForm";
 import CreateJobForm from "@/components/createJob/CreateJobForm";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import EditSkills from "@/components/me/EditSkills";
 import UpdateJobForm from "@/components/updateJob/UpdateJobForm";
 import ViewApplicants from "@/components/viewApplicants/ViewApplicants";
 import { RootState } from "@/lib/store.config";
@@ -10,32 +11,36 @@ import { useSelector } from "react-redux";
 export default function DashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-
   const isSidebarOpen = useSelector((state: RootState) => {
     return state.isSidebarOpen.value;
   });
 
-  const showJobApplicants= useSelector((state: RootState)=>{
-    return state.showJobApplicants.value
-  })
+  const showJobApplicants = useSelector((state: RootState) => {
+    return state.showJobApplicants.value;
+  });
 
-  const jobId= useSelector((state: RootState)=>{
-    return state.jobId.value
-  })
+  const jobId = useSelector((state: RootState) => {
+    return state.jobId.value;
+  });
 
   const showJobCreateForm = useSelector(
     (state: RootState) => state.showJobCreateForm.value
   );
 
-  const showCreateCompanyForm= useSelector((state: RootState)=> {
-    return state.showCreateCompanyForm.value
-  })
+  const showCreateCompanyForm = useSelector((state: RootState) => {
+    return state.showCreateCompanyForm.value;
+  });
 
-  const showJobUpdateForm = useSelector((state: RootState)=> state.showJobUpdateForm.value);
+  const showEditSkills = useSelector(
+    (state: RootState) => state.showEditSkills
+  );
+
+  const showJobUpdateForm = useSelector(
+    (state: RootState) => state.showJobUpdateForm.value
+  );
 
   return (
     <div className="dashboard-layout text-black  h-[100vh] w-[100%] bg-[#F5F5F5]">
-      
       {showCreateCompanyForm && (
         <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
           <div className="dashboard-layout w-full min-h-full">
@@ -44,10 +49,24 @@ export default function DashboardLayout({
         </div>
       )}
 
+      {showEditSkills.value && (
+        <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
+          <div className="dashboard-layout w-full min-h-full">
+            <EditSkills
+              fieldName={showEditSkills.fieldName!}
+              setValue={showEditSkills.setValue}
+              error={showEditSkills.error}
+              jwtToken={showEditSkills.jwtToken}
+              fieldValue={showEditSkills.fieldValue}
+            />
+          </div>
+        </div>
+      )}
+
       {showJobApplicants && (
         <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
           <div className="dashboard-layout w-full min-h-full">
-          <ViewApplicants jobId={Number(jobId)}/>
+            <ViewApplicants jobId={Number(jobId)} />
           </div>
         </div>
       )}
@@ -63,7 +82,10 @@ export default function DashboardLayout({
       {showJobUpdateForm && (
         <div className="dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-xl px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
           <div className="dashboard-layout  flex flex-col justify-center items-center  w-full min-h-full">
-            <UpdateJobForm id={Number(jobId)} className="dashboard-layout h-screen w-full" />
+            <UpdateJobForm
+              id={Number(jobId)}
+              className="dashboard-layout h-screen w-full"
+            />
           </div>
         </div>
       )}
@@ -73,7 +95,9 @@ export default function DashboardLayout({
         }`}
       ></div>
       <div className={"dashboard-layout sm:flex h-full w-full gap-x-2"}>
-        <div className={`dashboard-layout hidden sm:block basis-1/5 overflow-y-scroll px-3`}>
+        <div
+          className={`dashboard-layout hidden sm:block basis-1/5 overflow-y-scroll px-3`}
+        >
           <DashboardSidebar />
         </div>
         <div
@@ -84,7 +108,20 @@ export default function DashboardLayout({
           <DashboardSidebar />
         </div>
         <div className="dashboard-layout sm:basis-4/5 rounded-lg overflow-hidden">
-          
+          {showEditSkills.value && (
+            <div className="dashboard-layout absolute sm:hidden px-5 hide-scrollbar flex justify-center z-40 h-screen w-full sm:w-[79%] bg-white overflow-y-auto">
+              <div className="dashboard-layout w-full min-h-full">
+                <EditSkills
+                  fieldName={showEditSkills.fieldName!}
+                  setValue={showEditSkills.setValue}
+                  error={showEditSkills.error}
+                  jwtToken={showEditSkills.jwtToken}
+                  fieldValue={showEditSkills.fieldValue}
+                />
+              </div>
+            </div>
+          )}
+
           {showCreateCompanyForm && (
             <div className="dashboard-layout absolute sm:hidden px-5 hide-scrollbar flex justify-center z-40 h-screen w-full sm:w-[79%] bg-white overflow-y-auto">
               <div className="dashboard-layout w-full min-h-full">
@@ -96,7 +133,7 @@ export default function DashboardLayout({
           {showJobApplicants && (
             <div className="dashboard-layout absolute sm:hidden px-5 hide-scrollbar flex justify-center z-40 h-screen w-full sm:w-[79%] bg-white overflow-y-auto">
               <div className="dashboard-layout w-full min-h-full">
-                <ViewApplicants jobId={Number(jobId)}/>
+                <ViewApplicants jobId={Number(jobId)} />
               </div>
             </div>
           )}
@@ -112,7 +149,10 @@ export default function DashboardLayout({
           {showJobUpdateForm && (
             <div className="dashboard-layout absolute sm:hidden px-10 hide-scrollbar flex justify-center z-40 h-screen w-full sm:w-[79%] bg-white overflow-y-auto">
               <div className="dashboard-layout flex flex-col justify-center items-center  w-full min-h-full">
-                <UpdateJobForm id={Number(jobId)} className="dashboard-layout h-screen w-full" />
+                <UpdateJobForm
+                  id={Number(jobId)}
+                  className="dashboard-layout h-screen w-full"
+                />
               </div>
             </div>
           )}

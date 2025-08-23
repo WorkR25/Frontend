@@ -50,7 +50,6 @@ const getJobApplicants = async (authJwtToken: string | null, jobId: number) => {
         Authorization: authJwtToken,
       },
     });
-    console.log(response.data.data);
     
     return response.data?.data as ApplicantListType[];
   } catch (error) {

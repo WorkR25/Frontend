@@ -13,7 +13,6 @@ const useGetJobTitle = (authJwtToken: string | null, titleName: string | null) =
 
 const getJobTitle = async (authJwtToken: string | null, titleName: string | null) => {
   try {
-    console.log("titleName", titleName)
     if(!titleName){
       return []
     }
@@ -22,7 +21,6 @@ const getJobTitle = async (authJwtToken: string | null, titleName: string | null
         Authorization: authJwtToken,
       },
     });
-    console.log("job-title",response.data.data);
     
     return response.data?.data;
   } catch (error) {

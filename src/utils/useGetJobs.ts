@@ -19,7 +19,6 @@ const getJobs = async (authJwtToken: string | null) => {
         Authorization: authJwtToken,
       },
     });
-    console.log("get jobs: ", response);
     return response.data.data as Job[];
   } catch (error) {
     throw error;

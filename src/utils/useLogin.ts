@@ -3,6 +3,7 @@ import { userServiceApi } from "@/lib/axios.config";
 import { LogInFormSchema } from "@/schema/logIn.validator";
 import { useMutation } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import z from "zod";
 
 type FormValues = z.infer<typeof LogInFormSchema>;
@@ -19,8 +20,8 @@ const useLogin = () =>{
         throw error;
       }
     },
-    onError: (error) => {
-      console.log("Login error:", error);
+    onError: () => {
+      toast.error("Login failed. Please check your credentials.");
     },
     onSuccess: (data) => {
       const jwtToken = data.data;

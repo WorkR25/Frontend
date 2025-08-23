@@ -8,8 +8,7 @@ import InputField from "../InputField";
 import { useEffect, useState } from "react";
 import useCreateJob from "@/utils/useCreateJob";
 import useGetUser from "@/utils/useGetUser";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/lib/store.config";
+import { useDispatch } from "react-redux";
 import useGetJobTitle from "@/utils/useGetJobTitle";
 import useGetCity from "@/utils/useGetCity";
 import useGetEmploymentType from "@/utils/useGetEmploymentType";
@@ -36,17 +35,13 @@ export type OptionType = {
 
 export default function CreateJobForm({ className }: { className?: string }) {
   const router = useRouter();
-  const test = useSelector((state: RootState) => {
-    return state.jobId.value;
-  });
+  
   const dispatch = useDispatch();
 
   const [jwtToken, setJwtToken] = useState<string | null>("");
   const [isAuthorized, setIsAuthorized] = useState(false);
   useEffect(() => {
-    console.log("test :", test);
     setJwtToken(localStorage.getItem("AuthJwtToken"));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { data } = useGetUser(jwtToken);
@@ -98,7 +93,6 @@ export default function CreateJobForm({ className }: { className?: string }) {
     return <div className="flex justify-center w-full">Authorizing...</div>;
   }
 
-  console.log("error in crate jon schema", errors, getValues());
 
   return (
     <div className={cn("justify-center sm:flex ", className)}>
@@ -286,9 +280,6 @@ export default function CreateJobForm({ className }: { className?: string }) {
           <MarkdownEditor name={"description"} />
 
           <button
-            onClick={() => {
-              console.log("object", errors);
-            }}
             type="submit"
             className="bg-blue-600 hover:cursor-pointer text-white px-4 py-2 rounded"
           >

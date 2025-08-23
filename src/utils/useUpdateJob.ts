@@ -27,15 +27,14 @@ const useUpdateJobs = () => {
       }
     },
     onSuccess: (data, variables) => {
-      console.log("success updating job", data);
       toast.success("Job updated successfully!");
       queryClient.invalidateQueries({
         queryKey: ["jobDetails", variables.updateJobData.id],
       });
       queryClient.invalidateQueries({ queryKey: ["jobList"] });
     },
-    onError: (error) => {
-      console.log("error updading job", error);
+    onError: () => {
+      toast.error("Error updating job");
     },
   });
 };

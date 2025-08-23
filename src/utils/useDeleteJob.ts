@@ -32,15 +32,13 @@ const useDeleteJob = () => {
       }
     },
     onSuccess: (data, variables) => {
-      console.log("success deleting job", data);
       toast.success("Job deleted successfully!");
       queryClient.invalidateQueries({
         queryKey: ["jobDetails", variables.deleteJobdata.id],
       });
       queryClient.invalidateQueries({ queryKey: ["jobList"] });
     },
-    onError: (error) => {
-      console.log("error deleting job", error);
+    onError: () => {
       toast.error("Failed to delete job");
     },
   });

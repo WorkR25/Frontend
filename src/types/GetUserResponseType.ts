@@ -1,3 +1,5 @@
+import { Skills } from "./JobDetailsType";
+
 export type GetUserResponseType = {
   id: number;
   fullName: string;
@@ -14,5 +16,5 @@ export type GetUserResponseType = {
     resumeUrl: string | null;
     yearsOfExperience: number | null;
   };
-  skills: string[]; 
+  skills: Skills[]; 
 };

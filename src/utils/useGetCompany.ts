@@ -21,7 +21,6 @@ const getCompany = async (authJwtToken: string | null, companyName: string | nul
         Authorization: authJwtToken,
       },
     });
-    console.log(response.data.data);
     
     return response.data?.data;
   } catch (error) {

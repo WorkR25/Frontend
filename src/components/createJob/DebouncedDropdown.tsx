@@ -39,7 +39,6 @@
 //   const { data } = useQueryFn(jwtToken, debouncedCity);
 
 //   useEffect(() => {
-//     console.log("deb : ", data);
 //     if (data) {
 //       setOptionArray(data);
 //     }

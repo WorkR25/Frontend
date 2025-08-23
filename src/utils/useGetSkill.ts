@@ -21,7 +21,6 @@ const getSkill = async (authJwtToken: string | null, skillName: string | null) =
         Authorization: authJwtToken,
       },
     });
-    console.log("skills : ",response.data.data);
     
     return response.data?.data;
   } catch (error) {

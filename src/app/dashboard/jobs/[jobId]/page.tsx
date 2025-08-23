@@ -28,7 +28,6 @@ export default function Page({
 
   useGetJobDetails(jwtToken, jobId);
   useEffect(() => {
-    console.log("job id : ", jwtToken);
     dispatch(setJobId(jobId));
   });
 

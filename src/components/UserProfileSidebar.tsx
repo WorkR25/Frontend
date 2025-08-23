@@ -28,17 +28,14 @@ export default function UserProfileSidebar() {
     }
   }, [dispatch, router]);
 
-  const { data, isSuccess, isError } = useGetUser(authJwtToken);
-  console.log("user profile : ", authJwtToken);
+  const { data } = useGetUser(authJwtToken);
 
   // useEffect(() => {
-  //   console.log("errror", isError);
   //   if (isError) {
   //     router.replace("/login");
   //   }
   // }, [data, isError, router]);
 
-  console.log("rendered", isSuccess, isError);
 
   if (!data) {
     return <div className="text-center">Loading user...</div>;

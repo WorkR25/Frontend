@@ -16,7 +16,6 @@ export default function ViewApplicants({ jobId, className }: { jobId: number, cl
   });
 
   const { data: applicantList } = useGetJobApplicants(jwtToken, jobId);
-  console.log("applicant list : ", applicantList, jobId);
 
   return (
     <div className={cn("component-viewApplicants-ViewApplicants justify-center ", className)}>

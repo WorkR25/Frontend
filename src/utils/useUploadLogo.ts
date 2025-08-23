@@ -6,7 +6,6 @@ const useUploadLogo= ()=> {
         mutationFn: async({authJwtToken, file}: {authJwtToken: string | null, file: File})=>{
             const formData = new FormData();
             formData.append("file", file);
-            console.log("file", file)
             try {
                 const response = await jobServiceApi.post("/companies/upload-logo", formData, {
                           headers: {

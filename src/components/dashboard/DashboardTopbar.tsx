@@ -2,7 +2,7 @@
 import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice";
 import { cn } from "@/utils/cn";
 import { getFormattedDate } from "@/utils/getTime";
-import { AlignJustify, Bell, Calendar } from "lucide-react";
+import { AlignJustify,  Calendar } from "lucide-react";
 import { useDispatch } from "react-redux";
 
 export default function DashboardTopbar({

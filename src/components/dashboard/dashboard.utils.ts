@@ -34,7 +34,6 @@ export const onClickCreateCompany: OnClickFnType = (dispatch, router, link) => {
 //                     dispatch(isSidebarOpenToogle(false));
 // {() => {
 //                     setMainMenuActiveTab(index);
-//                     console.log("dashboard sidebar : ", index);
 //                     if (index != 2) {
 //                       router.replace(`/dashboard/${tab.link}`);
 //                     } else {

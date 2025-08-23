@@ -22,14 +22,21 @@ export default function SkillsDropdown<TFormValues extends FieldValues>({
   error,
   jwtToken,
   fieldValue,
+  handleSkillDelete,
+  handleSkillAdd,
 }: {
   fieldName: Path<TFormValues>;
   setValue: UseFormSetValue<TFormValues>;
   error: Merge<FieldError, (FieldError | undefined)[]> | undefined;
   jwtToken: string | null;
   fieldValue?: Skills[];
+  handleSkillDelete?: (id: number)=> void;
+  handleSkillAdd?: (id: number, name: string)=> void;
 }) {
-  console.log("skills: ",fieldValue);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
   const [skillIdArray, setSkillIdArray] = useState<number[]>(
     fieldValue
       ? fieldValue.map((v) => {
@@ -43,8 +50,6 @@ export default function SkillsDropdown<TFormValues extends FieldValues>({
   const [toggle, setToggle] = useState(false);
 
   useEffect(()=>{
-    console.log("id arr", skillIdArray);
-    console.log("name arr", skillNameArray)
   },[skillNameArray, skillIdArray])
 
   const [skills, setSkills] = useState<OptionType[]>([]);
@@ -59,33 +64,66 @@ export default function SkillsDropdown<TFormValues extends FieldValues>({
     }
   }, [skillData]);
 
-  const handleSkillSelect = (skill: { id: number; name: string }) => {
-    if (skillIdArray.includes(skill.id)) {
-      toast.error("This skill is already selected!", {
-        position: "top-left",
-        autoClose: 3000,
-        theme: "light",
-      });
-      return;
-    }
 
-    setSkillNameArray((prev) => [...prev, skill]);
-    setSkillIdArray((prev) => {
-      const updated = [...prev, skill.id];
-      setValue(fieldName, updated as PathValue<TFormValues, Path<TFormValues>>);
-      return updated;
+
+  // const handleSkillSelect = (skill: { id: number; name: string }) => {
+  //   if (skillIdArray.includes(skill.id)) {
+  //     toast.error("This skill is already selected!", {
+  //       position: "top-left",
+  //       autoClose: 3000,
+  //       theme: "light",
+  //     });
+  //     return;
+  //   }
+
+  //   setSkillNameArray((prev) => [...prev, skill]);
+  //   setSkillIdArray((prev) => {
+  //     const updated = [...prev, skill.id];
+  //     setValue(fieldName, updated as PathValue<TFormValues, Path<TFormValues>>);
+  //     return updated;
+  //   });
+  //   handleSkillAdd?.(skill.id)
+  // };
+
+  const handleSkillSelect = (skill: { id: number; name: string }) => {
+  if (skillIdArray.includes(skill.id)) {
+    toast.error("This skill is already selected!", {
+      position: "top-left",
+      autoClose: 3000,
+      theme: "light",
     });
-  };
+    return;
+  }
+
+  setSkillNameArray((prev) => [...prev, skill]);
+
+  const updated = [...skillIdArray, skill.id]; 
+  setSkillIdArray(updated);                     
+  setValue(fieldName, updated as PathValue<TFormValues, Path<TFormValues>>); 
+
+  handleSkillAdd?.(skill.id, skill.name);
+};
+  // const handleRemoveSkill = (id: number) => {
+  //   setSkillIdArray((prev) => {
+  //     const updated = prev.filter((skillId) => skillId !== id);
+  //     setValue(fieldName, updated as PathValue<TFormValues, Path<TFormValues>>);
+  //     return updated;
+  //   });
+
+  //   setSkillNameArray((prev) => prev.filter((skill) => skill.id !== id));
+  // };
 
   const handleRemoveSkill = (id: number) => {
-    setSkillIdArray((prev) => {
-      const updated = prev.filter((skillId) => skillId !== id);
-      setValue(fieldName, updated as PathValue<TFormValues, Path<TFormValues>>);
-      return updated;
-    });
+  setSkillIdArray((prev) => prev.filter((skillId) => skillId !== id));
+  setSkillNameArray((prev) => prev.filter((skill) => skill.id !== id));
+};
 
-    setSkillNameArray((prev) => prev.filter((skill) => skill.id !== id));
-  };
+useEffect(() => {
+  setValue(fieldName, skillIdArray as PathValue<TFormValues, Path<TFormValues>>);
+}, [skillIdArray, setValue, fieldName]);
+
+
+  if (!mounted) return null;
 
   return (
     <div>
@@ -98,7 +136,7 @@ export default function SkillsDropdown<TFormValues extends FieldValues>({
           >
             <div>{skill.name}</div>
             <div
-              onClick={() => handleRemoveSkill(skill.id)}
+              onClick={() => {handleRemoveSkill(skill.id); handleSkillDelete?.(skill.id)}}
               className="cursor-pointer"
             >
               <X />
@@ -126,7 +164,7 @@ export default function SkillsDropdown<TFormValues extends FieldValues>({
           <div className="h-[20vh] border overflow-y-scroll">
             {skills.map((skill) => (
               <div
-                onClick={() => handleSkillSelect(skill)}
+                onClick={() => {handleSkillSelect(skill); }}
                 className="px-2 py-1 cursor-pointer hover:bg-gray-100"
                 key={skill.id}
               >

@@ -104,7 +104,6 @@ export default function Page() {
                 />
                 <button
                   onClick={() => {
-                    console.log("view applicants called")
                     dispatch(setShowJobApplicants(true));
                     dispatch(setJobId(String(job.id)))
                   }}
