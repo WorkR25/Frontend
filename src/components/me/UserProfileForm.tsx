@@ -14,6 +14,10 @@ import TextAreaInput from "../createJob/TextAreaInput";
 import useUploadUserResume from "@/utils/useUploadUserResume";
 import DragAndDropFile from "../createCompany/DragAndDropFile";
 import useUpdateUserProfile from "@/utils/useUpdateUserProfile";
+import DebouncedDropdown from "../createJob/DebouncedDropdown";
+import { OptionType } from "../createJob/CreateJobForm";
+import useGetCompany from "@/utils/useGetCompany";
+import useGetCompanyById from "@/utils/useGetCompanyById";
 
 export const UserProfileSchema = z.object({
   bio: z.string().nullable().optional(),
@@ -36,7 +40,7 @@ export default function UserProfileForm() {
     defaultValues: {
       bio: "",
       yearsOfExperience: 0,
-      isFresher: true,
+      isFresher: false,
       currentCtc: "0.00",
       resumeUrl: "",
       linkedinUrl: "",
@@ -77,6 +81,7 @@ export default function UserProfileForm() {
         resumeUrl: profile.resumeUrl ?? "",
         linkedinUrl: profile.linkedinUrl ?? "",
         currentLocation: profile.currentLocation ?? null,
+        currentCompanyId: profile.currentCompanyId ?? null ,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -91,12 +96,12 @@ export default function UserProfileForm() {
       });
     }
   };
-
+  const { data: companyDetails } = useGetCompanyById(jwtToken,userData?.profile.currentCompanyId)
   const { mutate: updateUserProfile } = useUpdateUserProfile();
 
   return (
     <FormProvider {...methods}>
-        <div className="font-semibold text-lg mt-3">User Profile</div>
+      <div className="font-semibold text-lg mt-3">User Profile</div>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-4 p-4 mt-3 border rounded-lg shadow-md w-full"
@@ -124,7 +129,7 @@ export default function UserProfileForm() {
               className={watch("isFresher") ? "cursor-not-allowed" : ""}
               icon={<></>}
               fieldName="currentCtc"
-              placeholder={ "Current CTC"}
+              placeholder={"Current CTC"}
               type="text"
               register={register}
               error={errors.currentCtc}
@@ -148,6 +153,22 @@ export default function UserProfileForm() {
               onChangeFn={() => {}}
             />
           </div>
+
+          <div className="w-[90%] sm:w-[45%]">
+            <div>Company</div>
+            <DebouncedDropdown<UserProfileFormValues, OptionType>
+              placeholder="Select a company"
+              fieldName="currentCompanyId"
+              error={errors.currentCompanyId}
+              setValue={setValue}
+              jwtToken={jwtToken}
+              useQueryFn={useGetCompany}
+              getOptionLabel={(value) => value.name}
+              getOptionValue={(value) => value.id}
+              fieldValue={companyDetails? companyDetails.name :""}
+            />
+          </div>
+
           <div className="w-[90%] sm:w-[45%]">
             <div>Resume</div>
             <DragAndDropFile
@@ -158,7 +179,7 @@ export default function UserProfileForm() {
               maxFileSize={5}
               onChangeFn={() => {}}
             />
-            <div className="p-2 border-blue-200 text-xs">
+            <div className="p-2 border-blue-300 text-xs">
               <a href={watch("resumeUrl")} target="_blank">
                 Resume
               </a>
@@ -178,7 +199,6 @@ export default function UserProfileForm() {
             />
           </div>
           <div className="w-[90%]">
-            <div></div>
             <TextAreaInput
               onChangeFn={() => {}}
               icon={<></>}
@@ -194,7 +214,7 @@ export default function UserProfileForm() {
         {/* Submit */}
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 hover:cursor-pointer"
         >
           Save Profile
         </button>

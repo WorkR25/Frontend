@@ -30,7 +30,6 @@ const getJobDetails = async (authJwtToken: string | null, jobId: string, dispatc
     dispatch(setJobDetails(response.data.data));
     return response.data.data ? (response.data.data as JobDetails) : null;
   } catch (error) {
-    console.error("Error fetching job details:", error);
     throw error;
   }
 };

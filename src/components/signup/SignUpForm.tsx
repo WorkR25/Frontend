@@ -1,9 +1,9 @@
 "use client";
 
 import InputField from "../InputField";
-import {  useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Eye, EyeOff, User, Mail, Lock, Phone } from "lucide-react";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import z from "zod";
@@ -51,7 +51,6 @@ export default function SignUpForm() {
   );
 }
 
-
 function Form() {
   const {
     register,
@@ -64,7 +63,7 @@ function Form() {
     resolver: zodResolver(SignUpFormSchema),
   });
 
-  const router = useRouter()
+  const router = useRouter();
   const password = watch("password");
 
   const [showPassword, setShowPassword] = useState(false);
@@ -76,9 +75,7 @@ function Form() {
       if(isSuccess){
       router.replace('/dashboard');
     }
-    }, [isSuccess, router])
-
-
+  }, [isSuccess, router]);
 
   const onSubmit = (formData: FormValues) => {
     mutate(formData);
@@ -113,17 +110,16 @@ function Form() {
         <p className="text-[#E04B40] text-xs">{errors.phoneNo.message}</p>
       )}
 
-
       <InputField
         register={register}
         fieldName="email"
         placeholder="haikaa@example.com"
         type="email"
         icon={<Mail size={20} />}
-        />
-        {errors.email?.message && (
-          <p className="text-[#E04B40] text-xs">Enter enter valid email</p>
-        )}
+      />
+      {errors.email?.message && (
+        <p className="text-[#E04B40] text-xs">Enter enter valid email</p>
+      )}
 
       <InputField
         register={register}
@@ -178,12 +174,16 @@ function Form() {
           !!errors.phoneNo
         }
         className={` border border-[#F0F0F0] w-full py-1.5 rounded-md font-bold ${
-          errors.confirmPassword || errors.password || errors.email || errors.fullName || errors.phoneNo
+          errors.confirmPassword ||
+          errors.password ||
+          errors.email ||
+          errors.fullName ||
+          errors.phoneNo
             ? "cursor-not-allowed text-[#DDDDDD] bg-[#F0F0F0]"
             : "bg-[#3177a7] cursor-pointer hover:bg-[#7ba1d0]"
         }`}
       >
-        {isPending|| isSuccess ? "Signing Up" :"Sign up"}
+        {isPending || isSuccess ? "Signing Up" : "Sign up"}
       </button>
     </form>
   );

@@ -27,7 +27,6 @@ const useDeleteJob = () => {
         });
         return response.data;
       } catch (error) {
-        console.error("Delete job error:", error);
         throw error;
       }
     },

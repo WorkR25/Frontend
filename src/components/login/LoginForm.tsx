@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import z from "zod";
@@ -11,6 +11,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useLogin from "@/utils/useLogin";
 import InputField from "../InputField";
 import ErrorPopup from "../ErrorPopup";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/lib/store.config";
+import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
+import useGetUser from "@/utils/useGetUser";
 
 type LogInFormValues = z.infer<typeof LogInFormSchema>;
 
@@ -60,11 +64,29 @@ function Form() {
     handleSubmit,
     formState: { errors },
   } = useForm<LogInFormValues>({
-    mode: "onChange",      
+    mode: "onChange",
     reValidateMode: "onBlur",
     resolver: zodResolver(LogInFormSchema),
   });
-  const router = useRouter()
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const jwtToken = useSelector((state: RootState) => {
+    return state.authJwtToken.value;
+  });
+
+  useEffect(() => {
+    const token = localStorage.getItem("AuthJwtToken");
+    if (token) {
+      dispatch(setAuthJwtToken(token));
+    }
+  }, [dispatch]);
+
+  const { data, isSuccess: getUserSuccess } = useGetUser(jwtToken);
+  useEffect(() => {
+    if (getUserSuccess && data) {
+      router.push("/dashboard");
+    }
+  }, [getUserSuccess, data, router]);
 
   const { mutate, isError, isPending, isSuccess } = useLogin();
 
@@ -72,9 +94,9 @@ function Form() {
 
   const onSubmit = (logInData: LogInFormValues) => {
     mutate(logInData, {
-      onSuccess: ()=>{
-        router.push('/dashboard');
-      }
+      onSuccess: () => {
+        router.push("/dashboard");
+      },
     });
   };
 
@@ -83,8 +105,8 @@ function Form() {
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-md mx-auto space-y-2 py-6 rounded-lg font-poppins text-sm px-8 "
     >
-      {isError ? (<ErrorPopup message="Error while logging in" />):(<></>)}
-      
+      {isError ? <ErrorPopup message="Error while logging in" /> : <></>}
+
       <InputField
         register={register}
         fieldName="email"
@@ -117,10 +139,7 @@ function Form() {
 
       <button
         type="submit"
-        disabled={
-          !!errors.password ||
-          !!errors.email
-        }
+        disabled={!!errors.password || !!errors.email}
         className={` border border-[#F0F0F0] w-full py-1.5 rounded-md font-bold ${
           errors.password || errors.email
             ? "cursor-not-allowed text-[#DDDDDD] bg-[#F0F0F0]"
