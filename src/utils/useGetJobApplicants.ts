@@ -37,6 +37,7 @@ const useGetJobApplicants = (authJwtToken: string | null, jobId: number) => {
       return getJobApplicants(authJwtToken, jobId);
     },
     enabled: !!authJwtToken,
+    refetchInterval: 30*60*1000 // 30 mins 
   });
 };
 
