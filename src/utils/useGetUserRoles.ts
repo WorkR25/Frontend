@@ -3,11 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 
 const useGetUserRoles = (authJwtToken: string | null, userId: number | undefined ) => {
   return useQuery({
-    queryKey: ["userDetails", userId],
+    queryKey: ["userDetails", userId ?? ""],
     queryFn: () => {
       return getUserRoles(authJwtToken, String(userId));
     },
     enabled: !!authJwtToken,
+    refetchOnWindowFocus: false, 
+
   });
 };
 

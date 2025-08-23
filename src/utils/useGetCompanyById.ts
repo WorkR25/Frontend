@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 const useGetCompanyById = (authJwtToken: string | null, companyId: number | null | undefined) => {
     
   return useQuery({
-    queryKey: ["company", companyId],
+    queryKey: ["company", companyId ?? ""],
     queryFn: () => {
         if(!companyId){
         return 
@@ -13,6 +13,7 @@ const useGetCompanyById = (authJwtToken: string | null, companyId: number | null
       return getCompany(authJwtToken, companyId);
     },
     enabled: !!authJwtToken,
+    refetchOnWindowFocus: false, 
   });
 };
 

@@ -3,11 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 
 const useGetSkill = (authJwtToken: string | null, skillName: string | null) => {
   return useQuery({
-    queryKey: ["skills", skillName],
+    queryKey: ["skills", skillName ?? ""],
     queryFn: () => {
       return getSkill(authJwtToken, skillName);
     },
     enabled: !!authJwtToken,
+    refetchOnWindowFocus: false, 
+
   });
 };
 

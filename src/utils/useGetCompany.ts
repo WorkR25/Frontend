@@ -3,11 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 
 const useGetCompany = (authJwtToken: string | null, companyName: string | null) => {
   return useQuery({
-    queryKey: ["company", companyName],
+    queryKey: ["company", companyName ?? ""],
     queryFn: () => {
       return getCompany(authJwtToken, companyName);
     },
     enabled: !!authJwtToken,
+    refetchOnWindowFocus: false, 
   });
 };
 
