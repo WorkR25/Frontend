@@ -1,6 +1,8 @@
 import { UserProfileFormValues } from "@/components/me/UserProfileForm";
 import { userServiceApi } from "@/lib/axios.config";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const useUpdateUserProfile = () => {
   return useMutation({
@@ -38,6 +40,17 @@ const useUpdateUserProfile = () => {
           Authorization: `${authJwtToken}`,
         },
       });
+    },
+    onSuccess: ()=>{
+      toast.success("Profile updated successfully")
+    },
+
+    onError: (error) => {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Error updating profile");
+      } else {
+        toast.error("Error updating profile");
+      }
     },
   });
 };
