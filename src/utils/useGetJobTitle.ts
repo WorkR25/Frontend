@@ -3,11 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 
 const useGetJobTitle = (authJwtToken: string | null, titleName: string | null) => {
   return useQuery({
-    queryKey: ["jobTitles", titleName],
+    queryKey: ["jobTitles", titleName ?? ""],
     queryFn: () => {
       return getJobTitle(authJwtToken, titleName);
     },
     enabled: !!authJwtToken,
+    refetchOnWindowFocus: false, 
   });
 };
 

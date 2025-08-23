@@ -8,6 +8,7 @@ const useGetExperienceLevel = (authJwtToken: string | null) => {
       return getExperienceLevel(authJwtToken);
     },
     enabled: !!authJwtToken,
+    refetchOnWindowFocus: false, 
   });
 };
 

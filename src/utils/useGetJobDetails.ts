@@ -12,6 +12,8 @@ const useGetJobDetails = (authJwtToken: string | null, jobId: string) => {
         queryKey: ["jobDetails", jobId],
         queryFn: () => getJobDetails(authJwtToken, jobId, dispatch),
         enabled: !!authJwtToken,
+    refetchInterval: 30*60*1000 // 30 mins 
+
     });
 };
 

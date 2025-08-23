@@ -3,11 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 
 const useGetCity = (authJwtToken: string | null, cityName: string | undefined) => {
   return useQuery({
-    queryKey: ["city", cityName],
+    queryKey: ["city", cityName ?? ""],
     queryFn: () => {
       return getCity(authJwtToken, cityName);
     },
     enabled: !!authJwtToken,
+    refetchOnWindowFocus: false, 
   });
 };
 

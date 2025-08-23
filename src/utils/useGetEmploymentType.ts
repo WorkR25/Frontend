@@ -8,6 +8,7 @@ const useGetEmploymentType = (authJwtToken: string | null) => {
       return getEmploymentType(authJwtToken);
     },
     enabled: !!authJwtToken,
+    refetchOnWindowFocus: false, 
   });
 };
 

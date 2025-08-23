@@ -4,11 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 
 const useGetUser = (authJwtToken: string | null) => {
   return useQuery({
-    queryKey: ["userDetails", authJwtToken],
+    queryKey: ["userDetails", authJwtToken ?? ""],
     queryFn: () => {
       return getUserDetils(authJwtToken);
     },
     enabled: !!authJwtToken,
+    refetchOnWindowFocus: false, 
+
   });
 };
 
