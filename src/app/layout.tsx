@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/components/QueryProvider";
 import ReduxProvider from "@/components/ReduxProvider";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased bg-[#F5F5F5]`}
       >
+      <ToastContainer position="top-right" autoClose={3000} />
         <ReduxProvider>
           <QueryProvider>{children}</QueryProvider>
         </ReduxProvider>

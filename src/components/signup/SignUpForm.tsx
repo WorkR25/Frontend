@@ -10,7 +10,6 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignUpFormSchema } from "@/schema/signUp.validator";
 import useSignup from "@/utils/useSignup";
-import ErrorPopup from "../ErrorPopup";
 
 type FormValues = z.infer<typeof SignUpFormSchema>;
 
@@ -71,7 +70,7 @@ function Form() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const { mutate, isError, isPending, isSuccess } = useSignup();
+  const { mutate,  isPending, isSuccess } = useSignup();
 
   useEffect(()=>{
       if(isSuccess){
@@ -90,7 +89,7 @@ function Form() {
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-md mx-auto space-y-2 py-6 rounded-lg font-poppins text-sm px-8"
     >
-      {isError ? (<ErrorPopup message="Error while Siging up" />):(<></>)}
+      {/* {isError ? (<ErrorPopup message="Error while Siging up" />):(<></>)} */}
 
       <InputField
         register={register}
