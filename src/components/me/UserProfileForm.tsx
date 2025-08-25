@@ -18,16 +18,18 @@ import DebouncedDropdown from "../createJob/DebouncedDropdown";
 import { OptionType } from "../createJob/CreateJobForm";
 import useGetCompany from "@/utils/useGetCompany";
 import useGetCompanyById from "@/utils/useGetCompanyById";
+import useGetCity from "@/utils/useGetCity";
 
 export const UserProfileSchema = z.object({
   bio: z.string().nullable().optional(),
-  yearsOfExperience: z.number().min(0, "Experience must be non-negative"),
+  yearsOfExperience: z.string().min(1, "Experience must be non-negative"),
   isFresher: z.boolean(),
   currentCtc: z.string().regex(/^\d+(\.\d{1,2})?$/, {
     message: "Enter a valid CTC amount",
-  }),
-  resumeUrl: z.string().url("Invalid resume URL"),
-  linkedinUrl: z.string().url("Invalid LinkedIn URL"),
+  }).optional(),
+  resumeUrl: z.string().optional(),
+  // linkedinUrl: z.string().url("Invalid LinkedIn URL").optional()
+  linkedinUrl: z.string().optional(),
   currentLocationId: z.number().nullable().optional(),
   currentCompanyId: z.number().nullable().optional(),
   currentLocation: z.string().nullable().optional(),
@@ -39,7 +41,7 @@ export default function UserProfileForm() {
     resolver: zodResolver(UserProfileSchema),
     defaultValues: {
       bio: "",
-      yearsOfExperience: 0,
+      yearsOfExperience: "0",
       isFresher: false,
       currentCtc: "0.00",
       resumeUrl: "",
@@ -72,15 +74,15 @@ export default function UserProfileForm() {
       const profile = userData.profile;
       reset({
         bio: profile.bio ?? "",
-        yearsOfExperience: profile.yearsOfExperience ?? 0,
-        isFresher: profile.isFresher ?? true,
+        yearsOfExperience: String(profile.yearsOfExperience) ?? "0",
+        isFresher: profile.isFresher ?? false,
         currentCtc:
           profile.currentCtc !== null && profile.currentCtc !== undefined
             ? String(profile.currentCtc)
             : "0.00",
         resumeUrl: profile.resumeUrl ?? "",
         linkedinUrl: profile.linkedinUrl ?? "",
-        currentLocation: profile.currentLocation ?? null,
+        currentLocation: profile.currentLocation?.name ?? null,
         currentCompanyId: profile.currentCompanyId ?? null ,
       });
     }
@@ -115,7 +117,7 @@ export default function UserProfileForm() {
                 onChange={(e) => {
                   if (e.target.checked) {
                     setValue("currentCtc", "0");
-                    setValue("yearsOfExperience", 0);
+                    setValue("yearsOfExperience", "0");
                   }
                 }}
               />
@@ -124,12 +126,12 @@ export default function UserProfileForm() {
           </div>
 
           <div className={"w-[90%] sm:w-[45%]"}>
-            <div>Current CTC</div>
+            <div>Current CTC in LPA</div>
             <InputField
               className={watch("isFresher") ? "cursor-not-allowed" : ""}
               icon={<></>}
               fieldName="currentCtc"
-              placeholder={"Current CTC"}
+              placeholder={"Current CTC in LPA"}
               type="text"
               register={register}
               error={errors.currentCtc}
@@ -138,7 +140,7 @@ export default function UserProfileForm() {
             />
           </div>
           <div className="w-[90%] sm:w-[45%]">
-            <div>Experience</div>
+            <div>Experience in Yrs</div>
             <InputField
               icon={<></>}
               fieldName="yearsOfExperience"
@@ -149,7 +151,7 @@ export default function UserProfileForm() {
               register={register}
               error={errors.yearsOfExperience}
               disabled={watch("isFresher")}
-              fieldValue={userData?.profile.yearsOfExperience}
+              fieldValue={userData?.profile.yearsOfExperience ?? ""}
               onChangeFn={() => {}}
             />
           </div>
@@ -166,6 +168,21 @@ export default function UserProfileForm() {
               getOptionLabel={(value) => value.name}
               getOptionValue={(value) => value.id}
               fieldValue={companyDetails? companyDetails.name :""}
+            />
+          </div>
+
+          <div className="w-[90%] sm:w-[45%]">
+            <div>Location</div>
+            <DebouncedDropdown<UserProfileFormValues, OptionType>
+              placeholder="Current Location"
+              fieldName='currentLocationId'
+              error={errors.currentLocationId}
+              setValue={setValue}
+              jwtToken={jwtToken}
+              useQueryFn={useGetCity}
+              getOptionLabel={(value) => value.name}
+              getOptionValue={(value) => value.id}
+              fieldValue={userData?.profile.currentLocation?.name ?? ""}
             />
           </div>
 

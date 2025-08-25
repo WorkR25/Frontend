@@ -45,6 +45,7 @@ export default function UserDetailForm() {
   const jwtToken = useSelector((state: RootState)=>{return state.authJwtToken.value})
   useEffect(()=>{
     const token = localStorage.getItem("AuthJwtToken");
+    console.log("me token : ", token)
     if(token){
         dispatch(setAuthJwtToken(token));
     }

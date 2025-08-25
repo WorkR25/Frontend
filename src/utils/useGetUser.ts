@@ -3,6 +3,8 @@ import { GetUserResponseType } from "@/types/GetUserResponseType";
 import { useQuery } from "@tanstack/react-query";
 
 const useGetUser = (authJwtToken: string | null) => {
+  const time = new Date(); 
+  console.log(":token", authJwtToken, time)
   return useQuery({
     queryKey: ["userDetails", authJwtToken ?? ""],
     queryFn: () => {

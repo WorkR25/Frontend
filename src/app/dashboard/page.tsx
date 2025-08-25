@@ -7,50 +7,51 @@ import InterviewInvitationCard from "@/components/dashboard/InterviewInvitationC
 import JobCard from "@/components/JobCard";
 import OptionButton from "@/components/OptionButton";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
+import { RootState } from "@/lib/store.config";
 import useGetUser from "@/utils/useGetUser";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Page() {
   const router = useRouter();
-  const [jwtToken, setJwtToken] = useState<string | null>("");
+  const jwtToken = useSelector((state: RootState) => {
+    return state.authJwtToken.value;
+  });
   const dispatch = useDispatch();
   useEffect(() => {
     const token = localStorage.getItem("AuthJwtToken");
-    if (token !== null) {
-      setJwtToken(token);
+    if (token) {
       dispatch(setAuthJwtToken(token));
-    }else{
+    } else {
       router.push("/login");
     }
   }, [dispatch, router]);
 
-  const { isPending, isError } = useGetUser(jwtToken);
+  const { data: userData, isPending, isError, isSuccess } = useGetUser(jwtToken);
 
   useEffect(() => {
     if (isError) {
+      console.log("dash error")
       router.push("/login");
     }
   }, [isError, router]);
 
-  if (isPending ) {
+  
+
+  if (isPending) {
     return (
       <div className="flex items-center justify-center h-screen">
         <p className="text-lg font-medium">Loading...</p>
       </div>
     );
-  }
-
-  if( isError ){
+  }else if (isError) {
     return (
       <div className="flex items-center justify-center h-screen">
         <p className="text-lg font-medium">Redirecting...</p>
       </div>
     );
-  }
-
-  return (
+  }else if(userData && isSuccess) return (
     <div className="text-black p-2 bg-[#FFFF] h-full pb-0 ">
       <DashboardTopbar pageName="Overview" />
       <div className="flex m-4 h-full">
@@ -76,7 +77,7 @@ function JobRecommendation() {
         <div className="font-semibold text-xl">Job Recommendation</div>
         <div className="text-[#28668B]">See All</div>
       </div>
-      <div className=" space-x-3 mt-3 mr-3 overflow-x-scroll flex hide-scrollbar">
+      <div className=" space-x-3 mt-3 overflow-x-scroll flex hide-scrollbar">
         <OptionButton name="For you" isActive={true} />
         <OptionButton name="Trending" isActive={false} />
         <OptionButton name="New This Week" isActive={false} />
@@ -122,7 +123,7 @@ function ApplicationSummary() {
           <div className="text-xl font-semibold">Summary</div>
           <div>Month</div>
         </div>
-        <div className=" space-x-3 mt-3 mr-3 overflow-x-scroll flex hide-scrollbar  ">
+        <div className=" space-x-3 mt-3 overflow-x-scroll flex hide-scrollbar  ">
           <OptionButton name="Application" isActive={true} />
           <OptionButton name="Interview" isActive={false} />
           <OptionButton name="Screening" isActive={false} />

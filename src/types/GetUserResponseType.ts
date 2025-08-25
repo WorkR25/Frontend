@@ -9,12 +9,14 @@ export type GetUserResponseType = {
     bio: string | null;
     currentCompanyId: number | null;
     currentCtc: number | null;
-    currentLocation: string | null;
+    currentLocation: {
+      name: string | null;
+    } | null;
     currentLocationId: number | null;
     isFresher: boolean | null;
     linkedinUrl: string | null;
     resumeUrl: string | null;
     yearsOfExperience: number | null;
   };
-  skills: Skills[]; 
+  skills: Skills[];
 };
