@@ -1,3 +1,4 @@
+import DashboardTopbar from "@/components/dashboard/DashboardTopbar";
 import UserDetailForm from "@/components/me/UserDetailForm";
 import UserProfileForm from "@/components/me/UserProfileForm";
 import UserSkillForm from "@/components/me/UserSkillForm";
@@ -5,7 +6,8 @@ import UserSkillForm from "@/components/me/UserSkillForm";
 
 export default function Page(){
     return (
-        <div className="absolute top-0 p-6 overflow-y-scroll h-[100vh]">
+        <div className="absolute top-0 p-6 pt-2 overflow-y-scroll h-[100vh]">
+            <DashboardTopbar pageName="About You" />
             <UserDetailForm />
             <UserProfileForm />
             {/* <EditSkills /> */}

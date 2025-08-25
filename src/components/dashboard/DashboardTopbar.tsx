@@ -3,6 +3,7 @@ import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice
 import { cn } from "@/utils/cn";
 import { getFormattedDate } from "@/utils/getTime";
 import { AlignJustify,  Calendar } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 export default function DashboardTopbar({
@@ -12,8 +13,15 @@ export default function DashboardTopbar({
   pageName:string,
   className?: string,
 }) {
-
+  const [ mounted, setMounted ] = useState(false);
   const dispatch = useDispatch();
+
+  useEffect(()=>{
+    setMounted(true) ;
+  }, [])
+
+  if(!mounted) return null ;
+
   return (
     <div className={cn("components-dashboard-DashboardTopbar flex items-center justify-between px-4 pt-2 overflow-hidden mb-2 sm:mb-5", className)}>
       <div className="components-dashboard-DashboardTopbar text-xl flex items-center text-center gap-x-7 font-semibold">

@@ -15,24 +15,34 @@ const useUpdateUserProfile = () => {
       id: string;
       userProfileData: UserProfileFormValues;
     }) => {
-      
       const payload = {
         ...userProfileData,
         currentCtc:
           userProfileData.currentCtc?.trim() === ""
             ? 0
             : Number(userProfileData.currentCtc),
-        yearsOfExperience:
-          userProfileData.yearsOfExperience === null ||
-          userProfileData.yearsOfExperience === undefined ||
-          userProfileData.yearsOfExperience === (0)
+
+        yearsOfExperience: userProfileData.yearsOfExperience
+          ? Number.isNaN(Number(userProfileData.yearsOfExperience))
             ? 0
-            : Number(userProfileData.yearsOfExperience),
-        // Only include linkedinUrl if not empty
-        ...(userProfileData.linkedinUrl && {
-          linkedinUrl: userProfileData.linkedinUrl,
-        }),
+            : Number(userProfileData.yearsOfExperience)
+          : undefined, // don’t send null/0 unless required
+
+        linkedinUrl: userProfileData.linkedinUrl || undefined,
+
+        currentLocationId: userProfileData.currentLocationId
+          ? Number.isNaN(Number(userProfileData.currentLocationId))
+            ? 0
+            : Number(userProfileData.currentLocationId)
+          : undefined,
+
+        currentCompanyId: userProfileData.currentCompanyId
+          ? Number.isNaN(Number(userProfileData.currentCompanyId))
+            ? 0
+            : Number(userProfileData.currentCompanyId)
+          : undefined,
       };
+
 
       // send to API
       await userServiceApi.put(`/users/update-profile/${id}`, payload, {
@@ -41,8 +51,8 @@ const useUpdateUserProfile = () => {
         },
       });
     },
-    onSuccess: ()=>{
-      toast.success("Profile updated successfully")
+    onSuccess: () => {
+      toast.success("Profile updated successfully");
     },
 
     onError: (error) => {
