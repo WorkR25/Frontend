@@ -44,7 +44,7 @@ export default function UserProfileSidebar() {
 
   return (
     <div onClick={()=>{
-      router.push('dashboard/me')
+      router.push('/dashboard/me')
       dispatch(isSidebarOpenToogle(false))
     }} className="components-UserProfileSidebar w-full bottom-0 hover:cursor-pointer ">
       <div className="components-UserProfileSidebar flex items-center gap-3 p-3 bg-gray-100 rounded-lg w-full shadow-sm">
