@@ -7,7 +7,7 @@ import { z } from "zod";
 import InputField from "../InputField";
 import useGetUser from "@/utils/useGetUser";
 import { RootState } from "@/lib/store.config";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { useDispatch, useSelector } from "react-redux";
 import TextAreaInput from "../createJob/TextAreaInput";
@@ -37,13 +37,14 @@ export const UserProfileSchema = z.object({
 
 export type UserProfileFormValues = z.infer<typeof UserProfileSchema>;
 export default function UserProfileForm() {
+  const [isFresher, setIsFresher] = useState<boolean>()
   const methods = useForm<UserProfileFormValues>({
     resolver: zodResolver(UserProfileSchema),
     defaultValues: {
       bio: "",
       yearsOfExperience: "0",
       isFresher: false,
-      currentCtc: "0.00",
+      currentCtc: "0",
       resumeUrl: "",
       linkedinUrl: "",
       currentLocation: null,
@@ -86,6 +87,7 @@ export default function UserProfileForm() {
         currentCompanyId: profile.currentCompanyId ?? null ,
       });
     }
+    setIsFresher(userData?.profile.isFresher == null ? false : userData.profile.isFresher)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
@@ -116,8 +118,11 @@ export default function UserProfileForm() {
                 {...register("isFresher")}
                 onChange={(e) => {
                   if (e.target.checked) {
+                    setIsFresher(true);
                     setValue("currentCtc", "0");
                     setValue("yearsOfExperience", "0");
+                  }else{
+                    setIsFresher(false);
                   }
                 }}
               />
@@ -135,7 +140,8 @@ export default function UserProfileForm() {
               type="text"
               register={register}
               error={errors.currentCtc}
-              fieldValue={userData?.profile.currentCtc}
+              disabled={isFresher}
+              fieldValue={watch('currentCtc')}
               onChangeFn={() => {}}
             />
           </div>
@@ -150,8 +156,8 @@ export default function UserProfileForm() {
               type="text"
               register={register}
               error={errors.yearsOfExperience}
-              disabled={watch("isFresher")}
-              fieldValue={userData?.profile.yearsOfExperience ?? ""}
+              disabled={isFresher}
+              fieldValue={watch('yearsOfExperience')}
               onChangeFn={() => {}}
             />
           </div>
