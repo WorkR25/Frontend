@@ -43,21 +43,6 @@ const useUpdateUserProfile = () => {
           : undefined,
       };
 
-      console.log(
-        userProfileData.currentCompanyId && {
-          currentCompanyId: Number.isNaN(
-            Number(userProfileData.currentCompanyId)
-          )
-            ? 0
-            : Number(userProfileData.currentCompanyId),
-        }
-      );
-      console.log(
-        Number.isNaN(Number(userProfileData.currentCompanyId))
-          ? 0
-          : Number(userProfileData.currentCompanyId)
-      );
-      console.log(payload);
 
       // send to API
       await userServiceApi.put(`/users/update-profile/${id}`, payload, {

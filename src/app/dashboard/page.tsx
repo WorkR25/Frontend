@@ -32,7 +32,6 @@ export default function Page() {
 
   useEffect(() => {
     if (isError) {
-      console.log("dash error")
       router.push("/login");
     }
   }, [isError, router]);

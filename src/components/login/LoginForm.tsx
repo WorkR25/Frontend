@@ -85,9 +85,6 @@ function Form() {
   useEffect(() => {
     if (getUserSuccess && data) {
       router.push("/dashboard");
-      console.log("login good")
-    }else{
-      console.log("login error")
     }
   }, [getUserSuccess, data, router]);
 
