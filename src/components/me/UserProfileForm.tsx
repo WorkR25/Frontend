@@ -105,14 +105,14 @@ export default function UserProfileForm() {
 
   return (
     <FormProvider {...methods}>
-      <div className="font-semibold text-lg mt-3">User Profile</div>
+      <div className="components-me-UserProfileForm font-semibold text-lg mt-3">User Profile</div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 p-4 mt-3 border rounded-lg shadow-md w-full"
+        className="components-me-UserProfileForm space-y-4 p-4 mt-3 border rounded-lg shadow-md w-full"
       >
-        <div className="flex flex-wrap justify-center gap-4 mt-4">
-          <div className="w-[90%]">
-            <label className="flex items-center gap-2">
+        <div className="components-me-UserProfileForm flex flex-wrap justify-center gap-4 mt-4">
+          <div className="components-me-UserProfileForm w-[90%]">
+            <label className="components-me-UserProfileForm flex items-center gap-2">
               <input
                 type="checkbox"
                 {...register("isFresher")}
@@ -130,7 +130,7 @@ export default function UserProfileForm() {
             </label>
           </div>
 
-          <div className={"w-[90%] sm:w-[45%]"}>
+          <div className={"components-me-UserProfileForm w-[90%] sm:w-[45%]"}>
             <div>Current CTC in LPA</div>
             <InputField
               className={watch("isFresher") ? "cursor-not-allowed" : ""}
@@ -145,7 +145,7 @@ export default function UserProfileForm() {
               onChangeFn={() => {}}
             />
           </div>
-          <div className="w-[90%] sm:w-[45%]">
+          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
             <div>Experience in Yrs</div>
             <InputField
               icon={<></>}
@@ -162,7 +162,7 @@ export default function UserProfileForm() {
             />
           </div>
 
-          <div className="w-[90%] sm:w-[45%]">
+          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
             <div>Company</div>
             <DebouncedDropdown<UserProfileFormValues, OptionType>
               placeholder="Select a company"
@@ -177,7 +177,7 @@ export default function UserProfileForm() {
             />
           </div>
 
-          <div className="w-[90%] sm:w-[45%]">
+          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
             <div>Location</div>
             <DebouncedDropdown<UserProfileFormValues, OptionType>
               placeholder="Current Location"
@@ -192,7 +192,7 @@ export default function UserProfileForm() {
             />
           </div>
 
-          <div className="w-[90%] sm:w-[45%]">
+          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
             <div>Resume</div>
             <DragAndDropFile
               fieldName="resumeUrl"
@@ -208,7 +208,7 @@ export default function UserProfileForm() {
               </a>
             </div>
           </div>
-          <div className="w-[90%] sm:w-[45%]">
+          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
             <div>LinkedIn url</div>
             <InputField
               icon={<></>}
@@ -221,7 +221,7 @@ export default function UserProfileForm() {
               onChangeFn={() => {}}
             />
           </div>
-          <div className="w-[90%]">
+          <div className="components-me-UserProfileForm w-[90%]">
             <TextAreaInput
               onChangeFn={() => {}}
               icon={<></>}
@@ -237,7 +237,7 @@ export default function UserProfileForm() {
         {/* Submit */}
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 hover:cursor-pointer"
+          className="components-me-UserProfileForm bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 hover:cursor-pointer"
         >
           Save Profile
         </button>

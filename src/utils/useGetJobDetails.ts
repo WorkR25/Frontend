@@ -23,7 +23,7 @@ const getJobDetails = async (authJwtToken: string | null, jobId: string, dispatc
   }
 
   try {
-    const response = await jobServiceApi.get(`/job/${jobId}`, {
+    const response = await jobServiceApi.get(`/jobs/id/${jobId}`, {
       headers: {
         Authorization: `${authJwtToken}`,
       },

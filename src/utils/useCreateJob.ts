@@ -21,7 +21,7 @@ const useCreateJob = () => {
       authJwtToken: string | null;
     }) => {
       try {
-        const response = await jobServiceApi.post("/job", createJobData, {
+        const response = await jobServiceApi.post("/jobs", createJobData, {
           headers: {
             Authorization: `${authJwtToken}`,
           },
@@ -35,6 +35,7 @@ const useCreateJob = () => {
       toast.error("Error creating job");
     },
     onSuccess: () => {
+      toast.success("Job posted successfully!");
       dispatch(setShowJobCreateForm(false));
       queryClient.invalidateQueries({ queryKey: ["jobList"] });
     },

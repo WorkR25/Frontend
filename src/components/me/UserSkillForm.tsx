@@ -50,12 +50,12 @@ export default function UserSkillForm() {
   const { data: userData } = useGetUser(jwtToken);
   if (!mounted) return null;
   return (
-    <div className=" space-y-4 p-4 my-3 border rounded-lg shadow-md w-full">
+    <div className="components-me-UserSkillForm space-y-4 p-4 my-3 border rounded-lg shadow-md w-full">
       <div className="">
-        <div className="flex justify-between items-center p-2">
-          <div className="text-lg font-semibold">Skills</div>
+        <div className="components-me-UserSkillForm flex justify-between items-center p-2">
+          <div className="components-me-UserSkillForm text-lg font-semibold">Skills</div>
           <div
-            className="border border-gray-300 p-2 hover:cursor-pointer rounded-lg"
+            className="components-me-UserSkillForm border border-gray-300 p-2 hover:cursor-pointer rounded-lg"
             onClick={() => {
                 dispatch(setShowEditSkills(true));
               dispatch(
@@ -73,14 +73,14 @@ export default function UserSkillForm() {
             Edit
           </div>
         </div>
-        <div className="overflow-y-scroll h-[30vh] ">
-          <div className="">
+        <div className="components-me-UserSkillForm overflow-y-scroll h-[30vh] ">
+          <div className="components-me-UserSkillForm ">
             {userData && userData.skills && userData.skills.length > 0 ? (
               userData.skills.map((skill, index) => (
                 <SkillItem key={index} skillName={skill.name} />
               ))
             ) : (
-              <div className="text-gray-500">No skills added yet.</div>
+              <div className="components-me-UserSkillForm text-gray-500">No skills added yet.</div>
             )}
           </div>
         </div>

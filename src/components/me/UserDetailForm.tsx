@@ -69,8 +69,8 @@ export default function UserDetailForm() {
   return (
     <div>
       <div>
-        <div className="font-semibold text-lg mt-3">User Details</div>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-4 border rounded-lg shadow-md w-full">
+        <div className="components-me-UserDetailForm font-semibold text-lg mt-3">User Details</div>
+        <form onSubmit={handleSubmit(onSubmit)} className="components-me-UserDetailForm space-y-4 p-4 border rounded-lg shadow-md w-full">
           <div>Full Name</div>
           <InputField
             register={register}
@@ -104,7 +104,7 @@ export default function UserDetailForm() {
 
           <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 hover:cursor-pointer"
+          className="components-me-UserDetailForm bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 hover:cursor-pointer"
         >
           Save Details
         </button>
