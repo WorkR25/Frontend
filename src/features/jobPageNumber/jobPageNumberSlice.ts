@@ -6,7 +6,6 @@ const jobPageNumberSlice = createSlice({
     reducers: {
         incrementJobPageCount: (state)=>{
             state.value = state.value + 1 ;
-            console.log(state.value)
         },
 
         decrementJobPageCount: (state)=>{

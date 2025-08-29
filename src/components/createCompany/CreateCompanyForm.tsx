@@ -17,7 +17,7 @@ export type CreateCompanyFormType = z.infer<typeof CreateCompanySchema>;
 
 export default function CreateCompanyForm() {
   const methods = useForm<CreateCompanyFormType>({
-    mode: "onChange",      
+    mode: "onChange",
     reValidateMode: "onBlur",
     resolver: zodResolver(CreateCompanySchema),
     defaultValues: {
@@ -33,8 +33,7 @@ export default function CreateCompanyForm() {
     handleSubmit,
     watch,
     formState: { errors },
-  }= methods ;
-
+  } = methods;
 
   const logo = watch("logo");
   const dispatch = useDispatch();
@@ -43,16 +42,11 @@ export default function CreateCompanyForm() {
   const { mutate: createCompany } = useCreateCompany();
 
   const onSubmit = (createData: CreateCompanyFormType) => {
-    createCompany(
-      { authJwtToken: jwtToken, createData },
-      {
-        
-      }
-    );
+    createCompany({ authJwtToken: jwtToken, createData });
   };
 
   return (
-    <div className="components-createCompany-CreateCompanyForm justify-center">
+    <div className="components-createCompany-CreateCompanyForm text-black all-[unset] justify-center">
       <div
         className="components-createCompany-CreateCompanyForm absolute top-2 right-2 hover:cursor-pointer "
         onClick={() => dispatch(setShowCreateCompanyForm(false))}
@@ -60,59 +54,63 @@ export default function CreateCompanyForm() {
         <X width={20} />
       </div>
 
-  <FormProvider
-    {...methods}
-  >
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="components-createCompany-CreateCompanyForm text-gray-400 hide-scrollbar w-full flex flex-col space-y-2 py-4"
-      >
-        <div>
-          <div>Upload company logo</div>
-
-          <DragAndDropFile
-          fieldName="logo"
-          useMutationFn={useUploadLogo}
-          jwtToken={jwtToken}
-            fileExtension={[".png"]}
-            maxFileSize={3}
-          />
-        </div>
-
-        <div className="components-createCompany-CreateCompanyForm text-xs">Current logo: {logo}</div>
-        <button
-          type="button"
+      <FormProvider {...methods}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="components-createCompany-CreateCompanyForm text-black hide-scrollbar w-full flex flex-col space-y-2 py-4"
         >
-          Debug Values
-        </button>
-        <InputField
-          fieldName="name"
-          icon={<Building2 />}
-          placeholder="Company Name"
-          register={register}
-          type="text"
-          error={errors.name}
-        />
-        <InputField
-          fieldName="description"
-          icon={<Text />}
-          placeholder="Short Description"
-          register={register}
-          type="text"
-          error={errors.description}
-        />
-        <InputField
-          fieldName="website"
-          icon={<Link2 />}
-          placeholder="Company Website"
-          register={register}
-          type="text"
-          error={errors.website}
-        />
-        <button type="submit">Submit</button>
-      </form>
-      </FormProvider>
+          <div>
+            <div>Upload company logo</div>
 
+            <DragAndDropFile
+              fieldName="logo"
+              useMutationFn={useUploadLogo}
+              jwtToken={jwtToken}
+              fileExtension={[".png"]}
+              maxFileSize={3}
+            />
+          </div>
+
+          <div className="components-createCompany-CreateCompanyForm text-xs">
+            Current logo: {logo}
+          </div>
+          <button className="hidden" type="button">
+            Debug Values
+          </button>
+          <InputField
+            fieldName="name"
+            icon={<Building2 />}
+            placeholder="Company Name"
+            register={register}
+            type="text"
+            error={errors.name}
+          />
+          <InputField
+            fieldName="description"
+            icon={<Text />}
+            placeholder="Short Description"
+            register={register}
+            type="text"
+            error={errors.description}
+          />
+          <InputField
+            fieldName="website"
+            icon={<Link2 />}
+            placeholder="Company Website"
+            register={register}
+            type="text"
+            error={errors.website}
+          />
+          <div className="flex items-center justify-around">
+            <button
+              type="submit"
+              className="rounded py-2 px-4 bg-blue-200 hover:bg-blue-400 font-semibold justify-center duration-200 "
+            >
+              Create
+            </button>
+          </div>
+        </form>
+      </FormProvider>
     </div>
   );
 }

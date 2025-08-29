@@ -1,23 +1,30 @@
 "use client";
-import { decrementJobPageCount, incrementJobPageCount } from "@/features/jobPageNumber/jobPageNumberSlice";
+import {
+  decrementJobPageCount,
+  incrementJobPageCount,
+} from "@/features/jobPageNumber/jobPageNumberSlice";
 import { RootState } from "@/lib/store.config";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
-
-
 export default function PaginationFooter() {
-  const currentPage = useSelector((state: RootState)=>{ return state.jobPageNumber.value });
-  const totalPages = useSelector((state: RootState)=>{ return state.jobPageNumber.totalPages })
+  const currentPage = useSelector((state: RootState) => {
+    return state.jobPageNumber.value;
+  });
+  const totalPages = useSelector((state: RootState) => {
+    return state.jobPageNumber.totalPages;
+  });
 
-    const dispatch = useDispatch() ;
+  const dispatch = useDispatch();
   return (
     <div className="w-[97%] sticky bottom-0 bg-white border-t shadow-sm">
       <div className="flex items-center justify-between px-4 py-2">
         <button
           className="flex items-center px-3 py-1 rounded-lg border disabled:opacity-50 hover:cursor-pointer disabled:cursor-not-allowed"
           disabled={currentPage === 1}
-          onClick={() => {dispatch(decrementJobPageCount())}}
+          onClick={() => {
+            dispatch(decrementJobPageCount());
+          }}
         >
           <ChevronLeft size={16} className="mr-1" />
           Prev
@@ -30,7 +37,9 @@ export default function PaginationFooter() {
         <button
           className="flex items-center px-3 py-1 rounded-lg border disabled:opacity-50 hover:cursor-pointer disabled:cursor-not-allowed"
           disabled={currentPage === totalPages}
-          onClick={() => { console.log("object"); dispatch(incrementJobPageCount())}}
+          onClick={() => {
+            dispatch(incrementJobPageCount());
+          }}
         >
           Next
           <ChevronRight size={16} className="ml-1" />

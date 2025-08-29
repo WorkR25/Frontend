@@ -10,9 +10,14 @@ export default function JobList() {
     return state.authJwtToken.value;
   });
   const page = useSelector((state: RootState)=>{ return state.jobPageNumber.value})
-  const { data } = useGetJobPagination(jwtToken, page, 12) ;
+  const { data, isPending } = useGetJobPagination(jwtToken, page, 12) ;
+
+
   return (
     <div className="component-dashboard-JobList flex flex-wrap items-center justify-center-safe my-2 mx-auto gap-2 gap-y-3.5">
+      {isPending && <div className="flex items-center justify-center">
+        <div className="loader"></div>
+        </div>}
       {data?.map((job) => {
         return (
           <JobCard
