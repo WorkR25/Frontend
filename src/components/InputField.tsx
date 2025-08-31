@@ -1,6 +1,6 @@
 import { InputFieldProps } from "@/types/InputFieldProps";
 import { cn } from "@/utils/cn";
-import { useState } from "react";
+// import { useEffect, useState } from "react";
 import { FieldValues } from "react-hook-form";
 
 export default function InputField<T extends FieldValues>({
@@ -14,13 +14,20 @@ export default function InputField<T extends FieldValues>({
   error,
   className = "",
   setValueFn,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fieldValue,
   disabled,
   onChangeFn,
+  inputClassName,
 }: InputFieldProps<T>) {
-  const [inputValue, setInputValue] = useState<string | undefined>(
-    fieldValue ?? undefined
-  );
+  // const [inputValue, setInputValue] = useState<string | undefined>(
+  //   fieldValue ?? undefined
+  // );
+
+  // useEffect(()=>{
+  //   setInputValue(fieldValue ?? "")
+  // }, [fieldValue])
+
   return (
     <div>
       <div className={cn("relative w-full", className)}>
@@ -37,15 +44,15 @@ export default function InputField<T extends FieldValues>({
           })}
           type={type}
           placeholder={placeholder}
-          value={inputValue ?? ""}
+          // value={inputValue ?? ""}
           onChange={(e) => {
             onChangeFn?.(e);
-            setInputValue(e.target.value);
+            // setInputValue(e.target.value);
           }}
           aria-invalid={!!error}
           className={`w-full pl-10 pr-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
             error ? "border-red-500" : "border-[#E0E0E0]"
-          }`}
+          }` + inputClassName}
           disabled={disabled ? disabled : false}
         />
         {other}

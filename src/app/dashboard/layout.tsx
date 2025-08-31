@@ -1,4 +1,5 @@
 "use client";
+import AddSkill from "@/components/addSkill/AddSkillForm";
 import CreateCompanyForm from "@/components/createCompany/CreateCompanyForm";
 import CreateJobForm from "@/components/createJob/CreateJobForm";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
@@ -7,6 +8,7 @@ import UpdateJobForm from "@/components/updateJob/UpdateJobForm";
 import ViewApplicants from "@/components/viewApplicants/ViewApplicants";
 import { RootState } from "@/lib/store.config";
 import { useSelector } from "react-redux";
+import { ToastContainer } from "react-toastify";
 
 export default function DashboardLayout({
   children,
@@ -39,12 +41,23 @@ export default function DashboardLayout({
     (state: RootState) => state.showJobUpdateForm.value
   );
 
+  const showAddSkillsForm = useSelector((state: RootState)=>{return state.showAddSkillsForm.value})
+
   return (
     <div className="dashboard-layout text-black  h-[100vh] w-[100%] bg-[#F5F5F5]">
+    <ToastContainer position="top-right" autoClose={3000} className="z-20" />
       {showCreateCompanyForm && (
         <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
           <div className="dashboard-layout w-full min-h-full">
             <CreateCompanyForm />
+          </div>
+        </div>
+      )}
+
+      {showAddSkillsForm && (
+        <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
+          <div className="dashboard-layout w-full min-h-full">
+            <AddSkill />
           </div>
         </div>
       )}

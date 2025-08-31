@@ -16,8 +16,9 @@ const useGetJobs = (authJwtToken: string | null) => {
 
 const getJobs = async (authJwtToken: string | null) => {
   try {
-    const response = await jobServiceApi.get("/job", {
+    const response = await jobServiceApi.get("/jobs", {
       headers: {
+        
         Authorization: authJwtToken,
       },
     });

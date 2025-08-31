@@ -4,13 +4,15 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
+  Briefcase,
   Building2,
   ChartPie,
   ChevronDown,
   Folder,
   Globe,
-  MessageCircle,
+  LocateFixed,
   Search,
+  ToolCase,
 } from "lucide-react";
 import UserProfileSidebar from "../UserProfileSidebar";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +24,8 @@ import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import useGetUser from "@/utils/useGetUser";
 import useGetUserRoles from "@/utils/useGetUserRoles";
 import {
+  onClickAddCity,
+  onClickAddSKill,
   onClickAllJobs,
   onClickCreateCompany,
   onClickCreateJob,
@@ -31,8 +35,7 @@ import {
 // import { toogleShowJobCreateForm } from "@/features/showJobCreateForm/showJobCreateForm";
 const mainMenuTabId: { [key: string]: number } = {
   jobs: 1,
-  "create-job": 2,
-  "all-jobs": 3,
+  "all-jobs": 2,
 };
 
 export default function DashboardSidebar() {
@@ -78,10 +81,10 @@ export default function DashboardSidebar() {
   useEffect(() => {
     const routeName = pathname.split("/")[2];
 
-    if (showJobCreateForm) {
-      setMainMenuActiveTab(2);
-    } else if (routeName) {
+    if (routeName) {
       setMainMenuActiveTab(mainMenuTabId[routeName]);
+    }else{
+      setMainMenuActiveTab(0)
     }
   }, [pathname, showJobCreateForm]);
 
@@ -101,18 +104,21 @@ export default function DashboardSidebar() {
       onClickFn: onClickExploreJob,
     },
     {
-      name: "Create Job",
-      icon: <MessageCircle className="w-5 h-5 mr-2" />,
-      link: null,
-      auth: ["admin"],
-      onClickFn: onClickCreateJob,
-    },
-    {
       name: "All jobs",
       icon: <Folder className="w-5 h-5 mr-2" />,
       link: "/all-jobs",
       auth: ["admin"],
       onClickFn: onClickAllJobs,
+    },
+  ];
+
+  const creationTabs= [
+    {
+      name: "Create Job",
+      icon: <Briefcase  className="w-5 h-5 mr-2" />,
+      link: null,
+      auth: ["admin"],
+      onClickFn: onClickCreateJob,
     },
     {
       name: "Create Company",
@@ -121,7 +127,21 @@ export default function DashboardSidebar() {
       auth: ["admin"],
       onClickFn: onClickCreateCompany,
     },
-  ];
+    {
+      name: "Add Skill",
+      icon: <ToolCase className="w-5 h-5 mr-2" />,
+      link: null,
+      auth: ["admin"],
+      onClickFn: onClickAddSKill,
+    },
+    {
+      name: "Add City",
+      icon: <LocateFixed className="w-5 h-5 mr-2" />,
+      link: null,
+      auth: ["admin"],
+      onClickFn: onClickAddCity,
+    },
+  ]
 
   const otherMenuTabs = [
     { name: "Blog and article", icon: "", link: "/blog" },
@@ -209,6 +229,43 @@ export default function DashboardSidebar() {
           </div>
         </div>
       </aside>
+
+      <div className={`mb-[40%] ${userRoles?.includes('admin') ? '' : 'hidden'}`}>
+        <div className="text-xs text-gray-500 tracking-wide uppercase flex items-center justify-between z-20 bg-[#F5F5F5]">
+          Creation
+          <ChevronDown
+            className={`hover:cursor-pointer duration-300 ${
+              otherMenuCollapsed ? "transform rotate-180" : ""
+            }`}
+            onClick={() => {
+              dispatch(otherMenuCollapsedToogle());
+            }}
+          />
+        </div>
+        <div
+          className={`transition-all duration-500 ease-in-out -z-10 ${
+            otherMenuCollapsed ? "hidden" : ""
+          }`}
+        >
+          <div className="flex flex-col">
+            {creationTabs.map((tab, index) => (
+              tab.auth?.includes(role) ? (
+                <button
+                key={index}
+                onClick={() => {
+                  // setOtherMenuActiveTab(index);
+                  tab.onClickFn(dispatch, router, tab.link)
+                }}
+                className={`py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300 border-2 rounded-md hover:cursor-pointer border-transparent text-gray-500 hover:text-blue-500`}
+              >
+                {tab.icon}
+                {tab.name}
+              </button>
+              ): (<div key={index}></div>)
+            ))}
+          </div>
+        </div>
+      </div>
 
       <div className="mb-[40%]">
         <div className="text-xs text-gray-500 tracking-wide uppercase flex items-center justify-between z-20 bg-[#F5F5F5]">

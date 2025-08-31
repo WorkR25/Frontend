@@ -23,7 +23,7 @@ import DebouncedDropdown from "./DebouncedDropdown";
 
 import Dropdown from "./Dropdown";
 import SkillsDropdown from "./SkillsDropdown";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import MarkdownEditor from "./MarkdownEditor";
 
 type CreateJobFormValues = z.infer<typeof CreateJobFormSchema>;
@@ -35,7 +35,7 @@ export type OptionType = {
 
 export default function CreateJobForm({ className }: { className?: string }) {
   const router = useRouter();
-  
+
   const dispatch = useDispatch();
 
   const [jwtToken, setJwtToken] = useState<string | null>("");
@@ -72,14 +72,7 @@ export default function CreateJobForm({ className }: { className?: string }) {
   } = useFormMethods;
 
   const onSubmit = (createData: CreateJobFormValues) => {
-    mutate(
-      { createJobData: createData, authJwtToken: jwtToken },
-      {
-        onSuccess: () => {
-          toast.success("Job created successfully");
-        },
-      }
-    );
+    mutate({ createJobData: createData, authJwtToken: jwtToken });
   };
 
   const onError = () => {
@@ -87,17 +80,34 @@ export default function CreateJobForm({ className }: { className?: string }) {
   };
 
   setValue("recuiter_id", Number(data?.id));
-  const { mutate } = useCreateJob();
+  const { mutate, isPending } = useCreateJob();
 
   if (!isAuthorized || !userRoles || !userRoles.includes("admin")) {
     return <div className="flex justify-center w-full">Authorizing...</div>;
   }
 
-
   return (
-    <div className={cn("justify-center sm:flex ", className)}>
+    <div
+      className={cn(
+        `components-createJob-CreateJobForm justify-center sm:flex relative `,
+        className
+      )}
+    >
+      <ToastContainer position="top-right" autoClose={3000} className="z-20" />
+      {/* {!isPending && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/50 pointer-events-none">
+          <div className="loader"></div>
+        </div>
+      )} */}
+
+      {isPending && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/50">
+          <div className="loader"></div>
+        </div>
+      )}
+
       <div
-        className="absolute top-2 right-2 hover:cursor-pointer "
+        className="components-createJob-CreateJobForm absolute top-2 right-2 hover:cursor-pointer "
         onClick={() => {
           dispatch(toogleShowJobCreateForm());
         }}
@@ -107,14 +117,16 @@ export default function CreateJobForm({ className }: { className?: string }) {
       <FormProvider {...useFormMethods}>
         <form
           onSubmit={handleSubmit(onSubmit, onError)}
-          className="text-gray-400 hide-scrollbar w-full justify-center flex flex-col space-y-2 py-4  h-fit"
+          className="components-createJob-CreateJobForm text-gray-400 hide-scrollbar w-full justify-center flex flex-col space-y-2 py-4  h-fit"
         >
-          <div className="text-black text-center font-semibold text-xl">
+          <div className="components-createJob-CreateJobForm text-black text-center font-semibold text-xl">
             Create Job
           </div>
-          <div className="sm:flex gap-2">
-            <div className="basis-1/2 ">
-              <div className="font-bold text-md mt-2 text-black">Company *</div>
+          <div className="components-createJob-CreateJobForm sm:flex gap-2">
+            <div className="components-createJob-CreateJobForm basis-1/2 ">
+              <div className="components-createJob-CreateJobForm font-bold text-md mt-2 text-black">
+                Company *
+              </div>
               {/* <DebouncedDropdown
               placeholder="Select a company"
               setValue={setValue}
@@ -135,7 +147,7 @@ export default function CreateJobForm({ className }: { className?: string }) {
                 getOptionValue={(company) => company.id}
               />
 
-              <div className="font-bold text-md mt-2 text-black">
+              <div className="components-createJob-CreateJobForm font-bold text-md mt-2 text-black">
                 Job Title *
               </div>
               <DebouncedDropdown<CreateJobFormValues, OptionType>
@@ -149,7 +161,7 @@ export default function CreateJobForm({ className }: { className?: string }) {
                 getOptionValue={(jobTitle) => jobTitle.id}
               />
 
-              <div className="font-bold text-md  mt-2 text-black">
+              <div className="components-createJob-CreateJobForm font-bold text-md  mt-2 text-black">
                 Job City *
               </div>
               <DebouncedDropdown<CreateJobFormValues, OptionType>
@@ -164,8 +176,8 @@ export default function CreateJobForm({ className }: { className?: string }) {
               />
             </div>
 
-            <div className="basis-1/2">
-              <div className="font-bold text-md mt-2 text-black">
+            <div className="components-createJob-CreateJobForm basis-1/2">
+              <div className="components-createJob-CreateJobForm font-bold text-md mt-2 text-black">
                 Employment Type *
               </div>
               <Dropdown<CreateJobFormValues, OptionType>
@@ -178,7 +190,7 @@ export default function CreateJobForm({ className }: { className?: string }) {
                 getOptionValue={(option) => option.id}
               />
 
-              <div className="font-bold text-md mt-2 text-black">
+              <div className="components-createJob-CreateJobForm font-bold text-md mt-2 text-black">
                 Experience *
               </div>
               <Dropdown<CreateJobFormValues, OptionType>
@@ -191,8 +203,8 @@ export default function CreateJobForm({ className }: { className?: string }) {
                 getOptionValue={(option) => option.id}
               />
 
-              <div className="flex h-[42px] items-center mt-[24px]">
-                <div className="font-bold text-md text-center text-black basis-1/3">
+              <div className="components-createJob-CreateJobForm flex h-[42px] items-center mt-[24px]">
+                <div className="components-createJob-CreateJobForm font-bold text-md text-center text-black basis-1/3">
                   Is Remote *
                 </div>
                 <InputField
@@ -208,7 +220,9 @@ export default function CreateJobForm({ className }: { className?: string }) {
             </div>
           </div>
 
-          <div className="font-bold text-md mt-2 text-black">Apply Link*</div>
+          <div className="components-createJob-CreateJobForm font-bold text-md mt-2 text-black">
+            Apply Link*
+          </div>
           <InputField
             register={register}
             fieldName="apply_link"
@@ -218,9 +232,9 @@ export default function CreateJobForm({ className }: { className?: string }) {
             icon={<></>}
           />
 
-          <div className="flex justify-center text-center items-center">
-            <div className="">
-              <div className="font-bold text-md mt-2 text-black">
+          <div className="components-createJob-CreateJobForm flex justify-center text-center items-center">
+            <div className="components-createJob-CreateJobForm ">
+              <div className="components-createJob-CreateJobForm font-bold text-md mt-2 text-black">
                 Minimum Salary *
               </div>
               <InputField
@@ -244,7 +258,7 @@ export default function CreateJobForm({ className }: { className?: string }) {
               <Minus />
             </div>
             <div>
-              <div className="font-bold text-md mt-2 text-black">
+              <div className="components-createJob-CreateJobForm font-bold text-md mt-2 text-black">
                 Maximum salary *
               </div>
               <InputField
@@ -266,7 +280,9 @@ export default function CreateJobForm({ className }: { className?: string }) {
             </div>
           </div>
 
-          <div className="font-bold text-md mt-2 text-black">Add Skills *</div>
+          <div className="components-createJob-CreateJobForm font-bold text-md mt-2 text-black">
+            Add Skills *
+          </div>
           <SkillsDropdown
             setValue={setValue}
             error={errors.skillIds}
@@ -274,16 +290,16 @@ export default function CreateJobForm({ className }: { className?: string }) {
             fieldName="skillIds"
           />
 
-          <div className="font-bold text-md mt-2 text-black">
+          <div className="components-createJob-CreateJobForm font-bold text-md mt-2 text-black">
             Job Description{" "}
           </div>
           <MarkdownEditor name={"description"} />
 
           <button
             type="submit"
-            className="bg-blue-600 hover:cursor-pointer text-white px-4 py-2 rounded"
+            className="components-createJob-CreateJobForm bg-blue-600 hover:cursor-pointer text-white px-4 py-2 rounded"
           >
-            Submit
+            Create
           </button>
         </form>
       </FormProvider>

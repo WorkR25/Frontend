@@ -7,7 +7,7 @@ import { z } from "zod";
 import InputField from "../InputField";
 import useGetUser from "@/utils/useGetUser";
 import { RootState } from "@/lib/store.config";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { useDispatch, useSelector } from "react-redux";
 import TextAreaInput from "../createJob/TextAreaInput";
@@ -18,16 +18,18 @@ import DebouncedDropdown from "../createJob/DebouncedDropdown";
 import { OptionType } from "../createJob/CreateJobForm";
 import useGetCompany from "@/utils/useGetCompany";
 import useGetCompanyById from "@/utils/useGetCompanyById";
+import useGetCity from "@/utils/useGetCity";
 
 export const UserProfileSchema = z.object({
   bio: z.string().nullable().optional(),
-  yearsOfExperience: z.number().min(0, "Experience must be non-negative"),
+  yearsOfExperience: z.string().min(1, "Experience must be non-negative"),
   isFresher: z.boolean(),
   currentCtc: z.string().regex(/^\d+(\.\d{1,2})?$/, {
     message: "Enter a valid CTC amount",
-  }),
-  resumeUrl: z.string().url("Invalid resume URL"),
-  linkedinUrl: z.string().url("Invalid LinkedIn URL"),
+  }).optional(),
+  resumeUrl: z.string().optional(),
+  // linkedinUrl: z.string().url("Invalid LinkedIn URL").optional()
+  linkedinUrl: z.string().optional(),
   currentLocationId: z.number().nullable().optional(),
   currentCompanyId: z.number().nullable().optional(),
   currentLocation: z.string().nullable().optional(),
@@ -35,13 +37,14 @@ export const UserProfileSchema = z.object({
 
 export type UserProfileFormValues = z.infer<typeof UserProfileSchema>;
 export default function UserProfileForm() {
+  const [isFresher, setIsFresher] = useState<boolean>()
   const methods = useForm<UserProfileFormValues>({
     resolver: zodResolver(UserProfileSchema),
     defaultValues: {
       bio: "",
-      yearsOfExperience: 0,
+      yearsOfExperience: "0",
       isFresher: false,
-      currentCtc: "0.00",
+      currentCtc: "0",
       resumeUrl: "",
       linkedinUrl: "",
       currentLocation: null,
@@ -72,18 +75,19 @@ export default function UserProfileForm() {
       const profile = userData.profile;
       reset({
         bio: profile.bio ?? "",
-        yearsOfExperience: profile.yearsOfExperience ?? 0,
-        isFresher: profile.isFresher ?? true,
+        yearsOfExperience: String(profile.yearsOfExperience) ?? "0",
+        isFresher: profile.isFresher ?? false,
         currentCtc:
           profile.currentCtc !== null && profile.currentCtc !== undefined
             ? String(profile.currentCtc)
             : "0.00",
         resumeUrl: profile.resumeUrl ?? "",
         linkedinUrl: profile.linkedinUrl ?? "",
-        currentLocation: profile.currentLocation ?? null,
+        currentLocation: profile.currentLocation?.name ?? null,
         currentCompanyId: profile.currentCompanyId ?? null ,
       });
     }
+    setIsFresher(userData?.profile.isFresher == null ? false : userData.profile.isFresher)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
@@ -101,21 +105,24 @@ export default function UserProfileForm() {
 
   return (
     <FormProvider {...methods}>
-      <div className="font-semibold text-lg mt-3">User Profile</div>
+      <div className="components-me-UserProfileForm font-semibold text-lg mt-3">User Profile</div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 p-4 mt-3 border rounded-lg shadow-md w-full"
+        className="components-me-UserProfileForm space-y-4 p-4 mt-3 border rounded-lg shadow-md w-full"
       >
-        <div className="flex flex-wrap justify-center gap-4 mt-4">
-          <div className="w-[90%]">
-            <label className="flex items-center gap-2">
+        <div className="components-me-UserProfileForm flex flex-wrap justify-center gap-4 mt-4">
+          <div className="components-me-UserProfileForm w-[90%]">
+            <label className="components-me-UserProfileForm flex items-center gap-2">
               <input
                 type="checkbox"
                 {...register("isFresher")}
                 onChange={(e) => {
                   if (e.target.checked) {
+                    setIsFresher(true);
                     setValue("currentCtc", "0");
-                    setValue("yearsOfExperience", 0);
+                    setValue("yearsOfExperience", "0");
+                  }else{
+                    setIsFresher(false);
                   }
                 }}
               />
@@ -123,22 +130,23 @@ export default function UserProfileForm() {
             </label>
           </div>
 
-          <div className={"w-[90%] sm:w-[45%]"}>
-            <div>Current CTC</div>
+          <div className={"components-me-UserProfileForm w-[90%] sm:w-[45%]"}>
+            <div>Current CTC in LPA</div>
             <InputField
               className={watch("isFresher") ? "cursor-not-allowed" : ""}
               icon={<></>}
               fieldName="currentCtc"
-              placeholder={"Current CTC"}
+              placeholder={"Current CTC in LPA"}
               type="text"
               register={register}
               error={errors.currentCtc}
-              fieldValue={userData?.profile.currentCtc}
+              disabled={isFresher}
+              fieldValue={watch('currentCtc')}
               onChangeFn={() => {}}
             />
           </div>
-          <div className="w-[90%] sm:w-[45%]">
-            <div>Experience</div>
+          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
+            <div>Experience in Yrs</div>
             <InputField
               icon={<></>}
               fieldName="yearsOfExperience"
@@ -148,13 +156,13 @@ export default function UserProfileForm() {
               type="text"
               register={register}
               error={errors.yearsOfExperience}
-              disabled={watch("isFresher")}
-              fieldValue={userData?.profile.yearsOfExperience}
+              disabled={isFresher}
+              fieldValue={watch('yearsOfExperience')}
               onChangeFn={() => {}}
             />
           </div>
 
-          <div className="w-[90%] sm:w-[45%]">
+          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
             <div>Company</div>
             <DebouncedDropdown<UserProfileFormValues, OptionType>
               placeholder="Select a company"
@@ -169,7 +177,22 @@ export default function UserProfileForm() {
             />
           </div>
 
-          <div className="w-[90%] sm:w-[45%]">
+          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
+            <div>Location</div>
+            <DebouncedDropdown<UserProfileFormValues, OptionType>
+              placeholder="Current Location"
+              fieldName='currentLocationId'
+              error={errors.currentLocationId}
+              setValue={setValue}
+              jwtToken={jwtToken}
+              useQueryFn={useGetCity}
+              getOptionLabel={(value) => value.name}
+              getOptionValue={(value) => value.id}
+              fieldValue={userData?.profile.currentLocation?.name ?? ""}
+            />
+          </div>
+
+          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
             <div>Resume</div>
             <DragAndDropFile
               fieldName="resumeUrl"
@@ -185,7 +208,7 @@ export default function UserProfileForm() {
               </a>
             </div>
           </div>
-          <div className="w-[90%] sm:w-[45%]">
+          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
             <div>LinkedIn url</div>
             <InputField
               icon={<></>}
@@ -198,7 +221,7 @@ export default function UserProfileForm() {
               onChangeFn={() => {}}
             />
           </div>
-          <div className="w-[90%]">
+          <div className="components-me-UserProfileForm w-[90%]">
             <TextAreaInput
               onChangeFn={() => {}}
               icon={<></>}
@@ -214,7 +237,7 @@ export default function UserProfileForm() {
         {/* Submit */}
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 hover:cursor-pointer"
+          className="components-me-UserProfileForm bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 hover:cursor-pointer"
         >
           Save Profile
         </button>

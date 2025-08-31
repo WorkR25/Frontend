@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { setShowAddCityForm } from "@/features/setShowAddCityForm/setShowAddCityFormSlice";
+import { setShowAddSkillsFormSlice } from "@/features/showAddSkillsForm/showAddSkillsFormSlice";
 import { setShowCreateCompanyForm } from "@/features/showCreateCompanyForm/showCreateCompanyFormSlice";
+import { setShowEditSkills } from "@/features/showEditSkils/showEditSkillsSlice";
 import { toogleShowJobCreateForm } from "@/features/showJobCreateForm/showJobCreateForm";
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
@@ -26,10 +30,17 @@ export const onClickAllJobs: OnClickFnType = (dispatch, router, link) => {
   router.replace(`/dashboard/${link}`);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const onClickCreateCompany: OnClickFnType = (dispatch, router, link) => {
   dispatch(setShowCreateCompanyForm(true));
 };
+
+export const onClickAddSKill: OnClickFnType = (dispatch, router, link) => {
+  dispatch(setShowAddSkillsFormSlice(true))
+}
+
+export const onClickAddCity: OnClickFnType = (dispatch, router, link) => {
+  dispatch(setShowAddCityForm(true))
+}
 
 //                     dispatch(isSidebarOpenToogle(false));
 // {() => {
