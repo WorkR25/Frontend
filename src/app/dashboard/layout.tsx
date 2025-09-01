@@ -1,7 +1,7 @@
 "use client";
 import AddSkill from "@/components/addSkill/AddSkillForm";
 import CreateCompanyForm from "@/components/createCompany/CreateCompanyForm";
-import CreateJobForm from "@/components/createJob/CreateJobForm";
+import CreateJobForm from "@/components/createJob/CreateJobFormx";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import EditSkills from "@/components/me/EditSkills";
 import UpdateJobForm from "@/components/updateJob/UpdateJobForm";

@@ -1,4 +1,4 @@
-import { OptionType } from "@/components/createJob/CreateJobForm";
+import { OptionType } from "@/components/createJob/CreateJobFormx";
 import { jobServiceApi } from "@/lib/axios.config";
 import { useQuery } from "@tanstack/react-query";
 
