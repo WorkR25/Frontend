@@ -15,7 +15,7 @@ import useUploadUserResume from "@/utils/useUploadUserResume";
 import DragAndDropFile from "../createCompany/DragAndDropFile";
 import useUpdateUserProfile from "@/utils/useUpdateUserProfile";
 import DebouncedDropdown from "../createJob/DebouncedDropdown";
-import { OptionType } from "../createJob/CreateJobFormx";
+import { OptionType } from "../createJob/CreateJobForm";
 import useGetCompany from "@/utils/useGetCompany";
 import useGetCompanyById from "@/utils/useGetCompanyById";
 import useGetCity from "@/utils/useGetCity";

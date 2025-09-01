@@ -9,7 +9,7 @@ import {
   PathValue,
   UseFormSetValue,
 } from "react-hook-form";
-import { OptionType } from "./CreateJobFormx";
+import { OptionType } from "./CreateJobForm";
 import { useDebounce } from "@/utils/useDebounce";
 import useGetSkill from "@/utils/useGetSkill";
 import { ChevronDown, X } from "lucide-react";

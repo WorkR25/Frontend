@@ -10,7 +10,7 @@ import { cn } from "@/utils/cn";
 import { useDispatch, useSelector } from "react-redux";
 import { Minus, X } from "lucide-react";
 import DebouncedDropdown from "../createJob/DebouncedDropdown";
-import { OptionType } from "../createJob/CreateJobFormx";
+import { OptionType } from "../createJob/CreateJobForm";
 import useGetCompany from "@/utils/useGetCompany";
 import useGetJobTitle from "@/utils/useGetJobTitle";
 import useGetCity from "@/utils/useGetCity";
