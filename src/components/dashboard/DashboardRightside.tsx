@@ -1,8 +1,12 @@
 "use client";
 
 import TipsCard from "@/components/TipsCard";
+import { RootState } from "@/lib/store.config";
+import { getCompletionPercentage } from "@/utils/getCompletionPercentage";
+import useGetUser from "@/utils/useGetUser";
 import { Crown, Ellipsis, Pencil } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export default function DashboardRightside() {
   return (
@@ -15,6 +19,8 @@ export default function DashboardRightside() {
 }
 
 function ProfileCompletion() {
+  const jwtToken = useSelector((state: RootState)=> state.authJwtToken.value);
+  const { data: userData } = useGetUser(jwtToken) ;
   return (
     <div>
       <div className="border border-[#F0F0F0] rounded-lg px-3">
@@ -24,7 +30,7 @@ function ProfileCompletion() {
             <Ellipsis className="w-4 h-4" />
           </div>
         </div>
-        <div className="font-bold text-3xl pb-2">101%</div>
+        <div className="font-bold text-3xl pb-2">{userData ? getCompletionPercentage(userData) + '%' : "0%"}</div>
         <div className="text-sm text-[#929292]">
           Its super great and no need of improvement
         </div>

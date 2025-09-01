@@ -4,16 +4,16 @@ export const showAddSkillsFormSlice= createSlice({
     name: "showAddSkillsForm",
     initialState: {value: false} ,
     reducers: {
-        toogleShowAddSkillsFormSlice: (state)=>{
+        toogleShowAddSkillsForm: (state)=>{
             state.value = !state.value
         },
 
-        setShowAddSkillsFormSlice: (state, action: PayloadAction<boolean>)=>{
+        setShowAddSkillsForm: (state, action: PayloadAction<boolean>)=>{
             state.value= action.payload
         }
     }
 })
 
-export const { toogleShowAddSkillsFormSlice, setShowAddSkillsFormSlice } = showAddSkillsFormSlice.actions ;
+export const { toogleShowAddSkillsForm, setShowAddSkillsForm } = showAddSkillsFormSlice.actions ;
 
 export default showAddSkillsFormSlice.reducer ;

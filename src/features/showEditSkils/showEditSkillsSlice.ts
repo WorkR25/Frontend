@@ -36,7 +36,7 @@ export const showEditSkillsSlice = createSlice({
       state.value = !state.value;
     },
 
-    setShowEditSkills :(state, action)=>{
+    setShowEditSkills :(state, action: PayloadAction<boolean>)=>{
         state.value= action.payload
     },
 

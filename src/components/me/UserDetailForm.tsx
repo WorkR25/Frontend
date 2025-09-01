@@ -11,16 +11,8 @@ import { RootState } from "@/lib/store.config";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import useUpdateUserDetails from "@/utils/useUpdateUserDetails";
 import { toast } from "react-toastify";
+import { UserDetailSchema } from "@/schema/userDetails.validator";
 
-const UserDetailSchema = z.object({
-  fullName: z
-    .string()
-    .min(2, { message: "Full name must be at least 2 characters long" }),
-  email: z.string().email({ message: "Please enter a valid email address" }),
-  phoneNo: z
-    .string()
-    .regex(/^\d{10}$/, { message: "Phone number must be exactly 10 digits" }),
-});
 
 export type UserDetailFormValues = z.infer<typeof UserDetailSchema>;
 

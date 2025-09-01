@@ -1,13 +1,19 @@
 "use client";
+import AddLocationForm from "@/components/addLocation/AddLocationForm";
 import AddSkill from "@/components/addSkill/AddSkillForm";
 import CreateCompanyForm from "@/components/createCompany/CreateCompanyForm";
 import CreateJobForm from "@/components/createJob/CreateJobForm";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import EditSkills from "@/components/me/EditSkills";
+import TripleDotLoader from "@/components/TripleDotLoader";
 import UpdateJobForm from "@/components/updateJob/UpdateJobForm";
 import ViewApplicants from "@/components/viewApplicants/ViewApplicants";
+import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { RootState } from "@/lib/store.config";
-import { useSelector } from "react-redux";
+import useGetUser from "@/utils/useGetUser";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 
 export default function DashboardLayout({
@@ -41,11 +47,55 @@ export default function DashboardLayout({
     (state: RootState) => state.showJobUpdateForm.value
   );
 
-  const showAddSkillsForm = useSelector((state: RootState)=>{return state.showAddSkillsForm.value})
+  const showAddLocation = useSelector((state: RootState) => {
+    return state.showAddLocationForm.value;
+  });
+
+  const showAddSkillsForm = useSelector((state: RootState) => {
+    return state.showAddSkillsForm.value;
+  });
+
+  const jwtToken = useSelector((state: RootState) => {
+    return state.authJwtToken.value;
+  });
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const token = localStorage.getItem("AuthJwtToken");
+    if (token) {
+      dispatch(setAuthJwtToken(token));
+    }
+  }, [dispatch]);
+  const router = useRouter();
+  const { isError, isPending } = useGetUser(jwtToken);
+
+  useEffect(() => {
+    if (isError) {
+      router.replace("/login");
+    }
+  }, [isError, router]);
+
+  if(isPending || isError ){
+    return (
+      <TripleDotLoader />
+    )
+  }
+
+  
 
   return (
     <div className="dashboard-layout text-black  h-[100vh] w-[100%] bg-[#F5F5F5]">
-    <ToastContainer position="top-right" autoClose={3000} className="z-20" />
+      <ToastContainer position="top-right" autoClose={3000} className="z-20" />
+
+      {showAddLocation && (
+        <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
+          <div className="dashboard-layout w-full min-h-full">
+            <AddLocationForm />
+          </div>
+        </div>
+      )}
+
       {showCreateCompanyForm && (
         <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
           <div className="dashboard-layout w-full min-h-full">

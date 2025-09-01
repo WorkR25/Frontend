@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { setShowAddCityForm } from "@/features/setShowAddCityForm/setShowAddCityFormSlice";
-import { setShowAddSkillsFormSlice } from "@/features/showAddSkillsForm/showAddSkillsFormSlice";
+import { setShowAddLocationForm } from "@/features/showAddLocationForm/showAddLocationFormSlice";
+import { setShowAddSkillsForm } from "@/features/showAddSkillsForm/showAddSkillsFormSlice";
 import { setShowCreateCompanyForm } from "@/features/showCreateCompanyForm/showCreateCompanyFormSlice";
 import { setShowEditSkills } from "@/features/showEditSkils/showEditSkillsSlice";
 import { toogleShowJobCreateForm } from "@/features/showJobCreateForm/showJobCreateForm";
@@ -35,11 +35,11 @@ export const onClickCreateCompany: OnClickFnType = (dispatch, router, link) => {
 };
 
 export const onClickAddSKill: OnClickFnType = (dispatch, router, link) => {
-  dispatch(setShowAddSkillsFormSlice(true))
+  dispatch(setShowAddSkillsForm(true))
 }
 
 export const onClickAddCity: OnClickFnType = (dispatch, router, link) => {
-  dispatch(setShowAddCityForm(true))
+  dispatch(setShowAddLocationForm(true))
 }
 
 //                     dispatch(isSidebarOpenToogle(false));

@@ -8,7 +8,7 @@ export type GetUserResponseType = {
   profile: {
     bio: string | null;
     currentCompanyId: number | null;
-    currentCtc: number | null;
+    currentCtc: string | null;
     currentLocation: {
       name: string | null;
     } | null;

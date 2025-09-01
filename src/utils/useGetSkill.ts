@@ -1,3 +1,4 @@
+import { OptionType } from "@/components/createJob/CreateJobForm";
 import { userServiceApi } from "@/lib/axios.config";
 import { useQuery } from "@tanstack/react-query";
 
@@ -23,8 +24,7 @@ const getSkill = async (authJwtToken: string | null, skillName: string | null) =
         Authorization: authJwtToken,
       },
     });
-    
-    return response.data?.data;
+    return response.data?.data as OptionType[] ;
   } catch (error) {
     throw error;
   }
