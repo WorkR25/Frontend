@@ -1,27 +1,37 @@
+import { setShowAddSkillsForm } from "@/features/showAddSkillsForm/showAddSkillsFormSlice";
 import { RootState } from "@/lib/store.config";
 import useCreateSkill from "@/utils/useCreateSkills";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 export default function AddSkill() {
   const [skills, setSkills] = useState<string[]>([]);
   const [currentInput, setCurrentInput] = useState("");
+  const dispatch = useDispatch();
 
   const { mutate, isPending, isSuccess } = useCreateSkill();
 
-  useEffect(()=>{
-    if(isSuccess){
-        setSkills([]);
+  useEffect(() => {
+    if (isSuccess) {
+      setSkills([]);
     }
-  },[isSuccess])
+  }, [isSuccess]);
 
   const jwtToken = useSelector((state: RootState) => {
     return state.authJwtToken.value;
   });
   return (
     <div className="text-black all-[unset] py-3 justify-center">
+      <div
+        className="components-createJob-CreateJobForm absolute top-2 right-2 hover:cursor-pointer "
+        onClick={() => {
+          dispatch(setShowAddSkillsForm(false));
+        }}
+      >
+        <X width={20} />
+      </div>
       {isPending && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/50">
           <div className="loader"></div>

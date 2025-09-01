@@ -17,7 +17,7 @@ const useUpdateJobs = () => {
       updateJobData: UpdateJobFormValues;
     }) => {
       try {
-        const response = await jobServiceApi.put("/job/", updateJobData, {
+        const response = await jobServiceApi.put("/jobs/", updateJobData, {
           headers: { Authorization: authJwtToken },
         });
         return response.data;

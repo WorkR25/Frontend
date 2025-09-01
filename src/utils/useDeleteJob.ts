@@ -21,7 +21,7 @@ const useDeleteJob = () => {
         if(!authJwtToken){
             return new Error("No token provided");
         }
-        const response = await jobServiceApi.delete("/job", {
+        const response = await jobServiceApi.delete("/jobs", {
           headers: { Authorization: authJwtToken },
           data: deleteJobdata,
         });

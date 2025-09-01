@@ -12,7 +12,7 @@ import showCreateCompanyForm from "../features/showCreateCompanyForm/showCreateC
 import showEditSkills from "../features/showEditSkils/showEditSkillsSlice";
 import jobPageNumberSlice from "../features/jobPageNumber/jobPageNumberSlice"
 import showAddSkillsFormSlice  from "../features/showAddSkillsForm/showAddSkillsFormSlice";
-import showAddCityFormSlice from "../features/setShowAddCityForm/setShowAddCityFormSlice";
+import showAddLocationFormSlice from "../features/showAddLocationForm/showAddLocationFormSlice";
 
 export const store = configureStore({
   reducer: {
@@ -29,7 +29,7 @@ export const store = configureStore({
     showEditSkills: showEditSkills,
     jobPageNumber: jobPageNumberSlice,
     showAddSkillsForm: showAddSkillsFormSlice,
-    showAddCityForm: showAddCityFormSlice
+    showAddLocationForm: showAddLocationFormSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

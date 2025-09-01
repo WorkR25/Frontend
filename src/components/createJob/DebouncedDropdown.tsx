@@ -126,6 +126,7 @@ export interface DebouncedDropdownProps<
   };
   getOptionLabel: (option: TQueryData) => string;
   getOptionValue: (option: TQueryData) => PathValue<TFormValues, Path<TFormValues>>;
+  useTextValue?: boolean;
 }
 
 export default function DebouncedDropdown<
@@ -141,6 +142,7 @@ export default function DebouncedDropdown<
   getOptionLabel,
   getOptionValue,
   fieldValue,
+  useTextValue= false,
 }: DebouncedDropdownProps<TFormValues, TQueryData>) {
   const [isOpen, setIsOpen] = useState(false);
   const [optionArray, setOptionArray] = useState<TQueryData[]>([]);
@@ -193,6 +195,10 @@ export default function DebouncedDropdown<
           className="w-full h-full pl-3 pr-3 py-2 bg-transparent focus:outline-none"
           value={inputValue}
           onChange={(e) => {
+            if(useTextValue){
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              setValue(fieldName,e.target.value as any)
+            }
             setInputValue(e.target.value);
             setSearchTerm(e.target.value);
             if (!isOpen) {
