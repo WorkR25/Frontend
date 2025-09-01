@@ -20,6 +20,7 @@ import useGetCompany from "@/utils/useGetCompany";
 import useGetCompanyById from "@/utils/useGetCompanyById";
 import useGetCity from "@/utils/useGetCity";
 import { UserProfileSchema } from "@/schema/userProfile.validator";
+import { useRouter } from "next/navigation";
 
 
 
@@ -47,7 +48,8 @@ export default function UserProfileForm() {
     reset,
     formState: { errors },
   } = methods;
-
+  
+  const router = useRouter();
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
   const { data: userData } = useGetUser(jwtToken);
   const dispatch = useDispatch();
@@ -55,8 +57,10 @@ export default function UserProfileForm() {
     const token = localStorage.getItem("AuthJwtToken");
     if (token) {
       dispatch(setAuthJwtToken(token));
+    }else{
+      router.replace('/login')
     }
-  }, [dispatch]);
+  }, [dispatch, router]);
 
   useEffect(() => {
     if (userData?.profile) {
