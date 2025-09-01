@@ -48,7 +48,7 @@ export default function UserProfileSidebar() {
       dispatch(isSidebarOpenToogle(false))
     }} className="components-UserProfileSidebar w-full bottom-0 hover:cursor-pointer ">
       <div className="components-UserProfileSidebar flex items-center gap-3 p-3 bg-gray-100 rounded-lg w-full shadow-sm">
-        <div className="components-UserProfileSidebar w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-700 font-bold text-lg">
+        <div className="components-UserProfileSidebar w-0 sm:w-10 h-0 sm:h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-700 font-bold text-lg">
           {data?.fullName[0]}
         </div>
         <div className="components-UserProfileSidebar flex flex-col justify-center">

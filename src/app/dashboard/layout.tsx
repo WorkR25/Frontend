@@ -60,14 +60,16 @@ export default function DashboardLayout({
   });
 
   const dispatch = useDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("AuthJwtToken");
     if (token) {
       dispatch(setAuthJwtToken(token));
+    }else{
+      router.replace("/login");
     }
-  }, [dispatch]);
-  const router = useRouter();
+  }, [dispatch, router]);
   const { isError, isPending } = useGetUser(jwtToken);
 
   useEffect(() => {

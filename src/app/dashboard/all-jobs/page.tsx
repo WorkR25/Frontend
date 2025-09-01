@@ -2,34 +2,43 @@
 
 import ConfirmDeleteDialog from "@/components/ConfirmDelete";
 import DashboardTopbar from "@/components/dashboard/DashboardTopbar";
+import PaginationFooter from "@/components/dashboard/PaginationFooter";
 import JobCard from "@/components/JobCard";
+import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { setJobId } from "@/features/jobId/jobId";
 import { setShowJobApplicants } from "@/features/showJobApplicants/showJobApplicantsSlice";
 import { setShowJobupdateForm } from "@/features/showJobUpdateForm/showJobUpdateForm";
+import { RootState } from "@/lib/store.config";
 import useDeleteJob from "@/utils/useDeleteJob";
-import useGetJobs from "@/utils/useGetJobs";
+import useGetJobPagination from "@/utils/useGetJobsPagination";
 import useGetUser from "@/utils/useGetUser";
 import useGetUserRoles from "@/utils/useGetUserRoles";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Page() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const [jwtToken, setJwtToken] = useState<string | null>("");
+  const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
   const [confirmDelete, setConfirmDelete] = useState(false);
-
+  const page = useSelector((state: RootState)=> state.jobPageNumber.value)
   useEffect(() => {
-    setJwtToken(localStorage.getItem("AuthJwtToken"));
-  }, []);
+    const token = localStorage.getItem("AuthJwtToken");
+    if(token){
+      dispatch(setAuthJwtToken(token))
+    }else{
+      router.replace("/login")
+    }
+  }, [dispatch, router]);
 
+  
   const { data: userData } = useGetUser(jwtToken);
   const { data: userRoles } = useGetUserRoles(jwtToken, userData?.id);
-  const { data: jobList, isLoading: isLoadingJobList } = useGetJobs(jwtToken);
-
+  const { data: jobList, isLoading: isLoadingJobList } = useGetJobPagination(jwtToken, page, 20);
+  
   const { mutate } = useDeleteJob();
-
+  
   useEffect(() => {
     if (userRoles && !userRoles?.includes("admin")) {
       router.replace("/dashboard");
@@ -47,7 +56,7 @@ export default function Page() {
   }
 
   return (
-    <div className="all-jobs-page absolute w-[calc(100%-1/5)] top-0 text-black p-2 bg-[#FFFF] h-full pb-0 overflow-y-scroll py-3">
+    <div className="all-jobs-page absolute w-full sm:w-[calc(100%-1/5)] top-0 text-black p-2 bg-[#FFFF] h-full pb-0 overflow-y-scroll py-3">
       <DashboardTopbar pageName="All Jobs" />
       <div className="all-jobs-page sm:flex flex-wrap gap-2">
         {jobList?.map((job) => {
@@ -116,6 +125,7 @@ export default function Page() {
           );
         })}
       </div>
+      <PaginationFooter />
     </div>
   );
 }

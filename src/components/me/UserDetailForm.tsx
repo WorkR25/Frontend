@@ -12,6 +12,7 @@ import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import useUpdateUserDetails from "@/utils/useUpdateUserDetails";
 import { toast } from "react-toastify";
 import { UserDetailSchema } from "@/schema/userDetails.validator";
+import { useRouter } from "next/navigation";
 
 
 export type UserDetailFormValues = z.infer<typeof UserDetailSchema>;
@@ -34,13 +35,17 @@ export default function UserDetailForm() {
       phoneNo: "",
     },
   });
+  const router = useRouter();
   const jwtToken = useSelector((state: RootState)=>{return state.authJwtToken.value})
+  
   useEffect(()=>{
     const token = localStorage.getItem("AuthJwtToken");
     if(token){
         dispatch(setAuthJwtToken(token));
+    }else{
+      router.replace("/login")
     }
-  }, [dispatch])
+  }, [dispatch, router])
 
   const { data: userData } = useGetUser(jwtToken)
 
