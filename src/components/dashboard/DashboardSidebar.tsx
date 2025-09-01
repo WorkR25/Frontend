@@ -135,7 +135,7 @@ export default function DashboardSidebar() {
       onClickFn: onClickAddSKill,
     },
     {
-      name: "Add City",
+      name: "Add Location",
       icon: <LocateFixed className="w-5 h-5 mr-2" />,
       link: null,
       auth: ["admin"],

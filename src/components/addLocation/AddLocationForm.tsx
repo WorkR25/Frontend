@@ -162,6 +162,7 @@ export default function AddLocationForm() {
             useQueryFn={useGetCountry}
             setValue={setValue}
             useTextValue={true}
+            
           />
           <button
             type="submit"
