@@ -1,6 +1,7 @@
 import { setShowAddSkillsForm } from "@/features/showAddSkillsForm/showAddSkillsFormSlice";
 import { RootState } from "@/lib/store.config";
 import useCreateSkill from "@/utils/useCreateSkills";
+import useGetSkill from "@/utils/useGetSkill";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,10 +21,12 @@ export default function AddSkill() {
   }, [isSuccess]);
 
   const jwtToken = useSelector((state: RootState) => {
-    return state.authJwtToken.value;
-  });
+      return state.authJwtToken.value;
+    });
+    const { data: skillList } = useGetSkill(jwtToken, currentInput) ;
+
   return (
-    <div className="text-black all-[unset] py-3 justify-center">
+    <div className="text-black all-[unset] py-3 justify-center h-full">
       <div
         className="components-createJob-CreateJobForm absolute top-2 right-2 hover:cursor-pointer "
         onClick={() => {
@@ -70,6 +73,13 @@ export default function AddSkill() {
         >
           +
         </button>
+      </div>
+      <div className="mt-4 overflow-y-auto min-h-[50%]">
+        {skillList && skillList.map((skill, index)=>
+            (
+                <div className="border mt-1 px-6 py-3 rounded-sm" key={index}>{skill.name}</div>
+            )
+        ) }
       </div>
       <div className="flex flex-wrap mt-4">
         {skills.map((skill, index) => (

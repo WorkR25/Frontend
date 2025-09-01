@@ -10,7 +10,7 @@ import { LogInFormSchema } from "@/schema/logIn.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useLogin from "@/utils/useLogin";
 import InputField from "../InputField";
-import ErrorPopup from "../ErrorPopup";
+// import ErrorPopup from "../ErrorPopup";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store.config";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
@@ -88,7 +88,7 @@ function Form() {
     }
   }, [getUserSuccess, data, router]);
 
-  const { mutate, isError, isPending, isSuccess } = useLogin();
+  const { mutate,  isPending, isSuccess } = useLogin();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -105,7 +105,7 @@ function Form() {
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-md mx-auto space-y-2 py-6 rounded-lg font-poppins text-sm px-8 "
     >
-      {isError ? <ErrorPopup message="Error while logging in" /> : <></>}
+      {/* {isError ? <ErrorPopup message="Error while logging in" /> : <></>} */}
 
       <InputField
         register={register}
