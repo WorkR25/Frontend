@@ -127,6 +127,7 @@ export interface DebouncedDropdownProps<
   getOptionLabel: (option: TQueryData) => string;
   getOptionValue: (option: TQueryData) => PathValue<TFormValues, Path<TFormValues>>;
   useTextValue?: boolean;
+  disabled?: boolean;
 }
 
 export default function DebouncedDropdown<
@@ -143,6 +144,7 @@ export default function DebouncedDropdown<
   getOptionValue,
   fieldValue,
   useTextValue= false,
+  disabled=false ,
 }: DebouncedDropdownProps<TFormValues, TQueryData>) {
   const [isOpen, setIsOpen] = useState(false);
   const [optionArray, setOptionArray] = useState<TQueryData[]>([]);
@@ -207,6 +209,7 @@ export default function DebouncedDropdown<
           }}
           type="text"
           placeholder={placeholder || ""}
+          disabled = {disabled} 
         />
         <ChevronDown
           width={20}

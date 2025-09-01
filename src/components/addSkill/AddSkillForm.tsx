@@ -2,7 +2,7 @@ import { setShowAddSkillsForm } from "@/features/showAddSkillsForm/showAddSkills
 import { RootState } from "@/lib/store.config";
 import useCreateSkill from "@/utils/useCreateSkills";
 import useGetSkill from "@/utils/useGetSkill";
-import { X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -61,7 +61,7 @@ export default function AddSkill() {
         />
 
         <button
-          className="basis-1/10 border rounded hover:cursor-pointer pr-3 py-2"
+          className="basis-1/10 flex items-center justify-center border rounded hover:cursor-pointer hover:shadow-2xl pr-3 py-2"
           onClick={() => {
             if (skills.includes(currentInput)) {
               toast.error("Skill already added");
@@ -71,7 +71,7 @@ export default function AddSkill() {
             }
           }}
         >
-          +
+          <Plus />
         </button>
       </div>
       <div className="mt-4 overflow-y-auto min-h-[50%]">
@@ -88,7 +88,9 @@ export default function AddSkill() {
             key={index}
           >
             <div>{skill}</div>
-            <div>
+            <div className="hover:cursor-pointer" onClick={()=>{
+              setSkills((prev)=> [...prev.filter((v)=> v!==skill)])
+            }}>
               <X />
             </div>
           </div>

@@ -15,8 +15,10 @@ export default function Home() {
     const token = localStorage.getItem('AuthJwtToken') ;
     if(token){
       dispatch(setAuthJwtToken(token)) ;
+    }else{
+      router.replace('/login');
     }
-  },[dispatch])
+  },[dispatch, router])
   const jwtToken = useSelector((state: RootState)=>{return state.authJwtToken.value})
 
 

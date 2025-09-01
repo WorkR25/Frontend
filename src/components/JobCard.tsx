@@ -17,7 +17,6 @@ export default function JobCard({
   minPay,
   maxPay,
   className,
-  applyLink,
   created_at,
 }: JobCardParams) {
   const router = useRouter();
@@ -73,7 +72,7 @@ export default function JobCard({
         <div className="bg-gray-100 px-2 py-1 rounded-md text-xs">+2</div>
       </div>
 
-      {applyLink && (
+      { (
         <div className="flex items-center justify-between">
           <button className=" bg-blue-600 hover:bg-blue-700 basis-9/10 w-full text-white text-sm font-medium px-6 py-2 rounded-md">
             Apply

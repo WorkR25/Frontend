@@ -19,21 +19,9 @@ import { OptionType } from "../createJob/CreateJobForm";
 import useGetCompany from "@/utils/useGetCompany";
 import useGetCompanyById from "@/utils/useGetCompanyById";
 import useGetCity from "@/utils/useGetCity";
+import { UserProfileSchema } from "@/schema/userProfile.validator";
 
-export const UserProfileSchema = z.object({
-  bio: z.string().nullable().optional(),
-  yearsOfExperience: z.string().min(1, "Experience must be non-negative"),
-  isFresher: z.boolean(),
-  currentCtc: z.string().regex(/^\d+(\.\d{1,2})?$/, {
-    message: "Enter a valid CTC amount",
-  }).optional(),
-  resumeUrl: z.string().optional(),
-  // linkedinUrl: z.string().url("Invalid LinkedIn URL").optional()
-  linkedinUrl: z.string().optional(),
-  currentLocationId: z.number().nullable().optional(),
-  currentCompanyId: z.number().nullable().optional(),
-  currentLocation: z.string().nullable().optional(),
-});
+
 
 export type UserProfileFormValues = z.infer<typeof UserProfileSchema>;
 export default function UserProfileForm() {
@@ -121,6 +109,7 @@ export default function UserProfileForm() {
                     setIsFresher(true);
                     setValue("currentCtc", "0");
                     setValue("yearsOfExperience", "0");
+                    setValue("currentCompanyId", null);
                   }else{
                     setIsFresher(false);
                   }
@@ -157,7 +146,7 @@ export default function UserProfileForm() {
               register={register}
               error={errors.yearsOfExperience}
               disabled={isFresher}
-              fieldValue={watch('yearsOfExperience')}
+              fieldValue={watch('yearsOfExperience') ?? 0}
               onChangeFn={() => {}}
             />
           </div>
@@ -174,6 +163,7 @@ export default function UserProfileForm() {
               getOptionLabel={(value) => value.name}
               getOptionValue={(value) => value.id}
               fieldValue={companyDetails? companyDetails.name :""}
+              disabled={isFresher}
             />
           </div>
 

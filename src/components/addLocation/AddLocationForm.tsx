@@ -11,12 +11,9 @@ import { OptionType } from "../createJob/CreateJobForm";
 import useGetCity from "@/utils/useGetCity";
 import useGetState from "@/utils/useGetState";
 import useGetCountry from "@/utils/useGetCountry";
+import { AddLocationFormSchema } from "@/schema/addLocation.validator";
 
-const AddLocationFormSchema = z.object({
-  city: z.string().min(1, { message: "City is needed" }),
-  state: z.string().min(1, { message: "State is needed" }),
-  country: z.string().min(1, { message: "Country is needed" }),
-});
+
 
 type AddLocationFormType = z.infer<typeof AddLocationFormSchema>;
 
