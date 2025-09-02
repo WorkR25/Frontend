@@ -293,7 +293,7 @@ export default function CreateJobForm({ className }: { className?: string }) {
           <div className="components-createJob-CreateJobForm font-bold text-md mt-2 text-black">
             Job Description{" "}
           </div>
-          <MarkdownEditor name={"description"} />
+          <MarkdownEditor fieldName={"description"} />
 
           <button
             type="submit"

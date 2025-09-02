@@ -6,10 +6,12 @@ import TurndownService from "turndown";
 import { useFormContext } from "react-hook-form";
 
 interface MarkdownEditorProps {
-  name: string;
+  fieldName: string;
+  showFormatOptions?: boolean;
+  isSuccess?: boolean;
 }
 
-export default function MarkdownEditor({ name }: MarkdownEditorProps) {
+export default function MarkdownEditor({ fieldName, showFormatOptions = true, isSuccess = false }: MarkdownEditorProps) {
   const [activePanel, setActivePanel] = useState({
     bold: false,
     italic: false,
@@ -32,20 +34,27 @@ export default function MarkdownEditor({ name }: MarkdownEditorProps) {
       const html = editor.getHTML();
       const markdown = turndownService.turndown(html);
 
-      setValue(name, markdown, {
+      setValue(fieldName, markdown, {
         shouldDirty: true,
         shouldValidate: true,
       });
     },
   });
 
+  useEffect(()=>{
+    if(isSuccess){
+      editor?.commands.setContent(''); 
+    }
+  },[isSuccess, editor])
+
   useEffect(() => {
-    register(name, { required: true });
-  }, [name, register]);
+    register(fieldName, { required: true });
+  }, [fieldName, register]);
 
   return (
     <div className="border rounded-lg p-2">
-      <div className="toolbar mb-2 space-x-2">
+      {showFormatOptions && (
+        <div className="toolbar mb-2 space-x-2">
         <button
           type="button"
           onClick={() => {
@@ -106,6 +115,7 @@ export default function MarkdownEditor({ name }: MarkdownEditorProps) {
           </button>
         ))}
       </div>
+      )}
 
       {/* Editor displays PREVIEW */}
       <EditorContent editor={editor} className="h-fit outline-none p-2" />
