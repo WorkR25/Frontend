@@ -72,7 +72,7 @@ export default function CreateJobForm({ className }: { className?: string }) {
   } = useFormMethods;
 
   const onSubmit = (createData: CreateJobFormValues) => {
-    mutate({ createJobData: createData, authJwtToken: jwtToken });
+    mutate({ createJobData: {...createData, recuiter_id: Number(data?.id)}, authJwtToken: jwtToken });
   };
 
   const onError = () => {
@@ -293,7 +293,7 @@ export default function CreateJobForm({ className }: { className?: string }) {
           <div className="components-createJob-CreateJobForm font-bold text-md mt-2 text-black">
             Job Description{" "}
           </div>
-          <MarkdownEditor name={"description"} />
+          <MarkdownEditor fieldName={"description"} />
 
           <button
             type="submit"

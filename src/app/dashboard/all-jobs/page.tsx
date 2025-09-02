@@ -6,6 +6,7 @@ import PaginationFooter from "@/components/dashboard/PaginationFooter";
 import JobCard from "@/components/JobCard";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { setJobId } from "@/features/jobId/jobId";
+import { resetJobPageCount } from "@/features/jobPageNumber/jobPageNumberSlice";
 import { setShowJobApplicants } from "@/features/showJobApplicants/showJobApplicantsSlice";
 import { setShowJobupdateForm } from "@/features/showJobUpdateForm/showJobUpdateForm";
 import { RootState } from "@/lib/store.config";
@@ -22,7 +23,13 @@ export default function Page() {
   const dispatch = useDispatch();
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [jobIdToBeDeleted, setJobIdToBeDeleted] = useState<number>()
   const page = useSelector((state: RootState)=> state.jobPageNumber.value)
+
+  useEffect(()=>{
+    dispatch(resetJobPageCount())
+  },[dispatch])
+
   useEffect(() => {
     const token = localStorage.getItem("AuthJwtToken");
     if(token){
@@ -56,13 +63,30 @@ export default function Page() {
   }
 
   return (
-    <div className="all-jobs-page absolute w-full sm:w-[calc(100%-1/5)] top-0 text-black p-2 bg-[#FFFF] h-full pb-0 overflow-y-scroll py-3">
+    <div className="all-jobs-page absolute border top-0 text-black p-2 bg-[#FFFF] h-full pb-0 overflow-y-scroll py-3">
       <DashboardTopbar pageName="All Jobs" />
-      <div className="all-jobs-page sm:flex flex-wrap gap-2">
+      <ConfirmDeleteDialog
+                  isOpen={confirmDelete}
+                  onClose={() => {
+                    setConfirmDelete(false);
+                  }}
+                  onConfirm={() => {
+                    if(jobIdToBeDeleted){
+                      mutate({
+                      authJwtToken: jwtToken,
+                      deleteJobdata: { id: jobIdToBeDeleted},
+                    });
+                    }
+                    setConfirmDelete(false);
+                  }}
+                  message="Are you sure you want to delete this job posting ?"
+                  title="Confirm delete ?"
+                />
+      <div className="all-jobs-page sm:flex flex-wrap justify-around items-center gap-2">
         {jobList?.map((job) => {
           return (
             <div
-              className="all-jobs-page w-full sm:w-[45%] flex h-fit border border-gray-100 rounded-lg p-2 hover:shadow-lg "
+              className="all-jobs-page w-full sm:w-[45%] h-fit border gap-y-3 flex flex-col items-center justify-center border-gray-100 rounded-lg p-2 hover:shadow-lg "
               key={job.id}
             >
               <JobCard
@@ -76,47 +100,34 @@ export default function Page() {
                 minPay={job.salary_min}
                 maxPay={job.salary_max}
                 created_at={job.created_at}
-                className="all-jobs-page w-[30vw] basis-4/5"
+                className="all-jobs-page w-[100%] "
               />
-              <div className="all-jobs-page justify-center flex flex-col gap-2 px-2 basis-1/5">
+              <div className="all-jobs-page flex items-center justify-center gap-2 px-2 basis-1/5">
                 <button
                   onClick={() => {
                     dispatch(setJobId(String(job.id)));
                     dispatch(setShowJobupdateForm(true));
                   }}
-                  className="all-jobs-page border rounded-lg py-1 px-0.5 bg-[#32db97]"
+                  className="all-jobs-page border rounded-lg py-1 px-1.5 bg-[#32db97]"
                 >
                   Update
                 </button>
                 <button
                   onClick={() => {
                     setConfirmDelete(true);
+                    setJobIdToBeDeleted(job.id);
                   }}
-                  className="all-jobs-page border rounded-lg py-1 px-0.5 bg-[#b83588]"
+                  className="all-jobs-page border rounded-lg py-1 px-1.5 bg-[#b83588]"
                 >
                   Delete
                 </button>
-                <ConfirmDeleteDialog
-                  isOpen={confirmDelete}
-                  onClose={() => {
-                    setConfirmDelete(false);
-                  }}
-                  onConfirm={() => {
-                    mutate({
-                      authJwtToken: jwtToken,
-                      deleteJobdata: { id: job.id },
-                    });
-                    setConfirmDelete(false);
-                  }}
-                  message="Are you sure you want to delete this job posting ?"
-                  title="Confirm delete ?"
-                />
+                
                 <button
                   onClick={() => {
                     dispatch(setShowJobApplicants(true));
                     dispatch(setJobId(String(job.id)))
                   }}
-                  className="all-jobs-page border rounded-lg py-1 px-0.5 bg-[#32db97]"
+                  className="all-jobs-page border rounded-lg py-1 px-1.5 bg-[#32db97]"
                 >
                   View applicants
                 </button>

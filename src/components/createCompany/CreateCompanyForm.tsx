@@ -4,7 +4,7 @@ import { setShowCreateCompanyForm } from "@/features/showCreateCompanyForm/showC
 import { RootState } from "@/lib/store.config";
 import { CreateCompanySchema } from "@/schema/createCompany.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Building2, Link2, Text, X } from "lucide-react";
+import { Building2, Link2, X } from "lucide-react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import z from "zod";
@@ -12,6 +12,11 @@ import InputField from "../InputField";
 import useCreateCompany from "@/utils/useCreateCompany";
 import DragAndDropFile from "./DragAndDropFile";
 import useUploadLogo from "@/utils/useUploadLogo";
+import { useEffect } from "react";
+import MarkdownEditor from "../createJob/MarkdownEditor";
+import TripleDotLoader from "../TripleDotLoader";
+import Dropdown from "../createJob/Dropdown";
+import useGetCompanySize from "@/utils/useGetCompanySize";
 
 export type CreateCompanyFormType = z.infer<typeof CreateCompanySchema>;
 
@@ -25,6 +30,7 @@ export default function CreateCompanyForm() {
       description: "",
       website: "",
       logo: "",
+      company_size_id: null,
     },
   });
 
@@ -32,18 +38,26 @@ export default function CreateCompanyForm() {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    reset,
+    setValue,
+    formState: { errors, isSubmitSuccessful },
   } = methods;
 
   const logo = watch("logo");
   const dispatch = useDispatch();
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
 
-  const { mutate: createCompany } = useCreateCompany();
-
+  const { mutate: createCompany, isSuccess, isPending } = useCreateCompany();
+  const { data: companySizeList } = useGetCompanySize(jwtToken);
   const onSubmit = (createData: CreateCompanyFormType) => {
     createCompany({ authJwtToken: jwtToken, createData });
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      reset();
+    }
+  }, [isSuccess, reset]);
 
   return (
     <div className="components-createCompany-CreateCompanyForm text-black all-[unset] justify-center">
@@ -53,6 +67,7 @@ export default function CreateCompanyForm() {
       >
         <X width={20} />
       </div>
+      {isPending && <TripleDotLoader />}
 
       <FormProvider {...methods}>
         <form
@@ -85,14 +100,31 @@ export default function CreateCompanyForm() {
             type="text"
             error={errors.name}
           />
-          <InputField
+          {/* <InputField
             fieldName="description"
             icon={<Text />}
             placeholder="Short Description"
             register={register}
             type="text"
             error={errors.description}
+          /> */}
+          <div>Company Size</div>
+          <Dropdown
+            error={errors.company_size_id}
+            fieldName="company_size_id"
+            getOptionLabel={(option) => {
+              if(option.max_employees > 2000000){
+                return `${option.min_employees}+ employees`
+              }
+              return `${option.min_employees}-${option.max_employees} employees`;
+            }}
+            getOptionValue={(option) => option.id}
+            optionArray={companySizeList}
+            placeholder="Select company size"
+            setValue={setValue}
+            resetOn={isSubmitSuccessful}
           />
+          <div>Website</div>
           <InputField
             fieldName="website"
             icon={<Link2 />}
@@ -100,6 +132,13 @@ export default function CreateCompanyForm() {
             register={register}
             type="text"
             error={errors.website}
+          />
+
+          <div>Description</div>
+          <MarkdownEditor
+            fieldName="description"
+            showFormatOptions={false}
+            isSuccess={isSuccess}
           />
           <div className="flex items-center justify-around">
             <button

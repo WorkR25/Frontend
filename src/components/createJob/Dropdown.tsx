@@ -84,7 +84,7 @@ export interface DropdownProps<
   TFormValues extends FieldValues,
   TOption
 > {
-  optionArray: TOption[];
+  optionArray: TOption[] | undefined;
   fieldName: Path<TFormValues>;
   setValue: UseFormSetValue<TFormValues>;
   error: FieldError | undefined;
@@ -92,6 +92,7 @@ export interface DropdownProps<
   getOptionLabel: (option: TOption) => string;
   getOptionValue: (option: TOption) => PathValue<TFormValues, Path<TFormValues>>;
   fieldValue?: string;
+  resetOn?: boolean;
 }
 
 export default function Dropdown<
@@ -106,10 +107,17 @@ export default function Dropdown<
   getOptionLabel,
   getOptionValue,
   fieldValue,
+  resetOn= false,
 }: DropdownProps<TFormValues, TOption>) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState<string | null>(fieldValue || null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(()=>{
+    if(resetOn){
+      setSelectedLabel(null);
+    }
+  },[resetOn])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -147,7 +155,7 @@ export default function Dropdown<
       </div>
       {isOpen && (
         <div className="max-h-[20vh] border w-full absolute overflow-y-auto bg-white shadow-lg rounded-md mt-1 z-10">
-          {optionArray.map((option, index) => {
+          {optionArray && optionArray.map((option, index) => {
             const label = getOptionLabel(option);
             return (
               <div

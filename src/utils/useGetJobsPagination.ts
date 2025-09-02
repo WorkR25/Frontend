@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux"
 const useGetJobPagination= (authJwtToken: string , page: number , limit: number ) => {
     const dispatch = useDispatch() ;
     return useQuery<Job[]>({
-        queryKey: ['jobListPage', page?? 0, limit?? 0],
+        queryKey: ['jobListPage', `${page}`, `${limit}`],
         queryFn: () => {
             return getJobPagination({authJwtToken, page, limit, dispatch})
         },

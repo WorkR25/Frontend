@@ -155,7 +155,7 @@ export default function DashboardLayout({
         </div>
       )}
       <div
-        className={`dashboard-layout absolute w-[100%] h-[100vh] sm:hidden  border top-0 left-0 bg-black opacity-35 z-10 ${
+        className={`dashboard-layout absolute w-[100%] h-[100%] sm:hidden  border top-0 left-0 bg-black opacity-35 z-10 ${
           isSidebarOpen ? (showJobCreateForm ? "hidden" : "block") : "hidden"
         }`}
       ></div>
@@ -166,7 +166,7 @@ export default function DashboardLayout({
           <DashboardSidebar />
         </div>
         <div
-          className={`dashboard-layout absolute rounded-r-lg bg-[#F5F5F5] h-full w-[60%] sm:hidden overflow-y-scroll px-5 z-50 transform transition-transform duration-300 ease-in-out ${
+          className={`dashboard-layout absolute rounded-r-lg bg-[#F5F5F5] h-full w-[75%] sm:hidden overflow-y-scroll px-5 z-50 transform transition-transform duration-300 ease-in-out ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >

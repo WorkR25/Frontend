@@ -28,9 +28,9 @@ export default function SignUpForm() {
         />
       </div>
       <div className="flex items-center justify-center mt-[2vh]">
-        <div className=" w-[70vw] sm:w-[35vw] text-center mt-[4vh]">
+        <div className=" w-[100%] sm:w-[60%] text-center mt-[4vh]">
           <div className="text-lg font-semibold">Create Your Account</div>
-          <div className="text-sm">
+          <div className="text-sm px-4">
             Welcome to Workr! Let’s get started by creating your Account
           </div>
           <Form />
@@ -38,14 +38,14 @@ export default function SignUpForm() {
       </div>
       <div className=" bottom-0 flex items-center justify-center text-sm">
         <div>Already have an account? </div>
-        <div
+        <button
           className="text-[#467FA3] hover:cursor-pointer"
           onClick={() => {
             router.push("/login");
           }}
         >
           Log in
-        </div>
+        </button>
       </div>
     </div>
   );

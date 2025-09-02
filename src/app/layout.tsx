@@ -35,9 +35,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full w-full ">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased bg-[#F5F5F5]`}
+        className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased bg-[#F5F5F5] w-full h-full`}
       >
       <ToastContainer position="top-right" autoClose={3000} />
         <ReduxProvider>

@@ -1,6 +1,8 @@
 import { jobServiceApi } from "@/lib/axios.config";
 import { CreateCompanySchema } from "@/schema/createCompany.validator";
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { toast } from "react-toastify";
 import z from "zod";
 
 type CreateCompanyFormType = z.infer<typeof CreateCompanySchema>;
@@ -29,6 +31,17 @@ function useCreateCompany() {
         throw error;
       }
     },
+    onError: (error) =>{
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Error occured while creating company");
+      } else {
+        toast.error("Error occured while creating company ");
+      }
+    },
+
+    onSuccess: ()=>{
+      toast.success("Company created successfully");
+    }
   });
 }
 

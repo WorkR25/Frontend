@@ -48,7 +48,7 @@ export default function UserProfileForm() {
     reset,
     formState: { errors },
   } = methods;
-  
+
   const router = useRouter();
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
   const { data: userData } = useGetUser(jwtToken);
@@ -67,7 +67,7 @@ export default function UserProfileForm() {
       const profile = userData.profile;
       reset({
         bio: profile.bio ?? "",
-        yearsOfExperience: String(profile.yearsOfExperience) ?? "0",
+        yearsOfExperience: profile.yearsOfExperience ? String(profile.yearsOfExperience) ?? '0' : '0',
         isFresher: profile.isFresher ?? false,
         currentCtc:
           profile.currentCtc !== null && profile.currentCtc !== undefined

@@ -12,11 +12,6 @@ export default function JobDescription() {
       <div className="text-gray-400">
         <MarkdownHTML content={jobDetails?.description ?? "null"}/>
       </div>
-
-      <div className="text-lg font-semibold my-3">Job Qualifications</div>
-      <p className="text-gray-400">
-        Job qulaifications 
-      </p>
     </div>
   );
 }

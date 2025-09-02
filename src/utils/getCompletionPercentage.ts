@@ -13,9 +13,6 @@ export const getCompletionPercentage = (data: GetUserResponseType) => {
     const resumeUrl = data.profile.resumeUrl ? 1 : 0 ;
 
     const res= fullName+ email+ phoneNo+ currentCtc+ yearsOfExperience+ bio+ skills+ locations+ linkedinUrl+ resumeUrl;
-    console.log(data);
-    console.log(res);
-    console.log(fullName, email, phoneNo, currentCtc, yearsOfExperience, bio, skills, locations, linkedinUrl, resumeUrl, data.profile.currentCtc);
     return Math.floor(res*10);
 
 }
