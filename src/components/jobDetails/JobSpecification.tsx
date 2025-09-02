@@ -45,10 +45,9 @@ export default function JobSpecification({
           label="Salary Range"
           value={
             employmentType === "Internship"
-              ? `${Number(salaryMin) / 1000}K-${Number(salaryMax) / 1000}K`
-              : `${Number(salaryMin) / 100000}LPA-${
-                  Number(salaryMax) / 100000
-                }LPA`
+              ? `${Number(salaryMin)}K-${Number(salaryMax)}K`
+              : `${Number(salaryMin)}LPA-${
+                  Number(salaryMax)}LPA`
           }
           className="w-[96%]"
         />

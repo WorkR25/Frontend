@@ -10,7 +10,7 @@ export default function CompanyCard({
   description,
 }: CompanyCardProps) {
   return (
-    <div className="rounded-xl border border-gray-200 mt-3 p-5 bg-white space-y-4 shadow-sm">
+    <div className="hidden rounded-xl border border-gray-200 mt-3 p-5 bg-white space-y-4 shadow-sm">
       <h3 className="text-md font-semibold text-gray-900">About Company</h3>
 
       <div className="flex items-center gap-4">
@@ -27,7 +27,7 @@ export default function CompanyCard({
         </div>
       </div>
 
-      <div className="flex gap-3 flex-wrap">
+      <div className="hidden gap-3 flex-wrap">
         <span className="px-3 py-1 text-xs bg-gray-100 rounded-lg text-gray-700">
           {industry}
         </span>

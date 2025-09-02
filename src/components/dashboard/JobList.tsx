@@ -4,6 +4,7 @@ import { RootState } from "@/lib/store.config";
 import { useSelector } from "react-redux";
 import JobCard from "../JobCard";
 import useGetJobPagination from "@/utils/useGetJobsPagination";
+import TripleDotLoader from "../TripleDotLoader";
 
 export default function JobList() {
   const jwtToken = useSelector((state: RootState) => {
@@ -14,10 +15,8 @@ export default function JobList() {
 
 
   return (
-    <div className="component-dashboard-JobList flex flex-wrap items-center justify-center-safe my-2 mx-auto gap-2 gap-y-3.5">
-      {isPending && <div className="flex items-center justify-center">
-        <div className="loader"></div>
-        </div>}
+    <div className="component-dashboard-JobList w-full flex flex-wrap items-center justify-center-safe my-2 mx gap-2 gap-y-3.5">
+      {isPending && <TripleDotLoader />}
       {data?.map((job) => {
         return (
           <JobCard

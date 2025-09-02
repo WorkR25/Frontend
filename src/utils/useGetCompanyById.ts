@@ -20,7 +20,7 @@ const useGetCompanyById = (authJwtToken: string | null, companyId: number | null
 const getCompany = async (authJwtToken: string | null, companyId: number ) => {
   try {
     if(!companyId){
-      return ;
+      return "" ;
     }
     const response = await jobServiceApi.get("/companies/"+ companyId, {
       headers: {

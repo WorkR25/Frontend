@@ -33,9 +33,9 @@ export default function LogInForm() {
         />
       </div>
       <div className="flex items-center justify-center mt-[10vh]">
-        <div className=" w-[70vw] sm:w-[35vw] text-center mt-[4vh]">
+        <div className=" w-[100%] sm:w-[60%] text-center mt-[4vh]">
           <div className="text-lg font-semibold">Log In to Your Account</div>
-          <div className="text-sm">
+          <div className="text-sm px-4">
             Welcome to Workr ! Log In to get Started
           </div>
           <Form />
@@ -44,15 +44,14 @@ export default function LogInForm() {
       </div>
       <div className=" bottom-0 flex items-center justify-center text-sm">
         <div>Dont have an account?</div>
-        <div
+        <button
           className="text-[#467FA3] hover:cursor-pointer"
           onClick={() => {
             router.push("/signup");
           }}
         >
-          {" "}
           Sign Up
-        </div>
+        </button>
       </div>
     </div>
   );

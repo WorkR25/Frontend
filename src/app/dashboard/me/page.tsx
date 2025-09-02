@@ -6,7 +6,7 @@ import UserSkillForm from "@/components/me/UserSkillForm";
 
 export default function Page(){
     return (
-        <div className="me-page absolute top-0 p-6 pt-2 overflow-y-scroll h-[100vh]">
+        <div className="me-page absolute top-0 p-6 pt-2 overflow-y-scroll h-[100%]">
             <DashboardTopbar pageName="About You" />
             <UserDetailForm />
             <UserProfileForm />

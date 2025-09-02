@@ -12,6 +12,7 @@ import InputField from "../InputField";
 import useCreateCompany from "@/utils/useCreateCompany";
 import DragAndDropFile from "./DragAndDropFile";
 import useUploadLogo from "@/utils/useUploadLogo";
+import { useEffect } from "react";
 
 export type CreateCompanyFormType = z.infer<typeof CreateCompanySchema>;
 
@@ -32,6 +33,7 @@ export default function CreateCompanyForm() {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = methods;
 
@@ -39,11 +41,17 @@ export default function CreateCompanyForm() {
   const dispatch = useDispatch();
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
 
-  const { mutate: createCompany } = useCreateCompany();
+  const { mutate: createCompany, isSuccess } = useCreateCompany();
 
   const onSubmit = (createData: CreateCompanyFormType) => {
     createCompany({ authJwtToken: jwtToken, createData });
   };
+
+  useEffect(()=>{
+    if(isSuccess){
+      reset()
+    }
+  }, [isSuccess, reset])
 
   return (
     <div className="components-createCompany-CreateCompanyForm text-black all-[unset] justify-center">

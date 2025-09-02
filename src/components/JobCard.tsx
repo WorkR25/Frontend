@@ -16,7 +16,7 @@ export default function JobCard({
   country,
   minPay,
   maxPay,
-  className,
+  className="sm:w-[45%]",
   created_at,
 }: JobCardParams) {
   const router = useRouter();
@@ -25,7 +25,7 @@ export default function JobCard({
     <div
       className={cn(
         "w-full rounded-xl border border-gray-200 p-4 shadow-sm bg-white space-y-3",
-        "sm:w-[45%] hover:cursor-pointer hover:shadow-xl",
+        " hover:cursor-pointer hover:shadow-xl",
         className
       )}
       onClick={() => {

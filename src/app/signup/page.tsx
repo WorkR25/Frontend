@@ -4,8 +4,8 @@ import SignUpHero from "@/components/signup/SignUpHero";
 
 export default function Page() {
   return (
-    <div className="text-black bg-white font-poppins ">
-      <div className="flex w-screen h-screen p-2 gap-x-2">
+    <div className="text-black bg-white font-poppins h-full w-full">
+      <div className="flex w-screen h-[100%] p-2 gap-x-2">
         <div className="sm:basis-45/100 w-full sm:w-auto flex items-center justify-center rounded-2xl shadow-xs shadow-black overflow-y-scroll">
           <SignupForm/>
         </div>

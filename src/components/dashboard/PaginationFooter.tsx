@@ -17,7 +17,7 @@ export default function PaginationFooter() {
 
   const dispatch = useDispatch();
   return (
-    <div className="w-[97%] sticky bottom-0 bg-white border-t shadow-sm">
+    <div className="w-[100%] sticky bottom-0 bg-white border-t shadow-sm">
       <div className="flex items-center justify-between px-4 py-2">
         <button
           className="flex items-center px-3 py-1 rounded-lg border disabled:opacity-50 hover:cursor-pointer disabled:cursor-not-allowed"
