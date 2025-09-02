@@ -28,7 +28,6 @@ const getCompanySize = async (authJwtToken: string | null) => {
             Authorization: `${authJwtToken}`
         }
     })
-    console.log(response.data.data);
     return response.data.data as GetCompanySizeResponse[] ;
     } catch (error) {
         throw error;
