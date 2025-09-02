@@ -72,7 +72,7 @@ export default function CreateJobForm({ className }: { className?: string }) {
   } = useFormMethods;
 
   const onSubmit = (createData: CreateJobFormValues) => {
-    mutate({ createJobData: createData, authJwtToken: jwtToken });
+    mutate({ createJobData: {...createData, recuiter_id: Number(data?.id)}, authJwtToken: jwtToken });
   };
 
   const onError = () => {
