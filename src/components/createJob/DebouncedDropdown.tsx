@@ -128,6 +128,7 @@ export interface DebouncedDropdownProps<
   getOptionValue: (option: TQueryData) => PathValue<TFormValues, Path<TFormValues>>;
   useTextValue?: boolean;
   disabled?: boolean;
+  resetOn?: boolean;
 }
 
 export default function DebouncedDropdown<
@@ -145,6 +146,7 @@ export default function DebouncedDropdown<
   fieldValue,
   useTextValue= false,
   disabled=false ,
+  resetOn=false,
 }: DebouncedDropdownProps<TFormValues, TQueryData>) {
   const [isOpen, setIsOpen] = useState(false);
   const [optionArray, setOptionArray] = useState<TQueryData[]>([]);
@@ -154,6 +156,12 @@ export default function DebouncedDropdown<
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { data, isLoading } = useQueryFn(jwtToken, debouncedSearchTerm);
+
+  useEffect(()=>{
+      if(resetOn){
+        setInputValue("");
+      }
+    },[resetOn])
 
   useEffect(() => {
     if (fieldValue) {

@@ -21,6 +21,6 @@ export const CreateJobFormSchema = z.object({
       message: "Please select a skill",
     })
     .min(1, { message: "At least one skill must be selected" }),
-  recuiter_id: z.number().min(1, { message: "Recruiter ID is required" }),
+  recruiter_id: z.number().min(1, { message: "Recruiter ID is required" }),
   description: z.string().optional() ,
 });

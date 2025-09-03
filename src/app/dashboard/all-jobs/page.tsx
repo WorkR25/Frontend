@@ -63,7 +63,7 @@ export default function Page() {
   }
 
   return (
-    <div className="all-jobs-page absolute border top-0 text-black p-2 bg-[#FFFF] h-full pb-0 overflow-y-scroll py-3">
+    <div className="all-jobs-page absolute border w-full sm:w-auto top-0 text-black p-2 bg-[#FFFF] h-full pb-0 overflow-y-scroll py-3">
       <DashboardTopbar pageName="All Jobs" />
       <ConfirmDeleteDialog
                   isOpen={confirmDelete}

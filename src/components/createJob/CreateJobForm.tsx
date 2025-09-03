@@ -72,14 +72,14 @@ export default function CreateJobForm({ className }: { className?: string }) {
   } = useFormMethods;
 
   const onSubmit = (createData: CreateJobFormValues) => {
-    mutate({ createJobData: {...createData, recuiter_id: Number(data?.id)}, authJwtToken: jwtToken });
+    mutate({ createJobData: {...createData, recruiter_id: Number(data?.id)}, authJwtToken: jwtToken });
   };
 
   const onError = () => {
     toast.error("Fill all the required fields to continue");
   };
 
-  setValue("recuiter_id", Number(data?.id));
+  setValue('recruiter_id', Number(data?.id));
   const { mutate, isPending } = useCreateJob();
 
   if (!isAuthorized || !userRoles || !userRoles.includes("admin")) {
