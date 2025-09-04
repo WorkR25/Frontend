@@ -7,6 +7,7 @@ const useGetCompanySize = (authJwtToken: string | null) => {
         queryFn: async () => {
             return getCompanySize(authJwtToken)
         },
+        refetchOnWindowFocus: false,
     })
 }
 type GetCompanySizeResponse ={
@@ -24,11 +25,11 @@ type GetCompanySizeResponse ={
 const getCompanySize = async (authJwtToken: string | null) => {
     try {
         const response =await jobServiceApi.get('/company-sizes', {
-        headers: {
-            Authorization: `${authJwtToken}`
-        }
-    })
-    return response.data.data as GetCompanySizeResponse[] ;
+            headers: {
+                Authorization: `${authJwtToken}`
+            }
+        })
+        return response.data.data as GetCompanySizeResponse[] ;
     } catch (error) {
         throw error;
     }

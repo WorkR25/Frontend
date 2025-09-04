@@ -9,12 +9,11 @@ import { useDispatch } from "react-redux";
 const useGetJobDetails = (authJwtToken: string | null, jobId: string) => {
     const dispatch = useDispatch()
     return useQuery<JobDetails | null>({
-        queryKey: ["jobDetails", jobId],
+        queryKey: ["getJobDetails", jobId],
         queryFn: () => getJobDetails(authJwtToken, jobId, dispatch),
         enabled: !!authJwtToken,
-    refetchInterval: 30*60*1000 // 30 mins 
-
-    });
+        refetchInterval: 30*60*1000, // 30 mins
+});
 };
 
 const getJobDetails = async (authJwtToken: string | null, jobId: string, dispatch: Dispatch<UnknownAction>) => {

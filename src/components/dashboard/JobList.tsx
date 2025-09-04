@@ -16,7 +16,9 @@ export default function JobList() {
 
   return (
     <div className="component-dashboard-JobList w-full flex flex-wrap items-center justify-center-safe my-2 mx gap-2 gap-y-3.5">
-      {isPending && <TripleDotLoader />}
+      {isPending && (
+        <TripleDotLoader className="w-full h-full flex items-center justify-center" />
+      )}
       {data?.map((job) => {
         return (
           <JobCard

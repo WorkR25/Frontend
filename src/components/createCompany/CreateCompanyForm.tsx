@@ -17,6 +17,9 @@ import MarkdownEditor from "../createJob/MarkdownEditor";
 import TripleDotLoader from "../TripleDotLoader";
 import Dropdown from "../createJob/Dropdown";
 import useGetCompanySize from "@/utils/useGetCompanySize";
+import DebouncedDropdown from "../createJob/DebouncedDropdown";
+import { OptionType } from "../createJob/CreateJobForm";
+import useGetIndustry from "@/utils/useGetIndustry";
 
 export type CreateCompanyFormType = z.infer<typeof CreateCompanySchema>;
 
@@ -31,6 +34,7 @@ export default function CreateCompanyForm() {
       website: "",
       logo: "",
       company_size_id: null,
+      industry_id: null,
     },
   });
 
@@ -40,7 +44,7 @@ export default function CreateCompanyForm() {
     watch,
     reset,
     setValue,
-    formState: { errors, isSubmitSuccessful },
+    formState: { errors },
   } = methods;
 
   const logo = watch("logo");
@@ -58,6 +62,8 @@ export default function CreateCompanyForm() {
       reset();
     }
   }, [isSuccess, reset]);
+
+  if(!jwtToken) return null ;
 
   return (
     <div className="components-createCompany-CreateCompanyForm text-black all-[unset] justify-center">
@@ -113,8 +119,8 @@ export default function CreateCompanyForm() {
             error={errors.company_size_id}
             fieldName="company_size_id"
             getOptionLabel={(option) => {
-              if(option.max_employees > 2000000){
-                return `${option.min_employees}+ employees`
+              if (option.max_employees > 2000000) {
+                return `${option.min_employees}+ employees`;
               }
               return `${option.min_employees}-${option.max_employees} employees`;
             }}
@@ -122,7 +128,22 @@ export default function CreateCompanyForm() {
             optionArray={companySizeList}
             placeholder="Select company size"
             setValue={setValue}
-            resetOn={isSubmitSuccessful}
+            resetOn={isSuccess}
+          />
+            <div>Industry</div>
+          <DebouncedDropdown
+            error={errors.industry_id}
+            fieldName="industry_id"
+            getOptionLabel={(option: OptionType) => {
+              return option.name;
+            }}
+            getOptionValue={(option: OptionType) => option.id}
+            jwtToken={jwtToken}
+            placeholder="Please select an industry"
+            setValue={setValue}
+            useQueryFn={useGetIndustry}
+            useTextValue={false}
+            resetOn={isSuccess}
           />
           <div>Website</div>
           <InputField
@@ -140,6 +161,9 @@ export default function CreateCompanyForm() {
             showFormatOptions={false}
             isSuccess={isSuccess}
           />
+          {errors.description && (
+            <div className="text-red-400">Provide a valid description</div>
+          )}
           <div className="flex items-center justify-around">
             <button
               type="submit"

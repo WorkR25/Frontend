@@ -6,4 +6,5 @@ export const CreateCompanySchema= z.object({
     description: z.string().min(2, "Please provide a valid description"),
     website: z.string(),
     company_size_id: z.number("Please select a company size").nullable(),
+    industry_id: z.number("Please select an industry").nullable(),
 })

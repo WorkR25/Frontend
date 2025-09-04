@@ -25,6 +25,7 @@ import useUpdateJobs from "@/utils/useUpdateJob";
 import { setShowJobupdateForm } from "@/features/showJobUpdateForm/showJobUpdateForm";
 import { RootState } from "@/lib/store.config";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
+import TripleDotLoader from "../TripleDotLoader";
 
 type UpdateFormValues = z.infer<typeof UpdateJobSchema>;
 
@@ -48,7 +49,7 @@ export default function UpdateJobForm({
   const { data: employmentType } = useGetEmploymentType(jwtToken);
   const { data: experienceLevel } = useGetExperienceLevel(jwtToken);
   useGetUserRoles(jwtToken, data?.id);
-  const { data: jobDetails } = useGetJobDetails(jwtToken, String(id));
+  const { data: jobDetails, isFetching: isFetchingJobDetails, isPending: isPendingJobDetails } = useGetJobDetails(jwtToken, String(id));
 
   const { mutate } = useUpdateJobs();
 
@@ -66,17 +67,23 @@ export default function UpdateJobForm({
   setValue("id", id);
   const skillIdArray = jobDetails?.skills.map((val)=>{ return val.id})
   setValue('skillIds',skillIdArray);
+  setValue('apply_link',jobDetails?.apply_link);
+  setValue('salary_max',jobDetails?.salary_max ? Number(jobDetails?.salary_max) : 0);
+  setValue('salary_min',jobDetails?.salary_min ? Number(jobDetails?.salary_min) : 0);
 
   function onSubmit(updateData: UpdateFormValues) {
     mutate({ authJwtToken: jwtToken, updateJobData: updateData });
   }
 
   if (!jobDetails) {
-    return <div>Loading ... </div>;
+    return <TripleDotLoader className="fixed w-full h-full flex justify-center items-center"/>;
   }
 
   return (
     <div className={cn("justify-center sm:flex ", className)}>
+      {(isPendingJobDetails || isFetchingJobDetails) && (
+        <TripleDotLoader className="fixed w-full h-full flex justify-center items-center"/>
+      )}
       <div
         className="absolute top-2 right-2 hover:cursor-pointer "
         onClick={() => {
