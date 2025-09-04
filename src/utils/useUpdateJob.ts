@@ -27,10 +27,15 @@ const useUpdateJobs = () => {
     },
     onSuccess: (data, variables) => {
       toast.success("Job updated successfully!");
+      console.log("getJobDetails", variables.updateJobData.id)
       queryClient.invalidateQueries({
-        queryKey: ["jobDetails", variables.updateJobData.id],
+
+        queryKey: ["getJobDetails", `${variables.updateJobData.id}`],
+        refetchType: "active",
       });
       queryClient.invalidateQueries({ queryKey: ["jobList"] });
+      queryClient.refetchQueries({ queryKey: ["jobList"] });
+      queryClient.refetchQueries({ queryKey: ["getJobDetails", `${variables.updateJobData.id}` ] });
     },
     onError: () => {
       toast.error("Error updating job");
