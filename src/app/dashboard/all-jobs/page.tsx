@@ -35,10 +35,8 @@ export default function Page() {
     const token = localStorage.getItem("AuthJwtToken");
     if (token) {
       dispatch(setAuthJwtToken(token));
-    } else {
-      router.replace("/login");
-    }
-  }, [dispatch, router]);
+    } 
+  }, [dispatch]);
 
   const { data: userData } = useGetUser(jwtToken);
   const { data: userRoles } = useGetUserRoles(jwtToken, userData?.id);

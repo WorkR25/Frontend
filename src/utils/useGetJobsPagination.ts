@@ -12,7 +12,7 @@ const useGetJobPagination= (authJwtToken: string , page: number , limit: number 
         queryFn: () => {
             return getJobPagination({authJwtToken, page, limit, dispatch})
         },
-        enabled: !!authJwtToken,
+        // enabled: !!authJwtToken,
         refetchInterval: 30*60*1000 // 30 mins 
     })
 }

@@ -1,16 +1,16 @@
 "use client";
 import AddLocationForm from "@/components/addLocation/AddLocationForm";
 import AddSkill from "@/components/addSkill/AddSkillForm";
+import ConfirmLoginDialog from "@/components/ConfirmLogin";
 import CreateCompanyForm from "@/components/createCompany/CreateCompanyForm";
 import CreateJobForm from "@/components/createJob/CreateJobForm";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import EditSkills from "@/components/me/EditSkills";
-import TripleDotLoader from "@/components/TripleDotLoader";
 import UpdateJobForm from "@/components/updateJob/UpdateJobForm";
 import ViewApplicants from "@/components/viewApplicants/ViewApplicants";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
+import { setLoginRequiredDialogBox } from "@/features/loginRequiredDialogBox/loginRequiredDialogBoxSlice";
 import { RootState } from "@/lib/store.config";
-import useGetUser from "@/utils/useGetUser";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,9 +55,13 @@ export default function DashboardLayout({
     return state.showAddSkillsForm.value;
   });
 
-  const jwtToken = useSelector((state: RootState) => {
-    return state.authJwtToken.value;
-  });
+  // const jwtToken = useSelector((state: RootState) => {
+  //   return state.authJwtToken.value;
+  // });
+
+  const loginRequiredDialogBox = useSelector(
+    (state: RootState) => state.setLoginRequiredDialogBox.value
+  );
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -66,30 +70,39 @@ export default function DashboardLayout({
     const token = localStorage.getItem("AuthJwtToken");
     if (token) {
       dispatch(setAuthJwtToken(token));
-    }else{
-      router.replace("/login");
     }
-  }, [dispatch, router]);
-  const { isError, isPending } = useGetUser(jwtToken);
+  }, [dispatch]);
+  // const { isError, isPending } = useGetUser(jwtToken);
 
-  useEffect(() => {
-    if (isError) {
-      router.replace("/login");
-    }
-  }, [isError, router]);
+  // useEffect(() => {
+  //   if (isError) {
+  //     router.replace("/login");
+  //   }
+  // }, [isError, router]);
 
-  if(isPending || isError ){
-    return (
-      <TripleDotLoader />
-    )
-  }
-
-  
+  // if(isPending || isError ){
+  //   return (
+  //     <TripleDotLoader />
+  //   )
+  // }
 
   return (
     <div className="dashboard-layout text-black  h-[100vh] w-[100%] bg-[#F5F5F5]">
       <ToastContainer position="top-right" autoClose={3000} className="z-20" />
-
+      <ConfirmLoginDialog
+        isOpen={loginRequiredDialogBox}
+        onClose={() => {
+          dispatch(setLoginRequiredDialogBox(false));
+        }}
+        onLogin={() => {
+          router.replace("/login");
+          dispatch(setLoginRequiredDialogBox(false));
+        }}
+        onSignup={() => {
+          router.replace("/signup");
+          dispatch(setLoginRequiredDialogBox(false));
+        }}
+      />
       {showAddLocation && (
         <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
           <div className="dashboard-layout w-full min-h-full">

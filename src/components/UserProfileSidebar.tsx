@@ -19,17 +19,13 @@ export default function UserProfileSidebar() {
     if (typeof window !== "undefined") {
       const jwt = localStorage.getItem("AuthJwtToken");
 
-      if (!jwt) {
-        router.replace("/login");
-      }
-
       if (jwt) {
         dispatch(setAuthJwtToken(jwt));
       }
     }
-  }, [dispatch, router]);
+  }, [dispatch]);
 
-  const { data } = useGetUser(authJwtToken);
+  const { data, isPending } = useGetUser(authJwtToken);
 
   // useEffect(() => {
   //   if (isError) {
@@ -37,9 +33,18 @@ export default function UserProfileSidebar() {
   //   }
   // }, [data, isError, router]);
 
+  if(authJwtToken.length==0){
+    return <button className="w-full text-center bg-blue-200 rounded-lg px-2 py-1 hover:cursor-pointer hover:bg-gray-200" onClick={()=>{router.replace('/login')}}>Login</button>;
+
+  }
+
+  if(isPending){
+    return <div className="text-center">Loading...</div>
+  }
+
 
   if (!data) {
-    return <div className="text-center">Loading user...</div>;
+    return <button className="w-full text-center bg-blue-200 rounded-2xl px-2 py-1 hover:cursor-pointer hover:bg-gray-200" onClick={()=>{router.replace('/login')}}>Login</button>;
   }
 
   return (

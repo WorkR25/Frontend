@@ -9,12 +9,10 @@ import OptionButton from "@/components/OptionButton";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { RootState } from "@/lib/store.config";
 import useGetUser from "@/utils/useGetUser";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Page() {
-  const router = useRouter();
   const jwtToken = useSelector((state: RootState) => {
     return state.authJwtToken.value;
   });
@@ -23,34 +21,16 @@ export default function Page() {
     const token = localStorage.getItem("AuthJwtToken");
     if (token) {
       dispatch(setAuthJwtToken(token));
-    } else {
-      router.push("/login");
-    }
-  }, [dispatch, router]);
+    } 
+  }, [dispatch]);
 
-  const { data: userData, isPending, isError, isSuccess } = useGetUser(jwtToken);
-
-  useEffect(() => {
-    if (isError) {
-      router.push("/login");
-    }
-  }, [isError, router]);
+  const {
+    
+  } = useGetUser(jwtToken);
 
   
 
-  if (isPending) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-lg font-medium">Loading...</p>
-      </div>
-    );
-  }else if (isError) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-lg font-medium">Redirecting...</p>
-      </div>
-    );
-  }else if(userData && isSuccess) return (
+  return (
     <div className="text-black p-2 bg-[#FFFF] h-full pb-0 ">
       <DashboardTopbar pageName="Overview" />
       <div className="flex m-4 h-full">

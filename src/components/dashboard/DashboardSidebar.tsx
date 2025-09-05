@@ -62,7 +62,7 @@ export default function DashboardSidebar() {
     (state: RootState) => state.showJobCreateForm.value
   );
 
-  const { data: userData } = useGetUser(jwtToken);
+  const { data: userData, isSuccess } = useGetUser(jwtToken);
   const { data: userRoles } = useGetUserRoles(jwtToken, userData?.id);
 
   useEffect(() => {
@@ -77,6 +77,8 @@ export default function DashboardSidebar() {
       dispatch(setAuthJwtToken(jwtToken));
     }
   }, [dispatch]);
+
+  
 
   useEffect(() => {
     const routeName = pathname.split("/")[2];
@@ -211,7 +213,7 @@ export default function DashboardSidebar() {
                   onClick={() => {
                     setMainMenuActiveTab(index);
                     dispatch(isSidebarOpenToogle(false));
-                    tab.onClickFn(dispatch, router, tab.link);
+                    tab.onClickFn(dispatch, router, tab.link, isSuccess);
                   }}
                   className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300  rounded-md hover:cursor-pointer ${
                     mainMenuActiveTab === index
@@ -254,7 +256,7 @@ export default function DashboardSidebar() {
                 key={index}
                 onClick={() => {
                   // setOtherMenuActiveTab(index);
-                  tab.onClickFn(dispatch, router, tab.link)
+                  tab.onClickFn(dispatch, router, tab.link, isSuccess)
                 }}
                 className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300 border-2 rounded-md hover:cursor-pointer border-transparent text-gray-500 hover:text-blue-500`}
               >
