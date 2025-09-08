@@ -10,8 +10,7 @@ import { setJobId } from "@/features/jobId/jobId";
 import { RootState } from "@/lib/store.config";
 import useGetJobDetails from "@/utils/useGetJobDetails";
 import { ToastContainer } from "react-toastify";
-import useGetUser from "@/utils/useGetUser";
-import { useRouter } from "next/navigation";
+import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 
 export default function Page({
   params,
@@ -20,7 +19,6 @@ export default function Page({
 }) {
   const { jobId } = use(params);
   const dispatch = useDispatch();
-  const router = useRouter() ;
 
   const jwtToken = useSelector((state: RootState) => {
     return state.authJwtToken.value;
@@ -29,19 +27,18 @@ export default function Page({
     return state.jobDetails.value;
   });
 
-  const { isError } = useGetUser(jwtToken)
+  useEffect(()=>{
+    const token= localStorage.getItem("AuthJwtToken");
+    if(token){
+      dispatch(setAuthJwtToken(token));
+    }
+  },[dispatch])
 
   useGetJobDetails(jwtToken, jobId);
   
   useEffect(() => {
     dispatch(setJobId(jobId));
   });
-
-  useEffect(()=>{
-    if(isError){
-      router.replace('/login')
-    }
-  }, [isError, router])
 
   if (!jobDetails) {
     return <div>Not found</div>;

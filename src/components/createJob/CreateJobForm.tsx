@@ -8,7 +8,7 @@ import InputField from "../InputField";
 import { useEffect, useState } from "react";
 import useCreateJob from "@/utils/useCreateJob";
 import useGetUser from "@/utils/useGetUser";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useGetJobTitle from "@/utils/useGetJobTitle";
 import useGetCity from "@/utils/useGetCity";
 import useGetEmploymentType from "@/utils/useGetEmploymentType";
@@ -25,6 +25,8 @@ import Dropdown from "./Dropdown";
 import SkillsDropdown from "./SkillsDropdown";
 import { toast, ToastContainer } from "react-toastify";
 import MarkdownEditor from "./MarkdownEditor";
+import { RootState } from "@/lib/store.config";
+import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 
 type CreateJobFormValues = z.infer<typeof CreateJobFormSchema>;
 
@@ -38,11 +40,17 @@ export default function CreateJobForm({ className }: { className?: string }) {
 
   const dispatch = useDispatch();
 
-  const [jwtToken, setJwtToken] = useState<string | null>("");
+  const jwtToken = useSelector((state: RootState) => {
+    return state.authJwtToken.value;
+  });
+
   const [isAuthorized, setIsAuthorized] = useState(false);
   useEffect(() => {
-    setJwtToken(localStorage.getItem("AuthJwtToken"));
-  }, []);
+    const token = localStorage.getItem("AuthJwtToken");
+    if (token) {
+      dispatch(setAuthJwtToken(token));
+    }
+  }, [dispatch]);
 
   const { data } = useGetUser(jwtToken);
   const { data: employmentType } = useGetEmploymentType(jwtToken);
@@ -72,14 +80,14 @@ export default function CreateJobForm({ className }: { className?: string }) {
   } = useFormMethods;
 
   const onSubmit = (createData: CreateJobFormValues) => {
-    mutate({ createJobData: {...createData, recuiter_id: Number(data?.id)}, authJwtToken: jwtToken });
+    mutate({ createJobData: {...createData, recruiter_id: Number(data?.id)}, authJwtToken: jwtToken });
   };
 
   const onError = () => {
     toast.error("Fill all the required fields to continue");
   };
 
-  setValue("recuiter_id", Number(data?.id));
+  setValue('recruiter_id', Number(data?.id));
   const { mutate, isPending } = useCreateJob();
 
   if (!isAuthorized || !userRoles || !userRoles.includes("admin")) {

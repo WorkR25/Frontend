@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import InputField from "../InputField";
 import useGetUser from "@/utils/useGetUser";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,7 +37,7 @@ export default function UserDetailForm() {
   });
   const router = useRouter();
   const jwtToken = useSelector((state: RootState)=>{return state.authJwtToken.value})
-  
+  const [mounted, setMounted] = useState(false);
   useEffect(()=>{
     const token = localStorage.getItem("AuthJwtToken");
     if(token){
@@ -46,6 +46,11 @@ export default function UserDetailForm() {
       router.replace("/login")
     }
   }, [dispatch, router])
+
+  useEffect(()=>{
+    setMounted(true);
+  },[])
+
 
   const { data: userData } = useGetUser(jwtToken)
 
@@ -62,6 +67,8 @@ export default function UserDetailForm() {
         }
     });
   };
+
+  if(!mounted) return null ;
 
   return (
     <div>

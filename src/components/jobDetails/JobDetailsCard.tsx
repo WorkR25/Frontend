@@ -1,7 +1,9 @@
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
+import { setLoginRequiredDialogBox } from "@/features/loginRequiredDialogBox/loginRequiredDialogBoxSlice";
 import { RootState } from "@/lib/store.config";
 import { timeAgo } from "@/utils/getTime";
 import useCreateApplication from "@/utils/useCreateApplication";
+import useGetUser from "@/utils/useGetUser";
 import { Bookmark, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
@@ -31,8 +33,10 @@ export default function JobDetailsCard({
       const jwt = localStorage.getItem('AuthJwtToken');
       dispatch(setAuthJwtToken(String(jwt)))
     }
-  }, [dispatch, jwtToken])
+  }, [dispatch, jwtToken]);
   const { mutate }=  useCreateApplication() ;
+  const {isSuccess} = useGetUser(jwtToken);
+
   return (
     <div className="components-jobDetails-JobDetailsCard bg-gradient-to-r from-[#0052CC] to-[#0073E6] text-white p-4 rounded-xl space-y-3 sm:flex items-center justify-between shadow-md w-full ">
       <div className="components-jobDetails-JobDetailsCard flex  items-center gap-12 sm:gap-4">
@@ -67,7 +71,14 @@ export default function JobDetailsCard({
         <button className="components-jobDetails-JobDetailsCard bg-white/20 hover:bg-white/30 p-2 rounded-md">
           <MoreHorizontal size={16} />
         </button>
-        <button onClick={()=>{mutate({jobId, jwtToken})}} className="components-jobDetails-JobDetailsCard w-full hover:cursor-pointer hover:bg-[#cedcf1] ml-3 bg-white text-[#0052CC] px-4 py-1.5 rounded-md text-sm  cursor-not-allowed">
+        <button onClick={()=>{
+          if(isSuccess){
+            mutate({jobId, jwtToken})
+          }else{
+            dispatch(setLoginRequiredDialogBox(true))
+            // router.replace('/login');
+          }
+        }} className="components-jobDetails-JobDetailsCard w-full hover:cursor-pointer hover:bg-[#cedcf1] ml-3 bg-white text-[#0052CC] px-4 py-1.5 rounded-md text-sm  cursor-not-allowed">
           Apply Now
         </button>
       </div>
