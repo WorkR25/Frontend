@@ -34,8 +34,11 @@ export default function UserProfileSidebar() {
   // }, [data, isError, router]);
 
   if(authJwtToken.length==0){
-    return <button className="w-full text-center bg-blue-200 rounded-lg px-2 py-1 hover:cursor-pointer hover:bg-gray-200" onClick={()=>{router.replace('/login')}}>Login</button>;
+    return <div className="w-full flex items-stretch justify-around gap-2">
+      <button className="w-full text-center bg-blue-200 rounded-lg px-2 py-1 hover:cursor-pointer hover:bg-gray-200" onClick={()=>{router.replace('/signup')}}>Signup</button>
+      <button className="w-full text-center bg-blue-200 rounded-lg px-2 py-1 hover:cursor-pointer hover:bg-gray-200" onClick={()=>{router.replace('/login')}}>Login</button>
 
+    </div>
   }
 
   if(isPending){
@@ -44,7 +47,11 @@ export default function UserProfileSidebar() {
 
 
   if (!data) {
-    return <button className="w-full text-center bg-blue-200 rounded-2xl px-2 py-1 hover:cursor-pointer hover:bg-gray-200" onClick={()=>{router.replace('/login')}}>Login</button>;
+    return <div className="w-full flex items-stretch justify-around gap-2">
+      <button className="w-full text-center bg-blue-200 rounded-lg px-2 py-1 hover:cursor-pointer hover:bg-gray-200" onClick={()=>{router.replace('/signup')}}>Signup</button>
+      <button className="w-full text-center bg-blue-200 rounded-lg px-2 py-1 hover:cursor-pointer hover:bg-gray-200" onClick={()=>{router.replace('/login')}}>Login</button>
+
+    </div>
   }
 
   return (

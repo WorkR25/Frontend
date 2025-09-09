@@ -15,25 +15,24 @@ export default function Home() {
     const token = localStorage.getItem('AuthJwtToken') ;
     if(token){
       dispatch(setAuthJwtToken(token)) ;
-    }else{
-      router.replace('/login');
     }
+    router.replace('/dashboard')
   },[dispatch, router])
+
+  
   const jwtToken = useSelector((state: RootState)=>{return state.authJwtToken.value})
+  const {  } = useGetUser(jwtToken);
 
+// useEffect(() => {
+//   if (isLoading) return; // wait for query to finish
 
-  const { data, isSuccess, isError, isLoading } = useGetUser(jwtToken);
+//   if (isSuccess && data) {
+//     router.push("/dashboard");
+//   }
 
-useEffect(() => {
-  if (isLoading) return; // wait for query to finish
-
-  if (isSuccess && data) {
-    router.push("/dashboard");
-  }
-
-  if (isError) {
-    router.push("/login"); // or redirect("/login") in App Router
-  }
-}, [isSuccess, isError, isLoading, data, router]);
+//   if (isError) {
+//     router.push("/login"); // or redirect("/login") in App Router
+//   }
+// }, [isSuccess, isError, isLoading, data, router]);
 
 }
