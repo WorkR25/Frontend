@@ -1,4 +1,3 @@
-import CompanyCard from "./CompanyCard";
 import JobInfoCard from "./JobInfoCard";
 
 type JobSpecificationProps = {
@@ -18,9 +17,6 @@ export default function JobSpecification({
   salaryMin,
   salaryMax,
   workType,
-  img,
-  city,
-  companyName,
 }: JobSpecificationProps) {
   return (
     <div>
@@ -53,14 +49,7 @@ export default function JobSpecification({
         />
       </div>
 
-      <CompanyCard
-        logoUrl={img ? img : "/google-icon-logo-svgrepo-com.svg"}
-        name={companyName}
-        location={city}
-        industry="Technology Information"
-        size="11 - 50 Employee"
-        description="At Advanta Inc., we are pioneers in delivering cutting-edge solutions that drive innovation and efficiency. At Advanta Inc., we are pioneers in delivering cutting-edge solutions that drive innovation and efficiency. At Advanta Inc., we are pioneers in delivering cutting-edge solutions that drive innovation and efficiency"
-      />
+      
     </div>
   );
 }
