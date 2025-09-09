@@ -1,12 +1,14 @@
 "use client";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice";
+import { RootState } from "@/lib/store.config";
 import { cn } from "@/utils/cn";
 import { getFormattedDate } from "@/utils/getTime";
+import useGetUser from "@/utils/useGetUser";
 import { AlignJustify, Calendar, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function DashboardTopbar({
   pageName,
@@ -18,12 +20,15 @@ export default function DashboardTopbar({
   const [mounted, setMounted] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
+  const jwtToken= useSelector((state: RootState)=> state.authJwtToken.value)
+  const {isSuccess} = useGetUser(jwtToken)
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+  }, [isSuccess]);
 
   if (!mounted) return null;
+
 
   return (
     <div
@@ -56,7 +61,8 @@ export default function DashboardTopbar({
           </div>
           <div>
             
-            <button
+            {isSuccess && (
+              <button
               className="rounded-full bg-blue-200 hover:cursor-pointer hover:bg-blue-300 p-2"
               onClick={() => {
                 localStorage.removeItem("AuthJwtToken");
@@ -66,6 +72,7 @@ export default function DashboardTopbar({
             >
               <LogOut height={20} width={20}/>
             </button>
+            )}
           </div>
         </div>
         {/* <div className="components-dashboard-DashboardTopbar hidden sm:block">Language</div> */}

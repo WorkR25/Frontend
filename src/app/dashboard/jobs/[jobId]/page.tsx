@@ -11,6 +11,8 @@ import { RootState } from "@/lib/store.config";
 import useGetJobDetails from "@/utils/useGetJobDetails";
 import { ToastContainer } from "react-toastify";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
+import TripleDotLoader from "@/components/TripleDotLoader";
+import { setJobDetails } from "@/features/jobDetails/jobDetails";
 
 export default function Page({
   params,
@@ -34,15 +36,30 @@ export default function Page({
     }
   },[dispatch])
 
-  useGetJobDetails(jwtToken, jobId);
+  const { data, isPending, isError} =useGetJobDetails(jwtToken, jobId);
   
   useEffect(() => {
     dispatch(setJobId(jobId));
   });
 
-  if (!jobDetails) {
-    return <div>Not found</div>;
+  useEffect(() => {
+    if (data) {
+      dispatch(setJobDetails(data));
+    }
+  }, [data, dispatch]);
+
+  if(!jobDetails) return <div><TripleDotLoader/></div> ;
+
+  if (isPending) {
+    return <div><TripleDotLoader/></div>;
   }
+
+  if(isError){
+    return <div className="w-full h-full flex text-center items-center justify-center ">
+      Not found
+    </div>
+  }
+
 
   return (
     <div className="jobId-page text-black bg-white h-screen flex flex-col p-2">
