@@ -95,11 +95,11 @@ export default function DashboardLayout({
           dispatch(setLoginRequiredDialogBox(false));
         }}
         onLogin={() => {
-          router.replace("/login");
+          router.push("/login");
           dispatch(setLoginRequiredDialogBox(false));
         }}
         onSignup={() => {
-          router.replace("/signup");
+          router.push("/signup");
           dispatch(setLoginRequiredDialogBox(false));
         }}
       />

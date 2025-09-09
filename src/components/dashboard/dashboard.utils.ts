@@ -21,22 +21,24 @@ type OnClickFnType = (
 
 export const onClickOverview: OnClickFnType = (dispatch, router, link, isSuccess) => {
   dispatch(isSidebarOpenToogle(false));
-  if(isSuccess){
-    router.replace(`/dashboard/${link}`);
-  }else{
-    dispatch(setLoginRequiredDialogBox(true))
-    // router.replace(`/login`);
-  }
+  router.replace(`/dashboard/${link}`);
+  // if(isSuccess){
+  // }
+  // else{
+  //   dispatch(setLoginRequiredDialogBox(true))
+  //   // router.replace(`/login`);
+  // }
 };
 
 export const onClickExploreJob: OnClickFnType = (dispatch, router, link, isSuccess) => {
   dispatch(isSidebarOpenToogle(false));
-  if(isSuccess){
-    router.replace(`/dashboard/${link}`);
-  }else{
-    dispatch(setLoginRequiredDialogBox(true))
+  router.push(`/dashboard/${link}`);
+  // if(isSuccess){
+  // }
+  // else{
+    // dispatch(setLoginRequiredDialogBox(true))
     // router.replace(`/login`);
-  }
+  // }
 
 };
 
