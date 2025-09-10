@@ -46,7 +46,7 @@ const getJobApplicants = async (authJwtToken: string | null, jobId: number) => {
     if(!jobId){
       return [];
     }
-    const response = await jobServiceApi.get("/applications/"+ jobId, {
+    const response = await jobServiceApi.get("/applications/job-id/"+ jobId, {
       headers: {
         Authorization: authJwtToken,
       },

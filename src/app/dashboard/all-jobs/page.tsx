@@ -108,7 +108,7 @@ export default function Page() {
                       dispatch(setJobId(String(job.id)));
                       dispatch(setShowJobupdateForm(true));
                     }}
-                    className="all-jobs-page border rounded-lg py-1 px-1.5 bg-[#32db97]"
+                    className="hover:cursor-pointer all-jobs-page border rounded-lg py-1 px-1.5 bg-[#32db97]"
                   >
                     Update
                   </button>
@@ -117,7 +117,7 @@ export default function Page() {
                       setConfirmDelete(true);
                       setJobIdToBeDeleted(job.id);
                     }}
-                    className="all-jobs-page border rounded-lg py-1 px-1.5 bg-[#b83588]"
+                    className="all-jobs-page hover:cursor-pointer  border rounded-lg py-1 px-1.5 bg-[#b83588]"
                   >
                     Delete
                   </button>
@@ -127,7 +127,7 @@ export default function Page() {
                       dispatch(setShowJobApplicants(true));
                       dispatch(setJobId(String(job.id)));
                     }}
-                    className="all-jobs-page border rounded-lg py-1 px-1.5 bg-[#32db97]"
+                    className="all-jobs-page hover:cursor-pointer  border rounded-lg py-1 px-1.5 bg-[#32db97]"
                   >
                     View applicants
                   </button>

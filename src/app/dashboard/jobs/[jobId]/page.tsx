@@ -30,6 +30,7 @@ export default function Page({
     return state.jobDetails.value;
   });
 
+
   useEffect(() => {
     const token = localStorage.getItem("AuthJwtToken");
     if (token) {
@@ -38,6 +39,7 @@ export default function Page({
   }, [dispatch]);
 
   const { data, isPending, isError } = useGetJobDetails(jwtToken, jobId);
+
 
   useEffect(() => {
     dispatch(setJobId(jobId));
@@ -88,6 +90,7 @@ export default function Page({
         city={jobDetails.city.name}
         jobId={Number(jobId)}
         created_at={jobDetails.created_at}
+        apply_link={jobDetails.apply_link}
       />
       <div className="jobId-page sm:flex flex-1 overflow-y-scroll sm:overflow-hidden">
         <div className="jobId-page sm:hidden overflow-y-auto p-4 min-h-0">
@@ -118,13 +121,25 @@ export default function Page({
           />
           <CompanyCard
             description={jobDetails.company.description ?? "Description"}
-            industry={jobDetails.company.industry ? jobDetails.company.industry.name :"industry"}
+            industry={
+              jobDetails.company.industry
+                ? jobDetails.company.industry.name
+                : "industry"
+            }
             location={jobDetails.city.name}
             logoUrl={jobDetails.company.logo}
             name={jobDetails.company.name}
-            size={`${jobDetails.company.companySize.min_employees ?? "min"} - ${
-              jobDetails.company.companySize.max_employees ?? "max" 
-            } employees`}
+            size={
+              jobDetails.company.companySize
+                ? `${jobDetails.company.companySize.min_employees ?? "min"} ${
+                    jobDetails.company.companySize.max_employees
+                      ? jobDetails.company.companySize.max_employees > 100002
+                        ? "+"
+                        : `- ${jobDetails.company.companySize.max_employees}`
+                      : "max"
+                  } employees`
+                : "Company Size"
+            }
           />
         </div>
       </div>

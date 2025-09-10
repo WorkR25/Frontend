@@ -25,10 +25,10 @@ const  useCreateApplication= ()=>{
             }
         },
         onError: ()=>{
-            toast.error("Error applying for job ")
+            // toast.error("Error applying for job ")
         },
         onSuccess: ()=>{
-            toast.success("Succesfully applied")
+            // toast.success("Succesfully applied")
         }
     })
 }

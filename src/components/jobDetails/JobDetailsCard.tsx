@@ -8,36 +8,42 @@ import { Bookmark, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
-type JobDetailsCardProps= {
-  jobId: number ;
+type JobDetailsCardProps = {
+  jobId: number;
   img: string;
   title: string;
   companyName: string;
   city: string;
   created_at: Date;
-}
+  apply_link: string;
+};
 export default function JobDetailsCard({
-  jobId, 
+  jobId,
   img,
   title,
   companyName,
   city,
-  created_at
+  created_at,
+  apply_link,
 }: JobDetailsCardProps) {
   const dispatch = useDispatch();
-  const jwtToken = useSelector((state: RootState)=> {return state.authJwtToken.value})
-  
-  useEffect(()=>{
-    if(!jwtToken){
-      const jwt = localStorage.getItem('AuthJwtToken');
-      if(jwt){
-        dispatch(setAuthJwtToken(jwt))
+  const jwtToken = useSelector((state: RootState) => {
+    return state.authJwtToken.value;
+  });
+
+  useEffect(() => {
+    if (!jwtToken) {
+      const jwt = localStorage.getItem("AuthJwtToken");
+      if (jwt) {
+        dispatch(setAuthJwtToken(jwt));
       }
     }
   }, [dispatch, jwtToken]);
-  const { mutate }=  useCreateApplication() ;
-  const {isSuccess} = useGetUser(jwtToken);
+  const { mutate } = useCreateApplication();
+
+  const { isSuccess } = useGetUser(jwtToken);
 
   return (
     <div className="components-jobDetails-JobDetailsCard bg-gradient-to-r from-[#0052CC] to-[#0073E6] text-white p-4 rounded-xl space-y-3 sm:flex items-center justify-between shadow-md w-full ">
@@ -54,15 +60,13 @@ export default function JobDetailsCard({
 
         <div className="components-jobDetails-JobDetailsCard space-y-1">
           <div className="components-jobDetails-JobDetailsCard text-sm text-white/80">
-            {
-              created_at ? timeAgo(String(created_at)) : ""
-            }
+            {created_at ? timeAgo(String(created_at)) : ""}
           </div>
           <div className="components-jobDetails-JobDetailsCard font-semibold text-lg flex items-center gap-2">
             {title}
           </div>
           <div className="components-jobDetails-JobDetailsCard text-sm text-white/90">
-            {companyName+` ,  `} {city}
+            {companyName + ` ,  `} {city}
           </div>
         </div>
       </div>
@@ -70,12 +74,17 @@ export default function JobDetailsCard({
         <button className="hidden components-jobDetails-JobDetailsCard bg-white/20 hover:bg-white/30 p-2 rounded-md">
           <Bookmark size={16} />
         </button>
-        <button className="components-jobDetails-JobDetailsCard bg-white/20 hover:bg-white/30 p-2 rounded-md">
+        <button className="hidden components-jobDetails-JobDetailsCard bg-white/20 hover:bg-white/30 p-2 rounded-md">
           <MoreHorizontal size={16} />
         </button>
         <button onClick={()=>{
           if(isSuccess){
             mutate({jobId, jwtToken})
+            if(apply_link){
+              window.open(apply_link, '_blank');
+            }else{
+              toast.warning('Invalid apply link')
+            }
           }else{
             dispatch(setLoginRequiredDialogBox(true))
             // router.replace('/login');
