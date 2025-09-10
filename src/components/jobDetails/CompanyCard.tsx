@@ -14,13 +14,16 @@ export default function CompanyCard({
       <h3 className="text-md font-semibold text-gray-900">About Company</h3>
 
       <div className="flex items-center gap-4">
-        <Image
-          src={logoUrl}
-          alt={name}
-          width={40}
-          height={40}
-          className="rounded-md"
-        />
+        {logoUrl && (
+          <Image
+            src={logoUrl}
+            alt={name}
+            width={40}
+            height={40}
+            className="rounded-md"
+          />
+        )}
+
         <div>
           <div className="text-sm font-medium text-gray-900">{name}</div>
           <div className="text-sm text-gray-500">{location}</div>

@@ -8,6 +8,7 @@ import { Bookmark, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 type JobDetailsCardProps= {
   jobId: number ;
@@ -16,6 +17,7 @@ type JobDetailsCardProps= {
   companyName: string;
   city: string;
   created_at: Date;
+  apply_link: string;
 }
 export default function JobDetailsCard({
   jobId, 
@@ -23,7 +25,8 @@ export default function JobDetailsCard({
   title,
   companyName,
   city,
-  created_at
+  created_at,
+  apply_link,
 }: JobDetailsCardProps) {
   const dispatch = useDispatch();
   const jwtToken = useSelector((state: RootState)=> {return state.authJwtToken.value})
@@ -76,6 +79,11 @@ export default function JobDetailsCard({
         <button onClick={()=>{
           if(isSuccess){
             mutate({jobId, jwtToken})
+            if(apply_link){
+              window.open(apply_link, '_blank');
+            }else{
+              toast.warning('Invalid apply link')
+            }
           }else{
             dispatch(setLoginRequiredDialogBox(true))
             // router.replace('/login');
