@@ -3,7 +3,7 @@ export type Job = {
   jobTitle: {
     title: string;
   };    
-  companyId: {
+  company: {
     name: string;  
     logo: string;    
   };

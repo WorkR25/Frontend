@@ -31,7 +31,9 @@ export default function JobDetailsCard({
   useEffect(()=>{
     if(!jwtToken){
       const jwt = localStorage.getItem('AuthJwtToken');
-      dispatch(setAuthJwtToken(String(jwt)))
+      if(jwt){
+        dispatch(setAuthJwtToken(jwt))
+      }
     }
   }, [dispatch, jwtToken]);
   const { mutate }=  useCreateApplication() ;

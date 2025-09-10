@@ -13,6 +13,7 @@ import { ToastContainer } from "react-toastify";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import TripleDotLoader from "@/components/TripleDotLoader";
 import { setJobDetails } from "@/features/jobDetails/jobDetails";
+import CompanyCard from "@/components/jobDetails/CompanyCard";
 
 export default function Page({
   params,
@@ -29,15 +30,15 @@ export default function Page({
     return state.jobDetails.value;
   });
 
-  useEffect(()=>{
-    const token= localStorage.getItem("AuthJwtToken");
-    if(token){
+  useEffect(() => {
+    const token = localStorage.getItem("AuthJwtToken");
+    if (token) {
       dispatch(setAuthJwtToken(token));
     }
-  },[dispatch])
+  }, [dispatch]);
 
-  const { data, isPending, isError} =useGetJobDetails(jwtToken, jobId);
-  
+  const { data, isPending, isError } = useGetJobDetails(jwtToken, jobId);
+
   useEffect(() => {
     dispatch(setJobId(jobId));
   });
@@ -48,18 +49,28 @@ export default function Page({
     }
   }, [data, dispatch]);
 
-  if(!jobDetails) return <div><TripleDotLoader/></div> ;
+  if (!jobDetails)
+    return (
+      <div>
+        <TripleDotLoader />
+      </div>
+    );
 
   if (isPending) {
-    return <div><TripleDotLoader/></div>;
+    return (
+      <div>
+        <TripleDotLoader />
+      </div>
+    );
   }
 
-  if(isError){
-    return <div className="w-full h-full flex text-center items-center justify-center ">
-      Not found
-    </div>
+  if (isError) {
+    return (
+      <div className="w-full h-full flex text-center items-center justify-center ">
+        Not found
+      </div>
+    );
   }
-
 
   return (
     <div className="jobId-page text-black bg-white h-screen flex flex-col p-2">
@@ -71,9 +82,9 @@ export default function Page({
         <DashboardTopbar className="basis-[95%]" pageName="Job Details" />
       </div>
       <JobDetailsCard
-        img={jobDetails?.companyId.logo}
+        img={jobDetails?.company.logo}
         title={jobDetails.jobTitle.title}
-        companyName={jobDetails?.companyId.name}
+        companyName={jobDetails?.company.name}
         city={jobDetails.city.name}
         jobId={Number(jobId)}
         created_at={jobDetails.created_at}
@@ -86,9 +97,9 @@ export default function Page({
             salaryMax={jobDetails.salary_max}
             salaryMin={jobDetails.salary_min}
             workType={jobDetails.is_remote}
-            img={jobDetails.companyId.logo}
+            img={jobDetails.company.logo}
             city={jobDetails.city.name}
-            companyName={jobDetails.companyId.name}
+            companyName={jobDetails.company.name}
           />
         </div>
         <div className="jobId-page sm:basis-35/50 overflow-y-auto p-4 min-h-0">
@@ -101,9 +112,19 @@ export default function Page({
             salaryMax={jobDetails.salary_max}
             salaryMin={jobDetails.salary_min}
             workType={jobDetails.is_remote}
-            img={jobDetails.companyId.logo}
+            img={jobDetails.company.logo}
             city={jobDetails.city.name}
-            companyName={jobDetails.companyId.name}
+            companyName={jobDetails.company.name}
+          />
+          <CompanyCard
+            description={jobDetails.company.description ?? "Description"}
+            industry={jobDetails.company.industry ? jobDetails.company.industry.name :"industry"}
+            location={jobDetails.city.name}
+            logoUrl={jobDetails.company.logo}
+            name={jobDetails.company.name}
+            size={`${jobDetails.company.companySize.min_employees ?? "min"} - ${
+              jobDetails.company.companySize.max_employees ?? "max" 
+            } employees`}
           />
         </div>
       </div>

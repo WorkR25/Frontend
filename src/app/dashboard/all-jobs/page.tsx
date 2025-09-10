@@ -91,9 +91,9 @@ export default function Page() {
               >
                 <JobCard
                   id={job.id}
-                  img={job.companyId.logo}
+                  img={job.company.logo}
                   title={job.jobTitle.title}
-                  company={job.companyId.name}
+                  company={job.company.name}
                   employmentType={job.is_remote ? "Remote" : "On-site"}
                   city={job.city}
                   country={job.country}
