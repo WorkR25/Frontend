@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { Eye, EyeOff, User, Mail, Lock, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignUpFormSchema } from "@/schema/signUp.validator";
@@ -58,27 +58,33 @@ function Form() {
     watch,
     formState: { errors },
   } = useForm<FormValues>({
-    mode: "onChange",      
+    mode: "onChange",
     reValidateMode: "onBlur",
     resolver: zodResolver(SignUpFormSchema),
   });
 
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl");
   const router = useRouter();
   const password = watch("password");
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const { mutate,  isPending, isSuccess } = useSignup();
+  const { mutate, isPending, isSuccess } = useSignup();
 
-  useEffect(()=>{
-      if(isSuccess){
-      router.replace('/dashboard');
+  useEffect(() => {
+    if (isSuccess) {
+      router.push(returnUrl || "/dashboard");
     }
-  }, [isSuccess, router]);
+  }, [isSuccess, router, returnUrl]);
 
   const onSubmit = (formData: FormValues) => {
-    mutate(formData);
+    mutate(formData, {
+      onSuccess: () => {
+        router.push(returnUrl || "/dashboard");
+      },
+    });
   };
 
   return (

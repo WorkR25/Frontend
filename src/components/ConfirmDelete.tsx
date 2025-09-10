@@ -1,3 +1,4 @@
+import { X } from "lucide-react";
 import React from "react";
 
 interface ConfirmDeleteDialogProps {
@@ -25,6 +26,12 @@ const ConfirmDeleteDialog: React.FC<ConfirmDeleteDialogProps> = ({
       ></div>
 
       <div className="relative bg-white rounded-2xl shadow-lg w-full max-w-md p-6 z-10">
+        <div
+          className="components-createJob-CreateJobForm absolute top-2 right-2 hover:cursor-pointer "
+          onClick={onClose}
+        >
+          <X width={20} />
+        </div>
         <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
         <p className="text-gray-600 mt-2">{message}</p>
 

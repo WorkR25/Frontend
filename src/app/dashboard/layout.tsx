@@ -11,7 +11,7 @@ import ViewApplicants from "@/components/viewApplicants/ViewApplicants";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { setLoginRequiredDialogBox } from "@/features/loginRequiredDialogBox/loginRequiredDialogBoxSlice";
 import { RootState } from "@/lib/store.config";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
@@ -65,6 +65,7 @@ export default function DashboardLayout({
 
   const dispatch = useDispatch();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const token = localStorage.getItem("AuthJwtToken");
@@ -95,11 +96,11 @@ export default function DashboardLayout({
           dispatch(setLoginRequiredDialogBox(false));
         }}
         onLogin={() => {
-          router.push("/login");
+          router.push(`/login?returnUrl=${encodeURIComponent(pathname)}`);
           dispatch(setLoginRequiredDialogBox(false));
         }}
         onSignup={() => {
-          router.push("/signup");
+          router.push(`/signup?returnUrl=${encodeURIComponent(pathname)}`);
           dispatch(setLoginRequiredDialogBox(false));
         }}
       />

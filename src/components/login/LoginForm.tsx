@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import z from "zod";
 import { LogInFormSchema } from "@/schema/logIn.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -77,26 +77,27 @@ function Form() {
     const token = localStorage.getItem("AuthJwtToken");
     if (token) {
       dispatch(setAuthJwtToken(token));
-    }else{
-      router.replace('/login');
+    } else {
+      // router.replace("/login");
     }
-  }, [dispatch,router]);
+  }, [dispatch, router]);
 
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl");
   const { data, isSuccess: getUserSuccess } = useGetUser(jwtToken);
   useEffect(() => {
     if (getUserSuccess && data) {
-      router.push("/dashboard");
+      router.push(returnUrl || "/dashboard");
     }
-  }, [getUserSuccess, data, router]);
-
-  const { mutate,  isPending, isSuccess } = useLogin();
+  }, [getUserSuccess, data, router, returnUrl]);
+  const { mutate, isPending, isSuccess } = useLogin();
 
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = (logInData: LogInFormValues) => {
     mutate(logInData, {
       onSuccess: () => {
-        router.push("/dashboard");
+        router.push(returnUrl || "/dashboard");
       },
     });
   };
