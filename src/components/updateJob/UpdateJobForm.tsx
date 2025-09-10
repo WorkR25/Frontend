@@ -112,7 +112,7 @@ export default function UpdateJobForm({
               useQueryFn={useGetCompany}
               getOptionLabel={(company) => company.name}
               getOptionValue={(company) => company.id}
-              fieldValue={jobDetails.companyId.name}
+              fieldValue={jobDetails.company.name}
             />
 
             <div className="font-bold text-md mt-2 text-black">Job Title *</div>
