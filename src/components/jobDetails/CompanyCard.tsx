@@ -1,5 +1,6 @@
 import { CompanyCardProps } from "@/types/CompanyCardProps";
 import Image from "next/image";
+import MarkdownHTML from "./MarkdownRender";
 
 export default function CompanyCard({
   logoUrl,
@@ -39,7 +40,9 @@ export default function CompanyCard({
         </span>
       </div>
 
-      <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
+      <div className="text-sm text-gray-600 leading-relaxed">
+        <MarkdownHTML content={description ?? "null"}/>
+      </div>
     </div>
   );
 }

@@ -32,11 +32,12 @@ export default function JobCard({
         router.push("/dashboard/jobs/" + id);
       }}
     >
-      <div className="flex items-center justify-between text-sm">
-        <span className="bg-green-100 text-green-600 px-2 py-0.5 rounded-full text-xs font-medium">
+      <div className="flex items-center justify-end text-sm">
+        {/* unhide suit you best */}
+        <span className="hidden bg-green-100 text-green-600 px-2 py-0.5 rounded-full text-xs font-medium">
           Suit You Best!
         </span>
-        <span className="text-gray-400 text-xs">{created_at? timeAgo(String(created_at)): "3 days ago"}</span>
+        <div className="text-end text-gray-400 text-xs">{created_at? timeAgo(String(created_at)): "3 days ago"}</div>
       </div>
 
       <div className="flex items-start space-x-3">
@@ -74,10 +75,11 @@ export default function JobCard({
 
       { (
         <div className="flex items-center justify-between">
-          <button className=" bg-blue-600 hover:bg-blue-700 basis-9/10 w-full text-white text-sm font-medium px-6 py-2 rounded-md">
+          <button className=" bg-blue-600 hover:bg-blue-700 hover:cursor-pointer w-full text-white text-sm font-medium px-6 py-2 rounded-md">
             Apply
           </button>
-          <Bookmark className="w-5 h-5 basis-1/10 text-gray-400" />
+          {/* unhide bookmark */}
+          <Bookmark className="hidden w-5 h-5 basis-1/10 text-gray-400" />
         </div>
       )}
     </div>
