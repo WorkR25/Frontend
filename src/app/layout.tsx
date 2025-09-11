@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   title: "WorkR",
   description: "",
   icons: {
-    icon: "/WorkRLogo.png",
+    icon: "/WorkR-Logo2.png",
   },
 };
 
