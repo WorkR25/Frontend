@@ -188,13 +188,17 @@ export default function DashboardSidebar() {
           />
         </div>
       </div>
-      <div className="flex items-center w-full max-w-xs p-2 mt-2 border border-gray-300 rounded-md bg-white shadow-sm">
-        <Search className="w-5 h-5 text-gray-400" />
-        <input
-          type="text"
-          placeholder="Quick search..."
-          className="ml-2 w-full outline-none text-sm text-gray-700 placeholder:text-gray-400 bg-transparent"
-        />
+      <div className="relative">
+        <p className="text-red-500 text-xs absolute right-2 top-2.5">Coming Soon</p>
+        <div className="flex items-center w-full max-w-xs p-2 mt-2 border border-gray-300 rounded-md bg-white shadow-sm">
+          <Search className="w-5 h-5 text-gray-400" />
+          <input
+            disabled
+            type="text"
+            placeholder="Quick search..."
+            className="ml-2 w-full outline-none text-sm text-gray-700 placeholder:text-gray-400 bg-transparent"
+          />
+        </div>
       </div>
 
       <aside className="w-full py-4 text-gray-800 space-y-2">
@@ -297,20 +301,23 @@ export default function DashboardSidebar() {
         >
           <div className="flex flex-col">
             {otherMenuTabs.map((tab, index) => (
-              <button
+                <button
                 key={index}
                 onClick={() => {
                   setOtherMenuActiveTab(index);
                   router.push(`${pathname}${tab.link}`);
                 }}
-                className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300 border-2 rounded-md hover:cursor-pointer ${
+                className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300 border-2 rounded-md pointer-events-none ${
                   otherMenuActiveTab === index
                     ? "border-blue-500 text-[#D8FFFF] bg-[#0470B8]"
                     : "border-transparent text-gray-500 hover:text-blue-500"
                 }`}
               >
                 {tab.icon}
-                {tab.name}
+                <div className="relative">
+                  <p>{tab.name}</p>
+                  <p className="text-[0.61rem] text-red-500 absolute -right-[4.2rem] top-0">Coming Soon</p>
+                </div>
               </button>
             ))}
           </div>

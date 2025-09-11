@@ -1,11 +1,12 @@
-import { Check, MoreHorizontal, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 
 export default function InterviewInvitationCard () {
   return (
-    <div className="w-full sm:w-[55%] rounded-xl bg-[#0075C4] p-4 text-white space-y-4 shadow-md h-[220px]">
+    <div className="w-full sm:w-[55%] rounded-xl bg-[#0075C4] p-4 text-white space-y-4 shadow-md h-[220px] relative">
+      <p className="text-xs text-red-600 absolute right-2 top-2 font-semibold">Coming Soon</p>
       <div className="flex items-center justify-between">
         <h2 className="font-semibold text-base">You’ve got an invitation!</h2>
-        <MoreHorizontal className="w-5 h-5 text-white" />
+        {/* <MoreHorizontal className="w-5 h-5 text-white" /> */}
       </div>
 
       <p className="text-sm text-white/80">
@@ -28,10 +29,10 @@ export default function InterviewInvitationCard () {
         </div>
 
         <div className="flex space-x-2">
-          <button className="bg-red-500 p-1.5 rounded-full hover:bg-red-600 transition">
+          <button className="bg-red-500 p-1.5 rounded-full hover:bg-red-600 transition pointer-events-none">
             <X className="w-4 h-4 text-white" />
           </button>
-          <button className="bg-green-500 p-1.5 rounded-full hover:bg-green-600 transition">
+          <button className="bg-green-500 p-1.5 rounded-full hover:bg-green-600 transition pointer-events-none">
             <Check className="w-4 h-4 text-white" />
           </button>
         </div>
