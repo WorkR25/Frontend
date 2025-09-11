@@ -88,7 +88,7 @@ export default function SignUpHero() {
 
       <span className=" absolute bottom-[-200px] right-auto left-[100px] lg:left-auto lg:right-[-90px] h-[650px] w-[650px] overflow-hidden rounded-bl-2xl">
         <Image
-          src="/Frame 3.png"
+          src="/Frame 3(1).png"
           alt="photo"
           width={600}
           height={600}

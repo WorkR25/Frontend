@@ -19,7 +19,7 @@ export default function SignUpForm() {
     <div className="relative w-full h-full ">
       <div className=" top-0 left-0 p-6 pt-3">
         <Image
-          src="/WorkR-Logo.svg"
+          src="/WorkR-Full-Logo2.png"
           alt="photo"
           width={80}
           height={80}

@@ -164,7 +164,7 @@ export default function DashboardSidebar() {
       <div className="flex items-center justify-between py-4  ">
         <div>
           <Image
-            src="/WorkR-Logo.svg"
+            src="/WorkR-Full-Logo2.png"
             alt="photo"
             width={80}
             height={80}
