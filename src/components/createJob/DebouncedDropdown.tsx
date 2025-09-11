@@ -196,7 +196,7 @@ export default function DebouncedDropdown<
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative w-full" ref={dropdownRef}>
       <div
         className="flex items-center h-[42px] justify-between pr-3 w-full border rounded-md"
         onClick={() => setIsOpen((prev) => !prev)}

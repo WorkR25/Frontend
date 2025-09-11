@@ -3,6 +3,7 @@ import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice
 import { setLoginRequiredDialogBox } from "@/features/loginRequiredDialogBox/loginRequiredDialogBoxSlice";
 import { setShowAddLocationForm } from "@/features/showAddLocationForm/showAddLocationFormSlice";
 import { setShowAddSkillsForm } from "@/features/showAddSkillsForm/showAddSkillsFormSlice";
+import { setShowAddTitleForm } from "@/features/showAddTitleForm/showAddTitleFormSlice";
 import { setShowCreateCompanyForm } from "@/features/showCreateCompanyForm/showCreateCompanyFormSlice";
 import { setShowEditSkills } from "@/features/showEditSkils/showEditSkillsSlice";
 import { toogleShowJobCreateForm } from "@/features/showJobCreateForm/showJobCreateForm";
@@ -73,6 +74,11 @@ export const onClickAddCity: OnClickFnType = (dispatch, router, link) => {
   dispatch(isSidebarOpenToogle(false));
 };
 
+
+export const onClickAddTitle: OnClickFnType = (dispatch, router, link) => {
+  dispatch(setShowAddTitleForm(true))
+  dispatch(isSidebarOpenToogle(false));
+}
 //                     dispatch(isSidebarOpenToogle(false));
 // {() => {
 //                     setMainMenuActiveTab(index);

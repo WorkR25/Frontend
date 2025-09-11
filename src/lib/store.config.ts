@@ -14,7 +14,7 @@ import jobPageNumberSlice from "../features/jobPageNumber/jobPageNumberSlice"
 import showAddSkillsFormSlice  from "../features/showAddSkillsForm/showAddSkillsFormSlice";
 import showAddLocationFormSlice from "../features/showAddLocationForm/showAddLocationFormSlice";
 import setLoginRequiredDialogBox from "../features/loginRequiredDialogBox/loginRequiredDialogBoxSlice";
-
+import showAddTitleForm from "@/features/showAddTitleForm/showAddTitleFormSlice";
 
 export const store = configureStore({
   reducer: {
@@ -32,7 +32,8 @@ export const store = configureStore({
     jobPageNumber: jobPageNumberSlice,
     showAddSkillsForm: showAddSkillsFormSlice,
     showAddLocationForm: showAddLocationFormSlice,
-    setLoginRequiredDialogBox: setLoginRequiredDialogBox
+    setLoginRequiredDialogBox: setLoginRequiredDialogBox,
+    showAddTitleForm: showAddTitleForm,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

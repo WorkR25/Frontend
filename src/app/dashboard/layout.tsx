@@ -1,6 +1,7 @@
 "use client";
 import AddLocationForm from "@/components/addLocation/AddLocationForm";
 import AddSkill from "@/components/addSkill/AddSkillForm";
+import AddTitleForm from "@/components/addTitle/AddTitleForm";
 import ConfirmLoginDialog from "@/components/ConfirmLogin";
 import CreateCompanyForm from "@/components/createCompany/CreateCompanyForm";
 import CreateJobForm from "@/components/createJob/CreateJobForm";
@@ -11,7 +12,7 @@ import ViewApplicants from "@/components/viewApplicants/ViewApplicants";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { setLoginRequiredDialogBox } from "@/features/loginRequiredDialogBox/loginRequiredDialogBoxSlice";
 import { RootState } from "@/lib/store.config";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
@@ -55,6 +56,10 @@ export default function DashboardLayout({
     return state.showAddSkillsForm.value;
   });
 
+  const showAddTitleForm = useSelector((state: RootState) => {
+    return state.showAddTitleForm.value;
+  });
+
   // const jwtToken = useSelector((state: RootState) => {
   //   return state.authJwtToken.value;
   // });
@@ -65,6 +70,7 @@ export default function DashboardLayout({
 
   const dispatch = useDispatch();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const token = localStorage.getItem("AuthJwtToken");
@@ -95,11 +101,11 @@ export default function DashboardLayout({
           dispatch(setLoginRequiredDialogBox(false));
         }}
         onLogin={() => {
-          router.push("/login");
+          router.push(`/login?returnUrl=${encodeURIComponent(pathname)}`);
           dispatch(setLoginRequiredDialogBox(false));
         }}
         onSignup={() => {
-          router.push("/signup");
+          router.push(`/signup?returnUrl=${encodeURIComponent(pathname)}`);
           dispatch(setLoginRequiredDialogBox(false));
         }}
       />
@@ -111,6 +117,13 @@ export default function DashboardLayout({
         </div>
       )}
 
+      {showAddTitleForm && (
+        <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
+          <div className="dashboard-layout w-full min-h-full">
+            <AddTitleForm />
+          </div>
+        </div>
+      )}
       {showCreateCompanyForm && (
         <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
           <div className="dashboard-layout w-full min-h-full">
@@ -204,6 +217,13 @@ export default function DashboardLayout({
             <div className="dashboard-layout absolute sm:hidden px-5 hide-scrollbar flex justify-center z-40 h-screen w-full sm:w-[79%] bg-white overflow-y-auto">
               <div className="dashboard-layout w-full min-h-full">
                 <CreateCompanyForm />
+              </div>
+            </div>
+          )}
+          {showAddTitleForm && (
+            <div className="dashboard-layout absolute sm:hidden px-5 hide-scrollbar flex justify-center z-40 h-screen w-full sm:w-[79%] bg-white overflow-y-auto">
+              <div className="dashboard-layout w-full min-h-full">
+                <AddTitleForm />
               </div>
             </div>
           )}
