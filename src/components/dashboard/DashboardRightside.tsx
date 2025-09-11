@@ -59,9 +59,11 @@ function ProfileCompletion() {
 
 function Engagement() {
   return (
-    <div className="border border-[#F0F0F0] rounded-lg p-3 my-2 relative">
-      <p className="text-xs text-red-500 absolute right-2 top-2">Coming Soon</p>
-      <div className="text-base py-2">Your Engagement</div>
+    <div className="border border-[#F0F0F0] rounded-lg p-3 my-2">
+      <div className="relative w-fit flex items-center justify-between">
+        <p className="text-[10px] text-red-500 absolute -right-[4.3rem] -top-1">Coming Soon</p>
+        <div className="text-base py-2">Your Engagement</div>
+      </div>
       <div className="text-3xl font-semibold">29</div>
       <div className="text-[#929292] text-xs">Recuiter viewed your profile</div>
       <div className="h-[80px]">Chart</div>

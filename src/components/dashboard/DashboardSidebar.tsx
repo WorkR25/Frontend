@@ -188,16 +188,18 @@ export default function DashboardSidebar() {
           />
         </div>
       </div>
-      <div className="relative">
-        <p className="text-red-500 text-xs absolute right-2 top-2.5">Coming Soon</p>
+      <div className="">
         <div className="flex items-center w-full max-w-xs p-2 mt-2 border border-gray-300 rounded-md bg-white shadow-sm">
           <Search className="w-5 h-5 text-gray-400" />
-          <input
-            disabled
-            type="text"
-            placeholder="Quick search..."
-            className="ml-2 w-full outline-none text-sm text-gray-700 placeholder:text-gray-400 bg-transparent"
-          />
+          <div className="relative w-fit">
+            <p className="text-[10px] text-red-500 absolute right-0 -top-1">Coming Soon</p>
+            <input
+              disabled
+              type="text"
+              placeholder="Quick search..."
+              className="ml-2 w-full outline-none text-sm text-gray-700 placeholder:text-gray-400 bg-transparent"
+            />
+          </div>
         </div>
       </div>
 

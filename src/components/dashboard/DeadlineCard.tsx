@@ -1,12 +1,14 @@
-import { Bookmark } from "lucide-react";
+import { Bookmark, MoreHorizontal } from "lucide-react";
 
 export default function DeadlineCard () {
   return (
-    <div className="w-full sm:w-[40%] rounded-xl border border-gray-200 p-4 shadow-sm bg-white space-y-3 h-[220px] relative">
-      <p className="text-xs text-red-500 absolute right-2 top-2">Coming Soon</p>
+    <div className="w-full sm:w-[40%] rounded-xl border border-gray-200 p-4 shadow-sm bg-white space-y-3 h-[220px]">
       <div className="flex items-center justify-between">
-        <h2 className="font-semibold text-base">Deadline Today!</h2>
-        {/* <MoreHorizontal className="w-5 h-5 text-gray-500" /> */}
+        <div className="relative w-fit">
+          <p className="text-[10px] text-red-500 absolute -right-[4.3rem] -top-1">Coming Soon</p>
+          <h2 className="font-semibold text-base">Deadline Today!</h2>
+        </div>
+        <MoreHorizontal className="w-5 h-5 text-gray-500" />
       </div>
 
       <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
