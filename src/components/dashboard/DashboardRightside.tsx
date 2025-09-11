@@ -9,6 +9,14 @@ import { useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 export default function DashboardRightside() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null ;
+  
   return (
     <div className="sm:basis-15/50 relative sm:px-2 pb-2 mt-1 sm:overflow-y-scroll h-fit sm:h-[calc(100vh-84px)]">
       <ProfileCompletion />

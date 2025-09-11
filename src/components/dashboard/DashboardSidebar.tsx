@@ -12,6 +12,7 @@ import {
   Globe,
   LocateFixed,
   Search,
+  SignpostBig,
   ToolCase,
 } from "lucide-react";
 import UserProfileSidebar from "../UserProfileSidebar";
@@ -26,6 +27,7 @@ import useGetUserRoles from "@/utils/useGetUserRoles";
 import {
   onClickAddCity,
   onClickAddSKill,
+  onClickAddTitle,
   onClickAllJobs,
   onClickCreateCompany,
   onClickCreateJob,
@@ -143,6 +145,13 @@ export default function DashboardSidebar() {
       auth: ["admin"],
       onClickFn: onClickAddCity,
     },
+    {
+      name: "Add Title",
+      icon: <SignpostBig className="w-5 h-5 mr-2" />,
+      link: null,
+      auth: ["admin"],
+      onClickFn: onClickAddTitle,
+    }
   ]
 
   const otherMenuTabs = [
