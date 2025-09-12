@@ -11,6 +11,7 @@ import {
   Folder,
   Globe,
   LocateFixed,
+  PersonStanding,
   Search,
   SignpostBig,
   ToolCase,
@@ -28,6 +29,7 @@ import {
   onClickAddCity,
   onClickAddSKill,
   onClickAddTitle,
+  onClickAllCandidates,
   onClickAllJobs,
   onClickCreateCompany,
   onClickCreateJob,
@@ -151,6 +153,13 @@ export default function DashboardSidebar() {
       link: null,
       auth: ["admin"],
       onClickFn: onClickAddTitle,
+    },
+    {
+      name: 'All Candidates',
+      icon: <PersonStanding className= "w-5 h-5"/>,
+      link: null,
+      auth: ['admin'],
+      onClickFn: onClickAllCandidates
     }
   ]
 

@@ -1,6 +1,7 @@
 import JobInfoCard from "./JobInfoCard";
 
 type JobSpecificationProps = {
+  experienceLevelName: string;
   experienceLevel: string;
   employmentType: string;
   salaryMin: string;
@@ -12,6 +13,7 @@ type JobSpecificationProps = {
 };
 
 export default function JobSpecification({
+  experienceLevelName,
   experienceLevel,
   employmentType,
   salaryMin,
@@ -21,7 +23,7 @@ export default function JobSpecification({
   return (
     <div>
       <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
-        <JobInfoCard label="Level" value="Mid Senior" className="w-[48%] " />
+        <JobInfoCard label="Level" value={experienceLevelName} className="w-[48%] " />
         <JobInfoCard
           label="Experience"
           value={experienceLevel}

@@ -4,6 +4,7 @@ import { setLoginRequiredDialogBox } from "@/features/loginRequiredDialogBox/log
 import { setShowAddLocationForm } from "@/features/showAddLocationForm/showAddLocationFormSlice";
 import { setShowAddSkillsForm } from "@/features/showAddSkillsForm/showAddSkillsFormSlice";
 import { setShowAddTitleForm } from "@/features/showAddTitleForm/showAddTitleFormSlice";
+import { setShowAllCandidates } from "@/features/showAllCandidates/showAllCandidatesSlice";
 import { setShowCreateCompanyForm } from "@/features/showCreateCompanyForm/showCreateCompanyFormSlice";
 import { setShowEditSkills } from "@/features/showEditSkils/showEditSkillsSlice";
 import { toogleShowJobCreateForm } from "@/features/showJobCreateForm/showJobCreateForm";
@@ -30,6 +31,11 @@ export const onClickOverview: OnClickFnType = (dispatch, router, link, isSuccess
   //   // router.replace(`/login`);
   // }
 };
+
+export const onClickAllCandidates: OnClickFnType = (dispatch, router, link, isSuccess) => {
+  dispatch(setShowAllCandidates(true));
+  dispatch(isSidebarOpenToogle(false));
+}
 
 export const onClickExploreJob: OnClickFnType = (dispatch, router, link, isSuccess) => {
   dispatch(isSidebarOpenToogle(false));

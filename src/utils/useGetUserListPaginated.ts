@@ -5,7 +5,7 @@ const useGetUserListPagination = (authJwtToken: string | null, page: number, lim
   return useQuery({
     queryKey: ["useGetUserListPagination", authJwtToken ?? ""],
     queryFn: () => {
-      return getUserDetils(authJwtToken, page, limit );
+      return getUserListPagination(authJwtToken, page, limit );
     },
     enabled: !!authJwtToken,
     refetchOnWindowFocus: false, 
@@ -13,7 +13,7 @@ const useGetUserListPagination = (authJwtToken: string | null, page: number, lim
   });
 };
 
-const getUserDetils = async (authJwtToken: string | null, page: number, limit: number) => {
+const getUserListPagination = async (authJwtToken: string | null, page: number, limit: number) => {
   try {
     const response = await userServiceApi.get(`/users/pages?page=${page}&limit=${limit}`, {
       headers: {

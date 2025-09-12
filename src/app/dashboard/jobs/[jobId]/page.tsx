@@ -94,7 +94,8 @@ export default function Page({
       <div className="jobId-page sm:flex flex-1 overflow-y-scroll sm:overflow-hidden">
         <div className="jobId-page sm:hidden overflow-y-auto p-4 min-h-0">
           <JobSpecification
-            experienceLevel={jobDetails.experienceLevel.name}
+            experienceLevelName={jobDetails.experienceLevel.name}
+            experienceLevel={`${jobDetails.experienceLevel.min_years} - ${jobDetails.experienceLevel.max_years} years}`}
             employmentType={jobDetails.employmentType.name}
             salaryMax={jobDetails.salary_max}
             salaryMin={jobDetails.salary_min}
@@ -132,7 +133,8 @@ export default function Page({
         </div>
         <div className="jobId-page hidden sm:block sm:basis-15/50 overflow-y-auto p-4 min-h-0">
           <JobSpecification
-            experienceLevel={jobDetails.experienceLevel.name}
+            experienceLevelName={jobDetails.experienceLevel.name}
+            experienceLevel={`${jobDetails.experienceLevel.min_years} - ${jobDetails.experienceLevel.max_years} years}`}
             employmentType={jobDetails.employmentType.name}
             salaryMax={jobDetails.salary_max}
             salaryMin={jobDetails.salary_min}
