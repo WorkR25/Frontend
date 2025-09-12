@@ -7,6 +7,9 @@ export type Job = {
     name: string;  
     logo: string;    
   };
+  employmentType: {
+    name: string;
+  };
   city: string;
   state: string;
   country: string;    
