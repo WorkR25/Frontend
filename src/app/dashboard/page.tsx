@@ -53,19 +53,22 @@ function JobRecommendation() {
   return (
     <div className="px-3 w-full border border-[#F0F0F0] rounded-lg my-3 pb-3">
       <div className="flex items-center justify-between px-3 py-2">
-        <div className="font-semibold text-xl">Job Recommendation</div>
+        <div className="relative w-fit">
+          <p className="text-[10px] text-red-500 absolute -right-[4.3rem] -top-1">Coming Soon</p>
+          <div className="font-semibold text-xl">Job Recommendation</div>
+        </div>
         <div className="text-[#28668B]">See All</div>
       </div>
       <div className=" space-x-3 mt-3 overflow-x-scroll flex hide-scrollbar">
-        <OptionButton name="For you" isActive={true} />
-        <OptionButton name="Trending" isActive={false} />
-        <OptionButton name="New This Week" isActive={false} />
-        <OptionButton name="Nearby Opportunities" isActive={false} />
-        <OptionButton name="Urgently Hiring" isActive={false} />
-        <OptionButton name="Urgently Hiring" isActive={false} />
-        <OptionButton name="Urgently Hiring" isActive={false} />
+          <OptionButton name="For you" isActive={false} />
+          <OptionButton name="Trending" isActive={false} />
+          <OptionButton name="New This Week" isActive={false} />
+          <OptionButton name="Nearby Opportunities" isActive={false} />
+          <OptionButton name="Urgently Hiring" isActive={false} />
+          <OptionButton name="Urgently Hiring" isActive={false} />
+          <OptionButton name="Urgently Hiring" isActive={false} />
       </div>
-      <div className="flex gap-2 flex-wrap items-center justify-evenly mt-3">
+      <div className="flex gap-2 flex-wrap items-center justify-evenly mt-3 pointer-events-none">
         <JobCard
           id={1}
           title="SWE"
@@ -97,18 +100,23 @@ function ApplicationSummary() {
   return (
     <div className=" ">
       <div className=" border border-[#F0F0F0] rounded-lg p-4">
-        <div className="text-xl font-semibold">Applications</div>
+        <div className="relative w-fit">
+          <p className="absolute -right-[4.2rem] text-[10px] leading-none text-red-500">
+            Coming Soon
+          </p>
+          <p className="text-xl font-semibold">Applications</p>
+        </div>
         <div className="flex items-baseline gap-2">
           <div className="text-xl font-semibold">Summary</div>
-          <div>Month</div>
+          {/* <div>Month</div> */}
         </div>
         <div className=" space-x-3 mt-3 overflow-x-scroll flex hide-scrollbar  ">
-          <OptionButton name="Application" isActive={true} />
-          <OptionButton name="Interview" isActive={false} />
-          <OptionButton name="Screening" isActive={false} />
-          <OptionButton name="Assesment" isActive={false} />
-          <OptionButton name="Offering" isActive={false} />
-          <OptionButton name="Acceptance" isActive={false} />
+            <OptionButton name="Application" isActive={false} />
+            <OptionButton name="Interview" isActive={false} />
+            <OptionButton name="Screening" isActive={false} />
+            <OptionButton name="Assesment" isActive={false} />
+            <OptionButton name="Offering" isActive={false} />
+            <OptionButton name="Acceptance" isActive={false} />
         </div>
 
         <div className="text-4xl mt-4 font-semibold">999</div>

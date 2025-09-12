@@ -4,7 +4,10 @@ export default function DeadlineCard () {
   return (
     <div className="w-full sm:w-[40%] rounded-xl border border-gray-200 p-4 shadow-sm bg-white space-y-3 h-[220px]">
       <div className="flex items-center justify-between">
-        <h2 className="font-semibold text-base">Deadline Today!</h2>
+        <div className="relative w-fit">
+          <p className="text-[10px] text-red-500 absolute -right-[4.3rem] -top-1">Coming Soon</p>
+          <h2 className="font-semibold text-base">Deadline Today!</h2>
+        </div>
         <MoreHorizontal className="w-5 h-5 text-gray-500" />
       </div>
 
@@ -22,7 +25,7 @@ export default function DeadlineCard () {
       </div>
       <p className="text-sm text-gray-500">
         One of your saved jobs has a deadline today, don’t miss out,&nbsp;
-        <a href="#" className="text-blue-600 font-medium hover:underline">
+        <a href="#" className="text-blue-600 font-medium hover:underline pointer-events-none">
           apply now!
         </a>
       </p>

@@ -100,7 +100,7 @@ export default function MainTabList() {
                 onClick={() => {
                   setMainMenuActiveTab(index);
                   dispatch(isSidebarOpenToogle(false));
-                  tab.onClickFn(dispatch, router, tab.link);
+                  tab.onClickFn(dispatch, router, tab.link, true);
                 }}
                 className={`py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300  rounded-md hover:cursor-pointer ${
                   mainMenuActiveTab === index

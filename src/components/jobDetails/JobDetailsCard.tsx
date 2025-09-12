@@ -89,9 +89,19 @@ export default function JobDetailsCard({
             dispatch(setLoginRequiredDialogBox(true))
             // router.replace('/login');
           }
-        }} className="components-jobDetails-JobDetailsCard w-full hover:cursor-pointer hover:bg-[#cedcf1] ml-3 bg-white text-[#0052CC] px-4 py-1.5 rounded-md text-sm  cursor-not-allowed">
+        }} className="components-jobDetails-JobDetailsCard w-[15rem] hover:cursor-pointer hover:bg-[#cedcf1] ml-3 bg-white text-[#0052CC] px-4 py-1.5 rounded-md text-sm">
           Apply Now
         </button>
+
+        <button 
+          onClick={() => {
+            if(isSuccess) {
+              toast.success('Request is submitted successfully')
+            } else {
+              dispatch(setLoginRequiredDialogBox(true))
+            }
+          }}
+        className="components-jobDetails-JobDetailsCard w-[15rem] hover:cursor-pointer hover:bg-[#cedcf1] ml-3 bg-white text-[#0052CC] px-4 py-1.5 rounded-md text-sm">Request Refferal</button>
       </div>
     </div>
   );

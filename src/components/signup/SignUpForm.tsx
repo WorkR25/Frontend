@@ -97,7 +97,7 @@ function Form() {
       <InputField
         register={register}
         fieldName="fullName"
-        placeholder="Haiiatama"
+        placeholder="Full Name"
         type="text"
         icon={<User size={20} />}
       />
@@ -108,7 +108,7 @@ function Form() {
       <InputField
         register={register}
         fieldName="phoneNo"
-        placeholder="9087654321"
+        placeholder="Phone No."
         type="text"
         icon={<Phone size={20} />}
       />
@@ -119,7 +119,7 @@ function Form() {
       <InputField
         register={register}
         fieldName="email"
-        placeholder="haikaa@example.com"
+        placeholder="Email Address"
         type="email"
         icon={<Mail size={20} />}
       />
