@@ -14,6 +14,7 @@ import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import TripleDotLoader from "@/components/TripleDotLoader";
 import { setJobDetails } from "@/features/jobDetails/jobDetails";
 import CompanyCard from "@/components/jobDetails/CompanyCard";
+import JobSkills from "@/components/jobDetails/JobSkills";
 
 export default function Page({
   params,
@@ -30,7 +31,6 @@ export default function Page({
     return state.jobDetails.value;
   });
 
-
   useEffect(() => {
     const token = localStorage.getItem("AuthJwtToken");
     if (token) {
@@ -39,7 +39,6 @@ export default function Page({
   }, [dispatch]);
 
   const { data, isPending, isError } = useGetJobDetails(jwtToken, jobId);
-
 
   useEffect(() => {
     dispatch(setJobId(jobId));
@@ -104,6 +103,29 @@ export default function Page({
             city={jobDetails.city.name}
             companyName={jobDetails.company.name}
           />
+          <JobSkills skills={jobDetails.skills} />
+          <CompanyCard
+            description={jobDetails.company.description ?? "Description"}
+            industry={
+              jobDetails.company.industry
+                ? jobDetails.company.industry.name
+                : "industry"
+            }
+            location={jobDetails.city.name}
+            logoUrl={jobDetails.company.logo}
+            name={jobDetails.company.name}
+            size={
+              jobDetails.company.companySize
+                ? `${jobDetails.company.companySize.min_employees ?? "min"} ${
+                    jobDetails.company.companySize.max_employees
+                      ? jobDetails.company.companySize.max_employees > 100002
+                        ? "+"
+                        : `- ${jobDetails.company.companySize.max_employees}`
+                      : "max"
+                  } employees`
+                : "Company Size"
+            }
+          />
         </div>
         <div className="jobId-page sm:basis-35/50 overflow-y-auto p-4 min-h-0">
           <JobDescription />
@@ -119,6 +141,7 @@ export default function Page({
             city={jobDetails.city.name}
             companyName={jobDetails.company.name}
           />
+          <JobSkills skills={jobDetails.skills} />
           <CompanyCard
             description={jobDetails.company.description ?? "Description"}
             industry={

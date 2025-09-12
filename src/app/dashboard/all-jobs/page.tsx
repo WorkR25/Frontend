@@ -38,17 +38,20 @@ export default function Page() {
     } 
   }, [dispatch]);
 
-  const { data: userData } = useGetUser(jwtToken);
+  const { data: userData, isError } = useGetUser(jwtToken);
   const { data: userRoles } = useGetUserRoles(jwtToken, userData?.id);
   const { data: jobList, isPending } = useGetJobPagination(jwtToken, page, 20);
 
   const { mutate } = useDeleteJob();
 
   useEffect(() => {
+    if(isError){
+      router.push('/login')
+    }
     if (userRoles && !userRoles?.includes("admin")) {
       router.replace("/dashboard");
     }
-  }, [userRoles, router]);
+  }, [userRoles, router, isError]);
 
   if (!userRoles || !userRoles.includes("admin")) {
     return <div className="flex justify-center w-full">Authorizing...</div>;
@@ -94,7 +97,7 @@ export default function Page() {
                   img={job.company.logo}
                   title={job.jobTitle.title}
                   company={job.company.name}
-                  employmentType={job.is_remote ? "Remote" : "On-site"}
+                  employmentType={job.employmentType.name}
                   city={job.city}
                   country={job.country}
                   minPay={job.salary_min}

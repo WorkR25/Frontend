@@ -15,7 +15,7 @@ export default function JobList() {
 
 
   return (
-    <div className="component-dashboard-JobList w-full flex flex-wrap items-center justify-center-safe my-2 mx gap-2 gap-y-3.5">
+    <div className="component-dashboard-JobList w-full flex flex-wrap items-stretch justify-center-safe my-2 mx gap-2 gap-y-3.5">
       {isPending && (
         <TripleDotLoader className="w-full h-full flex items-center justify-center" />
       )}
@@ -27,7 +27,7 @@ export default function JobList() {
             img={job.company.logo}
             title={job.jobTitle.title}
             company={job.company.name}
-            employmentType={job.is_remote ? "Remote" : "On-site"}
+            employmentType={job.employmentType.name}
             city={job.city}
             country={job.country}
             minPay={job.salary_min}

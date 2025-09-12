@@ -17,7 +17,7 @@ type OnClickFnType = (
   dispatch: Dispatch<UnknownAction>,
   router: AppRouterInstance,
   link: string | null,
-  isSuccess: boolean,
+  isSuccess?: boolean,
 ) => void;
 
 export const onClickOverview: OnClickFnType = (dispatch, router, link, isSuccess) => {
@@ -51,12 +51,12 @@ export const onClickCreateJob: OnClickFnType = (dispatch) => {
 
 export const onClickAllJobs: OnClickFnType = (dispatch, router, link, isSuccess) => {
   dispatch(isSidebarOpenToogle(false));
-  if(isSuccess){
-    router.replace(`/dashboard/${link}`);
-  }else{
-    dispatch(setLoginRequiredDialogBox(true))
+  router.replace(`/dashboard/${link}`);
+  // if(isSuccess){
+  // }else{
+  //   dispatch(setLoginRequiredDialogBox(true))
     // router.replace(`/login`);
-  }
+  // }
 };
 
 export const onClickCreateCompany: OnClickFnType = (dispatch, router, link) => {
