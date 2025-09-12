@@ -73,10 +73,8 @@ export default function AddTitleForm() {
             type="submit"
             className="border rounded-lg hover:cursor-pointer"
             onClick={() => {
-              console.log("object2", errors);
               handleSubmit((data) => {
                 mutate({ authJwtToken: jwtToken, title: data.title });
-                console.log(data);
               })();
             }}
           >
