@@ -23,7 +23,7 @@ export default function MarkdownHTML({ content }: { content: string }) {
   return (
     <>
       <div
-        className="markdown-content"
+        className="markdown-content text-black"
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </>
