@@ -20,7 +20,6 @@ export default function JobCard({
   created_at,
 }: JobCardParams) {
   const router = useRouter();
-  console.log(employmentType)
   return (
     <div
       className={cn(
