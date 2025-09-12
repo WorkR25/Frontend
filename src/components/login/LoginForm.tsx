@@ -112,7 +112,7 @@ function Form() {
       <InputField
         register={register}
         fieldName="email"
-        placeholder="haikaa@example.com"
+        placeholder="Email Address"
         type="email"
         icon={<Mail size={20} />}
       />
