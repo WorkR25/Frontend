@@ -7,14 +7,15 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { GetUserResponseType } from "@/types/GetUserResponseType";
 import { useEffect, useState } from "react";
+import TripleDotLoader from "../TripleDotLoader";
 
 export default function AllCandidates() {
-  const [pageCount, setPageCount] = useState(0);
+  const [pageCount, setPageCount] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
   const dispatch = useDispatch();
 
-  const { data } = useGetUserListPagination(jwtToken, 1, 10);
+  const { data, isPending } = useGetUserListPagination(jwtToken, pageCount, 10);
 
   useEffect(() => {
     if (data) {
@@ -34,9 +35,12 @@ export default function AllCandidates() {
       </div>
       <div className="h-full flex flex-col justify-center ">
         <div className="font-semibold text-lg text-center">
-        All Candidates
+        All Candidates{` ( Total : ${data?.pagination.totalCount ?? '...'} ) `}
         </div>
         <div className="overflow-y-scroll">
+          {isPending && (
+            <TripleDotLoader />
+          )}
           {data &&
             data.records.map((user: GetUserResponseType) => (
               <div key={user.id} className="border rounded-lg p-4 m-4">

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const useGetUserListPagination = (authJwtToken: string | null, page: number, limit: number) => {
   return useQuery({
-    queryKey: ["useGetUserListPagination", authJwtToken ?? ""],
+    queryKey: ["useGetUserListPagination", authJwtToken ?? "", `${page}`, `${limit}`],
     queryFn: () => {
       return getUserListPagination(authJwtToken, page, limit );
     },
