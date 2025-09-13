@@ -2,6 +2,7 @@
 import AddLocationForm from "@/components/addLocation/AddLocationForm";
 import AddSkill from "@/components/addSkill/AddSkillForm";
 import AddTitleForm from "@/components/addTitle/AddTitleForm";
+import AllCandidates from "@/components/allCandidates/AllCandidates";
 import ConfirmLoginDialog from "@/components/ConfirmLogin";
 import CreateCompanyForm from "@/components/createCompany/CreateCompanyForm";
 import CreateJobForm from "@/components/createJob/CreateJobForm";
@@ -58,6 +59,10 @@ export default function DashboardLayout({
 
   const showAddTitleForm = useSelector((state: RootState) => {
     return state.showAddTitleForm.value;
+  });
+
+  const showAllCandidates = useSelector((state: RootState) => {
+    return state.showAllCandidates.value;
   });
 
   // const jwtToken = useSelector((state: RootState) => {
@@ -154,6 +159,14 @@ export default function DashboardLayout({
         </div>
       )}
 
+      {showAllCandidates && (
+        <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
+          <div className="dashboard-layout w-full h-full">
+            <AllCandidates />
+          </div>
+        </div>
+      )}
+
       {showJobApplicants && (
         <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
           <div className="dashboard-layout w-full min-h-full">
@@ -220,10 +233,19 @@ export default function DashboardLayout({
               </div>
             </div>
           )}
+
           {showAddTitleForm && (
             <div className="dashboard-layout absolute sm:hidden px-5 hide-scrollbar flex justify-center z-40 h-screen w-full sm:w-[79%] bg-white overflow-y-auto">
               <div className="dashboard-layout w-full min-h-full">
                 <AddTitleForm />
+              </div>
+            </div>
+          )}
+
+          {showAllCandidates && (
+            <div className="dashboard-layout absolute sm:hidden px-5 hide-scrollbar flex justify-center z-40 h-screen w-full sm:w-[79%] bg-white overflow-y-auto">
+              <div className="dashboard-layout w-full min-h-full">
+                <AllCandidates />
               </div>
             </div>
           )}

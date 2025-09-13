@@ -26,6 +26,8 @@ export type JobDetails = {
   };
   experienceLevel: {
     name: string;
+    min_years: number;
+    max_years: number;
   };
   is_remote: boolean;
   jobTitle: {
