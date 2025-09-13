@@ -24,8 +24,16 @@ export default function Page() {
   const dispatch = useDispatch();
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [jobIdToBeDeleted, setJobIdToBeDeleted] = useState<number>();
   const page = useSelector((state: RootState) => state.jobPageNumber.value);
+
+ useEffect(() => {
+  if(!mounted){
+    setMounted(true);
+  }
+  }, [mounted]);
+
 
   useEffect(() => {
     dispatch(resetJobPageCount());
@@ -52,6 +60,8 @@ export default function Page() {
       router.replace("/dashboard");
     }
   }, [userRoles, router, isError]);
+
+  if(!mounted) return null ;
 
   if (!userRoles || !userRoles.includes("admin")) {
     return <div className="flex justify-center w-full">Authorizing...</div>;
