@@ -95,7 +95,7 @@ export default function Page({
         <div className="jobId-page sm:hidden overflow-y-auto p-4 min-h-0">
           <JobSpecification
             experienceLevelName={jobDetails.experienceLevel.name}
-            experienceLevel={`${jobDetails.experienceLevel.min_years} - ${jobDetails.experienceLevel.max_years} years}`}
+            experienceLevel={`${jobDetails.experienceLevel.min_years} - ${jobDetails.experienceLevel.max_years} years`}
             employmentType={jobDetails.employmentType.name}
             salaryMax={jobDetails.salary_max}
             salaryMin={jobDetails.salary_min}
