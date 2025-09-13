@@ -34,7 +34,7 @@ export default function Page() {
     <div className="text-black p-2 bg-[#FFFF] h-full pb-0 ">
       <DashboardTopbar pageName="Overview" />
       <div className="flex m-4 h-full">
-        <div className="sm:basis-35/50 h-[calc(100vh-84px)] overflow-y-scroll  ">
+        <div className="sm:basis-35/50 h-[calc(100%-84px)] overflow-y-scroll  ">
           <ApplicationSummary />
           <div className="sm:hidden h-fit mt-4">
             <DashboardRightside />

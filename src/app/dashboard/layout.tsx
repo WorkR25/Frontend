@@ -211,7 +211,7 @@ export default function DashboardLayout({
         >
           <DashboardSidebar />
         </div>
-        <div className="dashboard-layout w-full sm:basis-4/5 rounded-lg overflow-hidden">
+        <div className="dashboard-layout w-full h-full sm:basis-4/5 rounded-lg overflow-hidden">
           {showEditSkills.value && (
             <div className="dashboard-layout absolute sm:hidden px-5 hide-scrollbar flex justify-center z-40 h-screen w-full sm:w-[79%] bg-white overflow-y-auto">
               <div className="dashboard-layout w-full min-h-full">

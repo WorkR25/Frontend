@@ -74,7 +74,7 @@ export default function Page({
   }
 
   return (
-    <div className="jobId-page text-black bg-white h-screen flex flex-col p-2">
+    <div className="jobId-page text-black bg-white h-full flex flex-col p-2">
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="jobId-page flex items-center ">
         <div className="jobId-page basis-[5%] ">
