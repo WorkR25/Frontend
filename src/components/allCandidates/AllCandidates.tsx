@@ -15,7 +15,7 @@ export default function AllCandidates() {
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
   const dispatch = useDispatch();
 
-  const { data, isPending } = useGetUserListPagination(jwtToken, pageCount, 2);
+  const { data, isPending } = useGetUserListPagination(jwtToken, pageCount, 10);
 
   useEffect(() => {
     if (data) {
