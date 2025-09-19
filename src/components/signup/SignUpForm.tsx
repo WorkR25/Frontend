@@ -2,7 +2,7 @@
 
 import InputField from "../InputField";
 import { useForm } from "react-hook-form";
-import { Eye, EyeOff, User, Mail, Lock, Phone } from "lucide-react";
+import { Eye, EyeOff, User, Mail, Lock, Phone, Calendar } from "lucide-react";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -125,6 +125,17 @@ function Form() {
       />
       {errors.email?.message && (
         <p className="text-[#E04B40] text-xs">Enter enter valid email</p>
+      )}
+
+      <InputField
+        register={register}
+        fieldName='graduationYear'
+        placeholder="Graduation Year"
+        type="number"
+        icon={<Calendar size={20} />}
+      />
+      {errors.graduationYear?.message && (
+        <p className="text-[#E04B40] text-xs">{errors.graduationYear.message}</p>
       )}
 
       <InputField

@@ -104,7 +104,8 @@ export default function Page({
             city={jobDetails.city.name}
             companyName={jobDetails.company.name}
           />
-          <JobSkills skills={jobDetails.skills} />
+          {/* hidden */}
+          <JobSkills skills={jobDetails.skills} className="hidden" />
           <CompanyCard
             description={jobDetails.company.description ?? "Description"}
             industry={

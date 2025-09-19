@@ -39,6 +39,7 @@ export default function JobSpecification({
           value={workType ? "Remote" : "On-site"}
           className="w-[48%]"
         />
+        {/* hidden */}
         <JobInfoCard
           label="Salary Range"
           value={
@@ -47,7 +48,7 @@ export default function JobSpecification({
               : `${Number(salaryMin)}LPA-${
                   Number(salaryMax)}LPA`
           }
-          className="w-[96%]"
+          className=" hidden w-[96%]"
         />
       </div>
 
