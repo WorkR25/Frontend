@@ -5,6 +5,7 @@ export type GetUserResponseType = {
   fullName: string;
   email: string;
   phoneNo: string;
+  graduationYear: string;
   profile: {
     bio: string | null;
     currentCompanyId: number | null;

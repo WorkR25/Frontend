@@ -33,6 +33,7 @@ export default function UserDetailForm() {
       fullName: "",
       email: "",
       phoneNo: "",
+      graduationYear: "",
     },
   });
   const router = useRouter();
@@ -105,7 +106,17 @@ export default function UserDetailForm() {
             error={errors.phoneNo}
             fieldValue= {userData?.phoneNo || watch('phoneNo')}
           />
-
+          <div>Graduation Year</div>
+          <InputField
+            register={register}
+            fieldName="graduationYear"
+            placeholder="2023"
+            type="text"
+            icon={<></>}
+            error={errors.graduationYear}
+            fieldValue= {userData?.graduationYear || watch('graduationYear')}
+          />
+          
           <button
           type="submit"
           className="components-me-UserDetailForm bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 hover:cursor-pointer"

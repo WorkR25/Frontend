@@ -67,7 +67,8 @@ export default function JobCard({
           <Clock className="w-3.5 h-3.5" />
           <span className="text-black">{employmentType}</span>
         </div>
-        <div className="flex items-center space-x-1 bg-[#EAEAEA] px-2 py-1 rounded-md">
+        {/* flex */}
+        <div className="hidden items-center space-x-1 bg-[#EAEAEA] px-2 py-1 rounded-md">
           <BadgeDollarSign className="hidden w-3.5 h-3.5" />
           <span className="text-black">
             {`${minPay} - ${maxPay} ${

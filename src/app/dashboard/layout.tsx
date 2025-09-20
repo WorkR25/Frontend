@@ -98,7 +98,8 @@ export default function DashboardLayout({
   // }
 
   return (
-    <div className="dashboard-layout text-black  h-[100vh] w-[100%] bg-[#F5F5F5]">
+    // {h-[100vh]}
+    <div className="dashboard-layout text-black  h-[100%] w-[100%] bg-[#F5F5F5]">
       <ToastContainer position="top-right" autoClose={3000} className="z-20" />
       <ConfirmLoginDialog
         isOpen={loginRequiredDialogBox}
@@ -169,7 +170,7 @@ export default function DashboardLayout({
 
       {showJobApplicants && (
         <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
-          <div className="dashboard-layout w-full min-h-full">
+          <div className="dashboard-layout w-full h-full">
             <ViewApplicants jobId={Number(jobId)} />
           </div>
         </div>
@@ -276,6 +277,7 @@ export default function DashboardLayout({
               </div>
             </div>
           )}
+          
           {children}
         </div>
       </div>
