@@ -13,6 +13,7 @@ import useUpdateUserDetails from "@/utils/useUpdateUserDetails";
 import { toast } from "react-toastify";
 import { UserDetailSchema } from "@/schema/userDetails.validator";
 import { useRouter } from "next/navigation";
+import TripleDotLoader from "../TripleDotLoader";
 
 
 export type UserDetailFormValues = z.infer<typeof UserDetailSchema>;
@@ -60,7 +61,7 @@ export default function UserDetailForm() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[userData])
 
-  const { mutate: userDetailsMutate }= useUpdateUserDetails();
+  const { mutate: userDetailsMutate, isPending }= useUpdateUserDetails();
   const onSubmit = (data: UserDetailFormValues) => {
     userDetailsMutate({ authJwtToken: jwtToken, id: String(userData?.id), userDetails: data }, {
         onSuccess:()=>{
@@ -74,6 +75,9 @@ export default function UserDetailForm() {
   return (
     <div>
       <div>
+        {isPending && (
+          <TripleDotLoader />
+        )}
         <div className="components-me-UserDetailForm font-semibold text-lg mt-3">User Details</div>
         <form onSubmit={handleSubmit(onSubmit)} className="components-me-UserDetailForm space-y-4 p-4 border rounded-lg shadow-md w-full">
           <div>Full Name</div>
@@ -110,7 +114,7 @@ export default function UserDetailForm() {
           <InputField
             register={register}
             fieldName="graduationYear"
-            placeholder="2023"
+            placeholder="Graduation Year( e.g 2024 )"
             type="text"
             icon={<></>}
             error={errors.graduationYear}
