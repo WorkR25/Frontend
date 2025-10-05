@@ -47,6 +47,7 @@ export default function AllCandidates() {
                 <div>Name: {user.fullName}</div>
                 <div>Email: {user.email}</div>
                 <div>Phone: {user.phoneNo}</div>
+                <div>{"Graduation Year: "}{user.graduationYear ?? "Not available"}</div>
               </div>
             ))}
         </div>
