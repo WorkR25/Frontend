@@ -28,6 +28,29 @@ export default function Page() {
     
   } = useGetUser(jwtToken);
 
+  return (
+    <div className="flex flex-col h-full ">
+      <div className="h-fit">
+      <DashboardTopbar pageName="Overview" />
+      </div>
+      <div className=" hide-scrollbar overflow-y-hidden">
+        <div className="flex h-full">
+        <div className="sm:basis-35/50 h-[100%] overflow-y-scroll">
+          <ApplicationSummary />
+          <div className="sm:hidden h-fit mt-4">
+            <DashboardRightside />
+          </div>
+          <JobRecommendation />
+        </div>
+        <div className="hidden sm:block">
+          <DashboardRightside />
+        </div>
+      </div>
+
+      </div>
+    </div>
+  )
+
   
 
   return (

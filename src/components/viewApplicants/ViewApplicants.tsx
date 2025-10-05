@@ -75,6 +75,7 @@ export default function ViewApplicants({
               city={applicant.phoneNo}
               email={applicant.email}
               name={applicant.fullName}
+              graduationYear={applicant.graduationYear}
             />
           </div>
         );

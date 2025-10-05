@@ -6,6 +6,7 @@ interface ApplicantCardProps {
   email: string;
   city: string;
   resumeUrl: string | null;
+  graduationYear: number | null;
 }
 
 export default function ApplicantCard({
@@ -13,6 +14,7 @@ export default function ApplicantCard({
   email,
   city,
   resumeUrl,
+  graduationYear,
 }: ApplicantCardProps) {
   return (
     <div className="component-viewApplicants-ApplicantCard flex justify-between border rounded-lg p-4 shadow-sm bg-white w-full">
@@ -20,6 +22,7 @@ export default function ApplicantCard({
         <h3 className="component-viewApplicants-ApplicantCard text-lg font-semibold">{name}</h3>
         <p className="component-viewApplicants-ApplicantCard text-gray-600">{email}</p>
         <p className="component-viewApplicants-ApplicantCard text-gray-500">{city}</p>
+        <p className="component-viewApplicants-ApplicantCard text-gray-500">{"Graduation Year: "}{graduationYear ?? "Not available"}</p>
       </div>
       <div className="component-viewApplicants-ApplicantCard items-center flex ">
         {resumeUrl ? <a className="font-medium text-md bg-blue-300 py-1.5 px-2 rounded-lg" href={resumeUrl} target="_blank"> Resume</a> : <div>No resume</div>}

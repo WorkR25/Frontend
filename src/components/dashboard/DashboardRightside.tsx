@@ -18,7 +18,7 @@ export default function DashboardRightside() {
   if (!mounted) return null ;
   
   return (
-    <div className="sm:basis-15/50 relative sm:px-2 pb-2 mt-1 sm:overflow-y-scroll h-fit sm:h-[calc(100vh-84px)]">
+    <div className="sm:basis-15/50 relative sm:px-2 pb-2 mt-1 sm:overflow-y-scroll h-fit sm:h-[calc(100%)]">
       <ProfileCompletion />
       <Engagement />
       <TipsCard/>

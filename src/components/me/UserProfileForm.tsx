@@ -21,6 +21,7 @@ import useGetCompanyById from "@/utils/useGetCompanyById";
 import useGetCity from "@/utils/useGetCity";
 import { UserProfileSchema } from "@/schema/userProfile.validator";
 import { useRouter } from "next/navigation";
+import TripleDotLoader from "../TripleDotLoader";
 
 
 
@@ -93,7 +94,7 @@ export default function UserProfileForm() {
     }
   };
   const { data: companyDetails } = useGetCompanyById(jwtToken,userData?.profile.currentCompanyId)
-  const { mutate: updateUserProfile } = useUpdateUserProfile();
+  const { mutate: updateUserProfile, isPending } = useUpdateUserProfile();
 
   return (
     <FormProvider {...methods}>
@@ -102,6 +103,9 @@ export default function UserProfileForm() {
         onSubmit={handleSubmit(onSubmit)}
         className="components-me-UserProfileForm space-y-4 p-4 mt-3 border rounded-lg shadow-md w-full"
       >
+        {isPending && (
+                  <TripleDotLoader />
+                )}
         <div className="components-me-UserProfileForm flex flex-wrap justify-center gap-4 mt-4">
           <div className="components-me-UserProfileForm w-[90%]">
             <label className="components-me-UserProfileForm flex items-center gap-2">

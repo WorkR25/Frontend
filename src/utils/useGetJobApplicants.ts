@@ -8,6 +8,7 @@ export type ApplicantListType = {
   email: string;
   phoneNo: string;
   id: number;
+  graduationYear: number | null;
   profile: {
     bio: string | null;
     yearsOfExperience: number | null;
