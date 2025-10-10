@@ -29,7 +29,7 @@ export default function Page() {
   } = useGetUser(jwtToken);
 
   return (
-    <div className="flex flex-col h-full ">
+    <div className="flex flex-col h-full p-2 pb-0">
       <div className="h-fit">
       <DashboardTopbar pageName="Overview" />
       </div>

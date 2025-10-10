@@ -1,14 +1,9 @@
-"use client";
-import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
-import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice";
-import { RootState } from "@/lib/store.config";
-import { cn } from "@/utils/cn";
 import { getFormattedDate } from "@/utils/getTime";
-import useGetUser from "@/utils/useGetUser";
-import { AlignJustify, Calendar, LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { Calendar } from "lucide-react";
+import { Suspense } from "react";
+import DashboardTopbarHamburgerMenu from "./DashboardTopbarHamburgerMenu";
+import DashboardTopbarLogoutButton from "./DashboardTopbarLogoutButton";
+import { cn } from "@/utils/cn";
 
 export default function DashboardTopbar({
   pageName,
@@ -17,18 +12,17 @@ export default function DashboardTopbar({
   pageName: string;
   className?: string;
 }) {
-  const [mounted, setMounted] = useState(false);
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const jwtToken= useSelector((state: RootState)=> state.authJwtToken.value)
-  const {isSuccess} = useGetUser(jwtToken)
+  // const [mounted, setMounted] = useState(false);
+  // const dispatch = useDispatch();
+  // const router = useRouter();
+  // const jwtToken= useSelector((state: RootState)=> state.authJwtToken.value)
+  // const {isSuccess} = useGetUser(jwtToken)
 
-  useEffect(() => {
-    setMounted(true);
-  }, [isSuccess]);
+  // useEffect(() => {
+  //   setMounted(true);
+  // }, [isSuccess]);
 
-  if (!mounted) return null;
-
+  // if (!mounted) return null;
 
   return (
     <div
@@ -38,15 +32,19 @@ export default function DashboardTopbar({
       )}
     >
       <div className="components-dashboard-DashboardTopbar text-xl flex items-center text-center gap-x-7 font-semibold">
-        <div
+        {/* <div
           className="components-dashboard-DashboardTopbar sm:hidden hover:cursor-pointer"
           onClick={() => {
             dispatch(isSidebarOpenToogle(true));
           }}
         >
           <AlignJustify />
-        </div>
-        <div>{pageName}</div>
+        </div> */}
+        <Suspense fallback={<div>...</div>}>
+          <DashboardTopbarHamburgerMenu />
+        </Suspense>
+
+        <div className="components-dashboard-DashboardTopbar py-1">{pageName}</div>
       </div>
       <div className="components-dashboard-DashboardTopbar flex items-center gap-3">
         {/* <div className="pr-4">
@@ -59,7 +57,7 @@ export default function DashboardTopbar({
           <div className="components-dashboard-DashboardTopbar text-sm hidden sm:block">
             {getFormattedDate()}
           </div>
-          <div>
+          {/* <div>
             
             {isSuccess && (
               <button
@@ -73,7 +71,10 @@ export default function DashboardTopbar({
               <LogOut height={20} width={20}/>
             </button>
             )}
-          </div>
+          </div> */}
+          <Suspense fallback={<div>...</div>}>
+            <DashboardTopbarLogoutButton />
+          </Suspense>
         </div>
         {/* <div className="components-dashboard-DashboardTopbar hidden sm:block">Language</div> */}
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -47,6 +47,8 @@ export default function DashboardSidebar() {
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
   const dispatch = useDispatch();
   const pathname = usePathname();
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  
 
   const [mainMenuActiveTab, setMainMenuActiveTab] = useState<number | null>(
     mainMenuTabId[pathname.split("/")[2]] ?? 0
@@ -91,6 +93,18 @@ export default function DashboardSidebar() {
       setMainMenuActiveTab(0);
     }
   }, [pathname, showJobCreateForm]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        dispatch(isSidebarOpenToogle(false));
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dispatch]);
 
   const mainMenuTabs = [
     {
@@ -167,7 +181,7 @@ export default function DashboardSidebar() {
   ];
 
   return (
-    <div className="flex flex-col h-full hide-scrollbar">
+    <div className="flex flex-col h-full hide-scrollbar " ref={sidebarRef}>
       {/* logo and quich search */}
       <div className="h-fit w-full ">
         <div className="flex items-center justify-between py-4  ">
