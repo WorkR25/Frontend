@@ -201,7 +201,7 @@ export default function DashboardLayout({
       ></div>
       <div className={"dashboard-layout flex h-full w-full gap-x-2"}>
         <div
-          className={`dashboard-layout hidden sm:block basis-1/5 overflow-y-scroll px-3`}
+          className={`dashboard-layout hidden sm:block basis-1/5 overflow-y-scroll hide-scrollbar px-3`}
         >
           <DashboardSidebar />
         </div>

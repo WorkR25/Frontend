@@ -82,15 +82,13 @@ export default function DashboardSidebar() {
     }
   }, [dispatch]);
 
-  
-
   useEffect(() => {
     const routeName = pathname.split("/")[2];
 
     if (routeName) {
       setMainMenuActiveTab(mainMenuTabId[routeName]);
-    }else{
-      setMainMenuActiveTab(0)
+    } else {
+      setMainMenuActiveTab(0);
     }
   }, [pathname, showJobCreateForm]);
 
@@ -118,10 +116,10 @@ export default function DashboardSidebar() {
     },
   ];
 
-  const creationTabs= [
+  const creationTabs = [
     {
       name: "Create Job",
-      icon: <Briefcase  className="w-5 h-5 mr-2" />,
+      icon: <Briefcase className="w-5 h-5 mr-2" />,
       link: null,
       auth: ["admin"],
       onClickFn: onClickCreateJob,
@@ -155,13 +153,13 @@ export default function DashboardSidebar() {
       onClickFn: onClickAddTitle,
     },
     {
-      name: 'All Candidates',
-      icon: <PersonStanding className= "w-5 h-5"/>,
+      name: "All Candidates",
+      icon: <PersonStanding className="w-5 h-5" />,
       link: null,
-      auth: ['admin'],
-      onClickFn: onClickAllCandidates
-    }
-  ]
+      auth: ["admin"],
+      onClickFn: onClickAllCandidates,
+    },
+  ];
 
   const otherMenuTabs = [
     { name: "Blog and article", icon: "", link: "/blog" },
@@ -169,172 +167,373 @@ export default function DashboardSidebar() {
   ];
 
   return (
-    <div className="hide-scrollbar">
-      <div className="flex items-center justify-between py-4  ">
-        <div>
-          <Image
-            src="/WorkR-Full-Logo2.png"
-            alt="photo"
-            width={80}
-            height={80}
-            objectFit="cover"
-            priority
-          />
-        </div>
-        <div
-          className="hover:cursor-pointer"
-          onClick={() => {
-            dispatch(isSidebarOpenToogle(false));
-          }}
-        >
-          <Image
-            src="/Close Sidebar Icon.svg"
-            alt="photo"
-            width={15}
-            height={15}
-            objectFit="cover"
-            priority
-          />
-        </div>
-      </div>
-      <div className="">
-        <div className="flex items-center w-full max-w-xs p-2 mt-2 border border-gray-300 rounded-md bg-white shadow-sm">
-          <Search className="w-5 h-5 text-gray-400" />
-          <div className="relative w-fit">
-            <p className="text-[10px] text-red-500 absolute right-0 -top-1">Coming Soon</p>
-            <input
-              disabled
-              type="text"
-              placeholder="Quick search..."
-              className="ml-2 w-full outline-none text-sm text-gray-700 placeholder:text-gray-400 bg-transparent"
+    <div className="flex flex-col h-full hide-scrollbar">
+      {/* logo and quich search */}
+      <div className="h-fit w-full ">
+        <div className="flex items-center justify-between py-4  ">
+          <div>
+            <Image
+              src="/WorkR-Full-Logo2.png"
+              alt="photo"
+              width={80}
+              height={80}
+              objectFit="cover"
+              priority
             />
+          </div>
+          <div
+            className="hover:cursor-pointer"
+            onClick={() => {
+              dispatch(isSidebarOpenToogle(false));
+            }}
+          >
+            <Image
+              src="/Close Sidebar Icon.svg"
+              alt="photo"
+              width={15}
+              height={15}
+              objectFit="cover"
+              priority
+            />
+          </div>
+        </div>
+        <div className="">
+          <div className="flex items-center w-full max-w-xs p-2 mt-2 border border-gray-300 rounded-md bg-white shadow-sm">
+            <Search className="w-5 h-5 text-gray-400" />
+            <div className="relative w-fit">
+              <p className="text-[10px] text-red-500 absolute right-0 -top-1">
+                Coming Soon
+              </p>
+              <input
+                disabled
+                type="text"
+                placeholder="Quick search..."
+                className="ml-2 w-full outline-none text-sm text-gray-700 placeholder:text-gray-400 bg-transparent"
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <aside className="w-full py-4 text-gray-800 space-y-2">
-        <div className="text-xs text-gray-500 tracking-wide uppercase flex items-center justify-between z-20 bg-[#F5F5F5]">
-          Main
-          <ChevronDown
-            className={`hover:cursor-pointer duration-300 ${
-              mainMenuCollapsed ? "transform rotate-180" : ""
+      {/* menus */}
+      <div className="flex-1 space-y-2 overflow-y-scroll hide-scrollbar">
+        
+        {/* main menu */}
+        <aside className="w-full py-4 text-gray-800 space-y-2">
+          <div className="text-xs text-gray-500 tracking-wide uppercase flex items-center justify-between z-20 bg-[#F5F5F5]">
+            Main
+            <ChevronDown
+              className={`hover:cursor-pointer duration-300 ${
+                mainMenuCollapsed ? "transform rotate-180" : ""
+              }`}
+              onClick={() => {
+                dispatch(mainMenuCollapsedToogle());
+              }}
+            />
+          </div>
+          <div
+            className={`transition-all duration-500 ease-in-out -z-10 ${
+              mainMenuCollapsed ? "hidden" : ""
             }`}
-            onClick={() => {
-              dispatch(mainMenuCollapsedToogle());
-            }}
-          />
-        </div>
+          >
+            <div className="flex flex-col">
+              {mainMenuTabs.map((tab, index) =>
+                tab.auth?.includes(role) ? (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      setMainMenuActiveTab(index);
+                      dispatch(isSidebarOpenToogle(false));
+                      tab.onClickFn(dispatch, router, tab.link, isSuccess);
+                    }}
+                    className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300  rounded-md hover:cursor-pointer ${
+                      mainMenuActiveTab === index
+                        ? "border-blue-500 text-[#D8FFFF] bg-[#0470B8]"
+                        : "border-transparent text-gray-500 hover:text-blue-500"
+                    }`}
+                  >
+                    {tab.icon}
+                    {tab.name}
+                  </button>
+                ) : (
+                  <div key={index}></div>
+                )
+              )}
+            </div>
+          </div>
+        </aside>
+
+        {/* creation menu */}
         <div
-          className={`transition-all duration-500 ease-in-out -z-10 ${
-            mainMenuCollapsed ? "hidden" : ""
-          }`}
+          className={`mb-[40%] ${userRoles?.includes("admin") ? "" : "hidden"}`}
         >
-          <div className="flex flex-col">
-            {mainMenuTabs.map((tab, index) =>
-              tab.auth?.includes(role) ? (
+          <div className="text-xs text-gray-500 tracking-wide uppercase flex items-center justify-between z-20 bg-[#F5F5F5]">
+            Creation
+            <ChevronDown
+              className={`hover:cursor-pointer duration-300 ${
+                otherMenuCollapsed ? "transform rotate-180" : ""
+              }`}
+              onClick={() => {
+                dispatch(otherMenuCollapsedToogle());
+              }}
+            />
+          </div>
+          <div
+            className={`transition-all duration-500 ease-in-out -z-10 ${
+              otherMenuCollapsed ? "hidden" : ""
+            }`}
+          >
+            <div className="flex flex-col">
+              {creationTabs.map((tab, index) =>
+                tab.auth?.includes(role) ? (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      // setOtherMenuActiveTab(index);
+                      tab.onClickFn(dispatch, router, tab.link, isSuccess);
+                    }}
+                    className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300 border-2 rounded-md hover:cursor-pointer border-transparent text-gray-500 hover:text-blue-500`}
+                  >
+                    {tab.icon}
+                    {tab.name}
+                  </button>
+                ) : (
+                  <div key={index}></div>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* other menu */}
+        <div className="mb-[40%]">
+          <div className="text-xs text-gray-500 tracking-wide uppercase flex items-center justify-between z-20 bg-[#F5F5F5]">
+            Others
+            <ChevronDown
+              className={`hover:cursor-pointer duration-300 ${
+                otherMenuCollapsed ? "transform rotate-180" : ""
+              }`}
+              onClick={() => {
+                dispatch(otherMenuCollapsedToogle());
+              }}
+            />
+          </div>
+          <div
+            className={`transition-all duration-500 ease-in-out -z-10 ${
+              otherMenuCollapsed ? "hidden" : ""
+            }`}
+          >
+            <div className="flex flex-col">
+              {otherMenuTabs.map((tab, index) => (
                 <button
                   key={index}
                   onClick={() => {
-                    setMainMenuActiveTab(index);
-                    dispatch(isSidebarOpenToogle(false));
-                    tab.onClickFn(dispatch, router, tab.link, isSuccess);
+                    setOtherMenuActiveTab(index);
+                    router.push(`${pathname}${tab.link}`);
                   }}
-                  className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300  rounded-md hover:cursor-pointer ${
-                    mainMenuActiveTab === index
+                  className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300 border-2 rounded-md pointer-events-none ${
+                    otherMenuActiveTab === index
                       ? "border-blue-500 text-[#D8FFFF] bg-[#0470B8]"
                       : "border-transparent text-gray-500 hover:text-blue-500"
                   }`}
                 >
                   {tab.icon}
-                  {tab.name}
+                  <div className="relative">
+                    <p>{tab.name}</p>
+                    <p className="text-[0.61rem] text-red-500 absolute -right-[4.2rem] top-0">
+                      Coming Soon
+                    </p>
+                  </div>
                 </button>
-              ) : (
-                <div key={index}></div>
-              )
-            )}
-          </div>
-        </div>
-      </aside>
-
-      <div className={`mb-[40%] ${userRoles?.includes('admin') ? '' : 'hidden'}`}>
-        <div className="text-xs text-gray-500 tracking-wide uppercase flex items-center justify-between z-20 bg-[#F5F5F5]">
-          Creation
-          <ChevronDown
-            className={`hover:cursor-pointer duration-300 ${
-              otherMenuCollapsed ? "transform rotate-180" : ""
-            }`}
-            onClick={() => {
-              dispatch(otherMenuCollapsedToogle());
-            }}
-          />
-        </div>
-        <div
-          className={`transition-all duration-500 ease-in-out -z-10 ${
-            otherMenuCollapsed ? "hidden" : ""
-          }`}
-        >
-          <div className="flex flex-col">
-            {creationTabs.map((tab, index) => (
-              tab.auth?.includes(role) ? (
-                <button
-                key={index}
-                onClick={() => {
-                  // setOtherMenuActiveTab(index);
-                  tab.onClickFn(dispatch, router, tab.link, isSuccess)
-                }}
-                className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300 border-2 rounded-md hover:cursor-pointer border-transparent text-gray-500 hover:text-blue-500`}
-              >
-                {tab.icon}
-                {tab.name}
-              </button>
-              ): (<div key={index}></div>)
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="mb-[40%]">
-        <div className="text-xs text-gray-500 tracking-wide uppercase flex items-center justify-between z-20 bg-[#F5F5F5]">
-          Others
-          <ChevronDown
-            className={`hover:cursor-pointer duration-300 ${
-              otherMenuCollapsed ? "transform rotate-180" : ""
-            }`}
-            onClick={() => {
-              dispatch(otherMenuCollapsedToogle());
-            }}
-          />
-        </div>
-        <div
-          className={`transition-all duration-500 ease-in-out -z-10 ${
-            otherMenuCollapsed ? "hidden" : ""
-          }`}
-        >
-          <div className="flex flex-col">
-            {otherMenuTabs.map((tab, index) => (
-                <button
-                key={index}
-                onClick={() => {
-                  setOtherMenuActiveTab(index);
-                  router.push(`${pathname}${tab.link}`);
-                }}
-                className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300 border-2 rounded-md pointer-events-none ${
-                  otherMenuActiveTab === index
-                    ? "border-blue-500 text-[#D8FFFF] bg-[#0470B8]"
-                    : "border-transparent text-gray-500 hover:text-blue-500"
-                }`}
-              >
-                {tab.icon}
-                <div className="relative">
-                  <p>{tab.name}</p>
-                  <p className="text-[0.61rem] text-red-500 absolute -right-[4.2rem] top-0">Coming Soon</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
+      {/* profile button */}
+      <div className="h-fit w-full pb-5">
+        <UserProfileSidebar />
       </div>
-      <UserProfileSidebar />
     </div>
   );
+
+  // return (
+  //   <div className="hide-scrollbar ">
+  //     <div className="flex items-center justify-between py-4  ">
+  //       <div>
+  //         <Image
+  //           src="/WorkR-Full-Logo2.png"
+  //           alt="photo"
+  //           width={80}
+  //           height={80}
+  //           objectFit="cover"
+  //           priority
+  //         />
+  //       </div>
+  //       <div
+  //         className="hover:cursor-pointer"
+  //         onClick={() => {
+  //           dispatch(isSidebarOpenToogle(false));
+  //         }}
+  //       >
+  //         <Image
+  //           src="/Close Sidebar Icon.svg"
+  //           alt="photo"
+  //           width={15}
+  //           height={15}
+  //           objectFit="cover"
+  //           priority
+  //         />
+  //       </div>
+  //     </div>
+
+  //     <div className="">
+  //       <div className="flex items-center w-full max-w-xs p-2 mt-2 border border-gray-300 rounded-md bg-white shadow-sm">
+  //         <Search className="w-5 h-5 text-gray-400" />
+  //         <div className="relative w-fit">
+  //           <p className="text-[10px] text-red-500 absolute right-0 -top-1">
+  //             Coming Soon
+  //           </p>
+  //           <input
+  //             disabled
+  //             type="text"
+  //             placeholder="Quick search..."
+  //             className="ml-2 w-full outline-none text-sm text-gray-700 placeholder:text-gray-400 bg-transparent"
+  //           />
+  //         </div>
+  //       </div>
+  //     </div>
+
+  //     <aside className="w-full py-4 text-gray-800 space-y-2">
+  //       <div className="text-xs text-gray-500 tracking-wide uppercase flex items-center justify-between z-20 bg-[#F5F5F5]">
+  //         Main
+  //         <ChevronDown
+  //           className={`hover:cursor-pointer duration-300 ${
+  //             mainMenuCollapsed ? "transform rotate-180" : ""
+  //           }`}
+  //           onClick={() => {
+  //             dispatch(mainMenuCollapsedToogle());
+  //           }}
+  //         />
+  //       </div>
+  //       <div
+  //         className={`transition-all duration-500 ease-in-out -z-10 ${
+  //           mainMenuCollapsed ? "hidden" : ""
+  //         }`}
+  //       >
+  //         <div className="flex flex-col">
+  //           {mainMenuTabs.map((tab, index) =>
+  //             tab.auth?.includes(role) ? (
+  //               <button
+  //                 key={index}
+  //                 onClick={() => {
+  //                   setMainMenuActiveTab(index);
+  //                   dispatch(isSidebarOpenToogle(false));
+  //                   tab.onClickFn(dispatch, router, tab.link, isSuccess);
+  //                 }}
+  //                 className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300  rounded-md hover:cursor-pointer ${
+  //                   mainMenuActiveTab === index
+  //                     ? "border-blue-500 text-[#D8FFFF] bg-[#0470B8]"
+  //                     : "border-transparent text-gray-500 hover:text-blue-500"
+  //                 }`}
+  //               >
+  //                 {tab.icon}
+  //                 {tab.name}
+  //               </button>
+  //             ) : (
+  //               <div key={index}></div>
+  //             )
+  //           )}
+  //         </div>
+  //       </div>
+  //     </aside>
+
+  //     <div
+  //       className={`mb-[40%] ${userRoles?.includes("admin") ? "" : "hidden"}`}
+  //     >
+  //       <div className="text-xs text-gray-500 tracking-wide uppercase flex items-center justify-between z-20 bg-[#F5F5F5]">
+  //         Creation
+  //         <ChevronDown
+  //           className={`hover:cursor-pointer duration-300 ${
+  //             otherMenuCollapsed ? "transform rotate-180" : ""
+  //           }`}
+  //           onClick={() => {
+  //             dispatch(otherMenuCollapsedToogle());
+  //           }}
+  //         />
+  //       </div>
+  //       <div
+  //         className={`transition-all duration-500 ease-in-out -z-10 ${
+  //           otherMenuCollapsed ? "hidden" : ""
+  //         }`}
+  //       >
+  //         <div className="flex flex-col">
+  //           {creationTabs.map((tab, index) =>
+  //             tab.auth?.includes(role) ? (
+  //               <button
+  //                 key={index}
+  //                 onClick={() => {
+  //                   // setOtherMenuActiveTab(index);
+  //                   tab.onClickFn(dispatch, router, tab.link, isSuccess);
+  //                 }}
+  //                 className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300 border-2 rounded-md hover:cursor-pointer border-transparent text-gray-500 hover:text-blue-500`}
+  //               >
+  //                 {tab.icon}
+  //                 {tab.name}
+  //               </button>
+  //             ) : (
+  //               <div key={index}></div>
+  //             )
+  //           )}
+  //         </div>
+  //       </div>
+  //     </div>
+
+  //     <div className="mb-[40%]">
+  //       <div className="text-xs text-gray-500 tracking-wide uppercase flex items-center justify-between z-20 bg-[#F5F5F5]">
+  //         Others
+  //         <ChevronDown
+  //           className={`hover:cursor-pointer duration-300 ${
+  //             otherMenuCollapsed ? "transform rotate-180" : ""
+  //           }`}
+  //           onClick={() => {
+  //             dispatch(otherMenuCollapsedToogle());
+  //           }}
+  //         />
+  //       </div>
+  //       <div
+  //         className={`transition-all duration-500 ease-in-out -z-10 ${
+  //           otherMenuCollapsed ? "hidden" : ""
+  //         }`}
+  //       >
+  //         <div className="flex flex-col">
+  //           {otherMenuTabs.map((tab, index) => (
+  //             <button
+  //               key={index}
+  //               onClick={() => {
+  //                 setOtherMenuActiveTab(index);
+  //                 router.push(`${pathname}${tab.link}`);
+  //               }}
+  //               className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300 border-2 rounded-md pointer-events-none ${
+  //                 otherMenuActiveTab === index
+  //                   ? "border-blue-500 text-[#D8FFFF] bg-[#0470B8]"
+  //                   : "border-transparent text-gray-500 hover:text-blue-500"
+  //               }`}
+  //             >
+  //               {tab.icon}
+  //               <div className="relative">
+  //                 <p>{tab.name}</p>
+  //                 <p className="text-[0.61rem] text-red-500 absolute -right-[4.2rem] top-0">
+  //                   Coming Soon
+  //                 </p>
+  //               </div>
+  //             </button>
+  //           ))}
+  //         </div>
+  //       </div>
+  //     </div>
+  //     <UserProfileSidebar />
+  //   </div>
+  // );
 }
