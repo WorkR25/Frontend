@@ -8,14 +8,15 @@ import PaginationFooter from "@/components/dashboard/PaginationFooter";
 
 export default function Page() {
   return (
-    <div className="jobs-page text-black p-2 bg-[#FFFF] h-full pb-0 ">
+    <div className="jobs-page text-black p-2 bg-[#FFFF] h-full pb-0 flex flex-col">
       <DashboardTopbar pageName="Jobs" />
-      <div className="jobs-page overflow-y-scroll h-[calc(100%-117px))]">
+      <div className="jobs-page overflow-y-scroll flex-1">
         <div className="jobs-page px-2 relative flex flex-col min-h-full items-end h-full">
           <div className="jobs-page hidden py-2 bg-white sticky top-0">
             <JobSearchBanner />
           </div>
-          <div className="jobs-page flex p-2 items-center justify-between">
+          {/* flex */}
+          <div className="jobs-page hidden p-2 items-center justify-between">
             {/* <div className="jobs-page font-semibold text-lg">Jobs for you</div> */}
             {/* <div className="jobs-page flex items-center justify-center gap-x-2"> */}
 
