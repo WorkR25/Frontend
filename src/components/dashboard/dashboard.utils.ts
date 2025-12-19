@@ -8,6 +8,9 @@ import { setShowAllCandidates } from "@/features/showAllCandidates/showAllCandid
 import { setShowCreateCompanyForm } from "@/features/showCreateCompanyForm/showCreateCompanyFormSlice";
 import { setShowEditSkills } from "@/features/showEditSkils/showEditSkillsSlice";
 import { toogleShowJobCreateForm } from "@/features/showJobCreateForm/showJobCreateForm";
+import { setShowSearchCandidates } from "@/features/showSearchCandidates/showSearchCandidates";
+import { setShowSearchCandidatesByEmail } from "@/features/showSearchCandidates/showSearchCandidatesByEmail";
+import { setShowSearchCandidatesByName } from "@/features/showSearchCandidates/showSearchCandidatesByName";
 import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { set } from "zod/v3";
@@ -20,6 +23,18 @@ type OnClickFnType = (
   link: string | null,
   isSuccess?: boolean,
 ) => void;
+
+export const onClickSearchCandidatesByName: OnClickFnType = (dispatch, router, link, isSuccess) => {
+  dispatch(isSidebarOpenToogle(false));
+  dispatch(setShowSearchCandidatesByName(true))
+  // router.replace(`/dashboard/${link}`);
+}
+
+export const onClickSearchCandidatesByEmail: OnClickFnType = (dispatch, router, link, isSuccess) => {
+  dispatch(isSidebarOpenToogle(false));
+  dispatch(setShowSearchCandidatesByEmail(true))
+  // router.replace(`/dashboard/${link}`);
+}
 
 export const onClickOverview: OnClickFnType = (dispatch, router, link, isSuccess) => {
   dispatch(isSidebarOpenToogle(false));
