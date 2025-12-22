@@ -35,6 +35,8 @@ import {
   onClickCreateJob,
   onClickExploreJob,
   onClickOverview,
+  onClickSearchCandidatesByEmail,
+  onClickSearchCandidatesByName,
 } from "./dashboard.utils";
 // import { toogleShowJobCreateForm } from "@/features/showJobCreateForm/showJobCreateForm";
 const mainMenuTabId: { [key: string]: number } = {
@@ -172,6 +174,20 @@ export default function DashboardSidebar() {
       link: null,
       auth: ["admin"],
       onClickFn: onClickAllCandidates,
+    },
+    {
+      name: "Search by name",
+      icon: <PersonStanding className="w-5 h-5" />,
+      link: null,
+      auth: ["admin"],
+      onClickFn: onClickSearchCandidatesByName,
+    },
+    {
+      name: "Search by email",
+      icon: <PersonStanding className="w-5 h-5" />,
+      link: null,
+      auth: ["admin"],
+      onClickFn: onClickSearchCandidatesByEmail,
     },
   ];
 

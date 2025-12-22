@@ -8,6 +8,10 @@ import CreateCompanyForm from "@/components/createCompany/CreateCompanyForm";
 import CreateJobForm from "@/components/createJob/CreateJobForm";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import EditSkills from "@/components/me/EditSkills";
+import SearchCandidatesByEmail from "@/components/searchCandidates/SearchCandidatesByEmail";
+import SearchCandidatesByName from "@/components/searchCandidates/SearchCandidatesByName";
+// import NameSearchWithParams from "@/components/searchCandidates/SearchCandidatesByName";
+// import SearchCandidatesCard from "@/components/searchCandidates/SearchCandidatesCard";
 import UpdateJobForm from "@/components/updateJob/UpdateJobForm";
 import ViewApplicants from "@/components/viewApplicants/ViewApplicants";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
@@ -17,6 +21,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
+
 
 export default function DashboardLayout({
   children,
@@ -65,6 +70,20 @@ export default function DashboardLayout({
     return state.showAllCandidates.value;
   });
 
+  const showSearchCandidates = useSelector((state: RootState) => {
+    return state.showSearchCandidates.value;
+  })
+
+
+  const showSearchCandidatesByName = useSelector((state: RootState) => {
+    return state.showSearchCandidatesByName.value;
+  })
+
+  const showSearchCandidatesByEmail = useSelector((state: RootState) => {
+    return state.showSearchCandidatesByEmail.value;
+  })
+
+
   // const jwtToken = useSelector((state: RootState) => {
   //   return state.authJwtToken.value;
   // });
@@ -72,6 +91,72 @@ export default function DashboardLayout({
   const loginRequiredDialogBox = useSelector(
     (state: RootState) => state.setLoginRequiredDialogBox.value
   );
+
+  const panels = [
+    {
+      show: showAddLocation,
+      element: <AddLocationForm />,
+    },
+    {
+      show: showAddTitleForm,
+      element: <AddTitleForm />,
+    },
+    {
+      show: showCreateCompanyForm,
+      element: <CreateCompanyForm />,
+    },
+    {
+      show: showAddSkillsForm,
+      element: <AddSkill />,
+    },
+    {
+      show: showEditSkills.value,
+      element: (
+        <EditSkills
+          fieldName={showEditSkills.fieldName!}
+          setValue={showEditSkills.setValue}
+          error={showEditSkills.error}
+          jwtToken={showEditSkills.jwtToken}
+          fieldValue={showEditSkills.fieldValue}
+        />
+      ),
+    },
+    {
+      show: showAllCandidates,
+      element: <AllCandidates />,
+    },
+    {
+      show: showSearchCandidates,
+      element: <SearchCandidatesByName />,
+    },
+    {
+      show: showJobApplicants,
+      element: <ViewApplicants jobId={Number(jobId)} />,
+    },
+    {
+      show: showJobCreateForm,
+      element: (
+        <CreateJobForm className="dashboard-layout h-screen w-full" />
+      ),
+    },
+    {
+      show: showJobUpdateForm,
+      element: (
+        <UpdateJobForm
+          id={Number(jobId)}
+          className="dashboard-layout h-screen w-full"
+        />
+      ),
+    }, {
+      show: showSearchCandidatesByName,
+      element: <SearchCandidatesByName />,
+    },
+    {
+      show: showSearchCandidatesByEmail,
+      element: <SearchCandidatesByEmail />,
+    }
+  ];
+
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -115,7 +200,7 @@ export default function DashboardLayout({
           dispatch(setLoginRequiredDialogBox(false));
         }}
       />
-      {showAddLocation && (
+      {/* {showAddLocation && (
         <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
           <div className="dashboard-layout w-full min-h-full">
             <AddLocationForm />
@@ -168,6 +253,14 @@ export default function DashboardLayout({
         </div>
       )}
 
+      {showSearchCandidates && (
+        <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
+          <div className="dashboard-layout w-full h-full">
+            <SearchCandidatesCard />
+          </div>
+        </div>
+      )}
+
       {showJobApplicants && (
         <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
           <div className="dashboard-layout w-full h-full">
@@ -193,11 +286,19 @@ export default function DashboardLayout({
             />
           </div>
         </div>
+      )} */}
+
+      {panels.map(
+        (panel, index) =>
+          panel.show && (
+            <Wrapper key={index}>
+              {panel.element}
+            </Wrapper>
+          )
       )}
       <div
-        className={`dashboard-layout absolute w-[100%] h-[100%] sm:hidden  border top-0 left-0 bg-black opacity-35 z-10 ${
-          isSidebarOpen ? (showJobCreateForm ? "hidden" : "block") : "hidden"
-        }`}
+        className={`dashboard-layout absolute w-[100%] h-[100%] sm:hidden  border top-0 left-0 bg-black opacity-35 z-10 ${isSidebarOpen ? (showJobCreateForm ? "hidden" : "block") : "hidden"
+          }`}
       ></div>
       <div className={"dashboard-layout flex h-full w-full gap-x-2"}>
         <div
@@ -206,14 +307,13 @@ export default function DashboardLayout({
           <DashboardSidebar />
         </div>
         <div
-          className={`dashboard-layout absolute rounded-r-lg bg-[#F5F5F5] h-full w-[75%] sm:hidden overflow-y-scroll px-5 z-50 transform transition-transform duration-300 ease-in-out ${
-            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+          className={`dashboard-layout absolute rounded-r-lg bg-[#F5F5F5] h-full w-[75%] sm:hidden overflow-y-scroll px-5 z-50 transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
         >
           <DashboardSidebar />
         </div>
         <div className="dashboard-layout w-full h-full sm:basis-4/5 rounded-lg overflow-hidden">
-          {showEditSkills.value && (
+          {/* {showEditSkills.value && (
             <div className="dashboard-layout absolute sm:hidden px-5 hide-scrollbar flex justify-center z-40 h-screen w-full sm:w-[79%] bg-white overflow-y-auto">
               <div className="dashboard-layout w-full min-h-full">
                 <EditSkills
@@ -276,11 +376,36 @@ export default function DashboardLayout({
                 />
               </div>
             </div>
+          )} */}
+
+          {panels.map(
+            (panel, index) =>
+              panel.show && (
+                <WrapperMobile key={index}>
+                  {panel.element}
+                </WrapperMobile>
+              )
           )}
-          
+
           {children}
         </div>
       </div>
     </div>
   );
 }
+
+const Wrapper = ({ children }: { children: React.ReactNode }) => (
+  <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
+    <div className="dashboard-layout w-full min-h-full">
+      {children}
+    </div>
+  </div>
+);
+
+const WrapperMobile = ({ children }: { children: React.ReactNode }) => (
+  <div className="dashboard-layout absolute sm:hidden px-5 hide-scrollbar flex justify-center z-40 h-screen w-full bg-white overflow-y-auto">
+    <div className="dashboard-layout w-full min-h-full">
+      {children}
+    </div>
+  </div>
+);
