@@ -1,5 +1,6 @@
 "use client";
 import AddLocationForm from "@/components/addLocation/AddLocationForm";
+import AddRoles from "@/components/addRoles/AddRolesForm";
 import AddSkill from "@/components/addSkill/AddSkillForm";
 import AddTitleForm from "@/components/addTitle/AddTitleForm";
 import AllCandidates from "@/components/allCandidates/AllCandidates";
@@ -92,6 +93,10 @@ export default function DashboardLayout({
     (state: RootState) => state.setLoginRequiredDialogBox.value
   );
 
+  const showAddRolesForm = useSelector(
+    (state: RootState) => state.showAddRolesForm.value
+  );
+
   const panels = [
     {
       show: showAddLocation,
@@ -154,6 +159,10 @@ export default function DashboardLayout({
     {
       show: showSearchCandidatesByEmail,
       element: <SearchCandidatesByEmail />,
+    },
+    {
+      show: showAddRolesForm,
+      element: <AddRoles />,
     }
   ];
 

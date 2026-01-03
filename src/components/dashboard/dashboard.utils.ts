@@ -2,6 +2,7 @@
 import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice";
 import { setLoginRequiredDialogBox } from "@/features/loginRequiredDialogBox/loginRequiredDialogBoxSlice";
 import { setShowAddLocationForm } from "@/features/showAddLocationForm/showAddLocationFormSlice";
+import { setShowAddRolesForm } from "@/features/showAddRolesForm/showAddRolesFormSlice";
 import { setShowAddSkillsForm } from "@/features/showAddSkillsForm/showAddSkillsFormSlice";
 import { setShowAddTitleForm } from "@/features/showAddTitleForm/showAddTitleFormSlice";
 import { setShowAllCandidates } from "@/features/showAllCandidates/showAllCandidatesSlice";
@@ -16,7 +17,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import { set } from "zod/v3";
 import { is } from "zod/v4/locales";
 
-type OnClickFnType = (
+export type OnClickFnType = (
     
   dispatch: Dispatch<UnknownAction>,
   router: AppRouterInstance,
@@ -98,6 +99,11 @@ export const onClickAddCity: OnClickFnType = (dispatch, router, link) => {
 
 export const onClickAddTitle: OnClickFnType = (dispatch, router, link) => {
   dispatch(setShowAddTitleForm(true))
+  dispatch(isSidebarOpenToogle(false));
+}
+
+export const onClickCreateRoles: OnClickFnType = (dispatch, router, link) => {
+  dispatch(setShowAddRolesForm(true))
   dispatch(isSidebarOpenToogle(false));
 }
 //                     dispatch(isSidebarOpenToogle(false));
