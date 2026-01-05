@@ -76,7 +76,7 @@ export default function Page() {
   if(!mounted) return null ;
 
   if (!userRoles || !permission[userRoles[0]]) {
-    return <div className="flex justify-center w-full">Authorizing... {jwtToken}</div>;
+    return <div className="flex justify-center w-full">Authorizing... </div>;
   }
 
   return (
