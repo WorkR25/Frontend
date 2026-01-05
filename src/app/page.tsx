@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 export default function Home() {
   const router = useRouter() ;
   const dispatch = useDispatch();
-  
+
   useEffect(()=>{
     const token = localStorage.getItem('AuthJwtToken') ;
     if(token){
@@ -19,7 +19,7 @@ export default function Home() {
     router.replace('/dashboard')
   },[dispatch, router])
 
-  
+
   const jwtToken = useSelector((state: RootState)=>{return state.authJwtToken.value})
   const {  } = useGetUser(jwtToken);
 

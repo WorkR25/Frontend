@@ -4,17 +4,8 @@ import { JSX, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
-  Briefcase,
-  Building2,
-  ChartPie,
   ChevronDown,
-  Folder,
-  Globe,
-  LocateFixed,
-  PersonStanding,
   Search,
-  SignpostBig,
-  ToolCase,
 } from "lucide-react";
 import UserProfileSidebar from "../UserProfileSidebar";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,21 +16,9 @@ import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import useGetUser from "@/utils/useGetUser";
 import useGetUserRoles from "@/utils/useGetUserRoles";
-import {
-  onClickAddCity,
-  onClickAddSKill,
-  onClickAddTitle,
-  onClickAllCandidates,
-  onClickAllJobs,
-  onClickCreateCompany,
-  onClickCreateJob,
-  onClickCreateRoles,
-  onClickExploreJob,
-  OnClickFnType,
-  onClickOverview,
-  onClickSearchCandidatesByEmail,
-  onClickSearchCandidatesByName,
-} from "./dashboard.utils";
+
+import { dashboardSidebarTabs } from "./dashboard.utis";
+import { OnClickFnType } from "./dashboard.utils";
 // import { toogleShowJobCreateForm } from "@/features/showJobCreateForm/showJobCreateForm";
 const mainMenuTabId: { [key: string]: number } = {
   jobs: 1,
@@ -52,7 +31,6 @@ export default function DashboardSidebar() {
   const dispatch = useDispatch();
   const pathname = usePathname();
   const sidebarRef = useRef<HTMLDivElement>(null);
-
 
   const [mainMenuActiveTab, setMainMenuActiveTab] = useState<number | null>(
     mainMenuTabId[pathname.split("/")[2]] ?? 0
@@ -76,23 +54,22 @@ export default function DashboardSidebar() {
   const { data: userRoles } = useGetUserRoles(jwtToken, userData?.id);
 
   const roleMap: { [key: string]: string } = {
-    "admin": "admin",
-    "recruiter": "recruiter",
-    "user": "user",
-    "operations_admin": "operations_admin"
+    admin: "admin",
+    recruiter: "recruiter",
+    jobseeker: "jobseeker",
+    operations_admin: "operations_admin",
   };
 
   useEffect(() => {
-
-    const tempRole = Object.keys(roleMap).find(r => userRoles?.includes(r));
+    const tempRole = Object.keys(roleMap).find((r) => userRoles?.includes(r));
 
     if (tempRole == undefined) {
-      setRole("user");
+      setRole("jobseeker");
       return;
     }
 
-    setRole(roleMap[tempRole] || "user");
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setRole(roleMap[tempRole] || "jobseeker");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userRoles, pathname]);
 
   useEffect(() => {
@@ -114,7 +91,10 @@ export default function DashboardSidebar() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node)
+      ) {
         dispatch(isSidebarOpenToogle(false));
       }
     };
@@ -148,156 +128,60 @@ export default function DashboardSidebar() {
   //   },
   // ];
 
-  const newMainMenuTabs: { [key: string]: { name: string, icon: JSX.Element, link: string | null, onClickFn: OnClickFnType }[] } = {
-    user: [
-    {
-      name: "Overview",
-      icon: <ChartPie className="w-5 h-5 mr-2" />,
-      link: "/",
-      onClickFn: onClickOverview,
-    },
-    {
-      name: "Explore Jobs",
-      icon: <Globe className="w-5 h-5 mr-2" />,
-      link: "/jobs",
-      onClickFn: onClickExploreJob,
-    },
-  ],
+  const newMainMenuTabs: {
+    [key: string]: {
+      name: string;
+      icon: JSX.Element;
+      link: string | null;
+      onClickFn: OnClickFnType;
+    }[];
+  } = {
+    jobseeker: [
+      dashboardSidebarTabs.overviewTab,
+      dashboardSidebarTabs.exploreJobsTab,
+    ],
     admin: [
-    {
-      name: "Overview",
-      icon: <ChartPie className="w-5 h-5 mr-2" />,
-      link: "/",
-      onClickFn: onClickOverview,
-    },
-    {
-      name: "Explore Jobs",
-      icon: <Globe className="w-5 h-5 mr-2" />,
-      link: "/jobs",
-      onClickFn: onClickExploreJob,
-    },
-    {
-      name: "All jobs",
-      icon: <Folder className="w-5 h-5 mr-2" />,
-      link: "/all-jobs",
-      onClickFn: onClickAllJobs,
-    },
-  ],
-    operations_admin: [
-    {
-      name: "Overview",
-      icon: <ChartPie className="w-5 h-5 mr-2" />,
-      link: "/",
-      onClickFn: onClickOverview,
-    },
-    {
-      name: "Explore Jobs",
-      icon: <Globe className="w-5 h-5 mr-2" />,
-      link: "/jobs",
-      onClickFn: onClickExploreJob,
-    },
-    {
-      name: "All jobs",
-      icon: <Folder className="w-5 h-5 mr-2" />,
-      link: "/all-jobs",
-      onClickFn: onClickAllJobs,
-    },
-  ]
-  };
-  
-
-  const newCreationTabs: { [key: string]: { name: string, icon: JSX.Element, link: string | null, onClickFn: OnClickFnType }[] } = {
-    user: [],
-    admin: [
-      {
-        name: "Create Job",
-        icon: <Briefcase className="w-5 h-5 mr-2" />,
-        link: null,
-        onClickFn: onClickCreateJob,
-      },
-      {
-        name: "Create Company",
-        icon: <Building2 className="w-5 h-5 mr-2" />,
-        link: null,
-        onClickFn: onClickCreateCompany,
-      },
-      {
-        name: "Add Skill",
-        icon: <ToolCase className="w-5 h-5 mr-2" />,
-        link: null,
-        onClickFn: onClickAddSKill,
-      },
-      {
-        name: "Add Location",
-        icon: <LocateFixed className="w-5 h-5 mr-2" />,
-        link: null,
-        onClickFn: onClickAddCity,
-      },
-      {
-        name: "Add Title",
-        icon: <SignpostBig className="w-5 h-5 mr-2" />,
-        link: null,
-        onClickFn: onClickAddTitle,
-      },
-      {
-        name: "All Candidates",
-        icon: <PersonStanding className="w-5 h-5" />,
-        link: null,
-        onClickFn: onClickAllCandidates,
-      },
-      {
-        name: "Search by name",
-        icon: <PersonStanding className="w-5 h-5" />,
-        link: null,
-        onClickFn: onClickSearchCandidatesByName,
-      },
-      {
-        name: "Search by email",
-        icon: <PersonStanding className="w-5 h-5" />,
-        link: null,
-        onClickFn: onClickSearchCandidatesByEmail,
-      },
-      {
-        name: "Create Roles",
-        icon: <ToolCase className="w-5 h-5 mr-2" />,
-        link: null,
-        onClickFn: onClickCreateRoles,
-      }
+      dashboardSidebarTabs.overviewTab,
+      dashboardSidebarTabs.exploreJobsTab,
+      dashboardSidebarTabs.allJobsTab,
     ],
     operations_admin: [
-      {
-        name: "Create Job",
-        icon: <Briefcase className="w-5 h-5 mr-2" />,
-        link: null,
-        onClickFn: onClickCreateJob,
-      },
-      {
-        name: "Create Company",
-        icon: <Building2 className="w-5 h-5 mr-2" />,
-        link: null,
-        onClickFn: onClickCreateCompany,
-      },
-      {
-        name: "Add Skill",
-        icon: <ToolCase className="w-5 h-5 mr-2" />,
-        link: null,
-        onClickFn: onClickAddSKill,
-      },
-      {
-        name: "Add Location",
-        icon: <LocateFixed className="w-5 h-5 mr-2" />,
-        link: null,
-        onClickFn: onClickAddCity,
-      },
-      {
-        name: "Add Title",
-        icon: <SignpostBig className="w-5 h-5 mr-2" />,
-        link: null,
-        onClickFn: onClickAddTitle,
-      },
-    ]
-  }
+      dashboardSidebarTabs.overviewTab,
+      dashboardSidebarTabs.exploreJobsTab,
+      dashboardSidebarTabs.allJobsTab,
+    ],
+  };
 
+  const newCreationTabs: {
+    [key: string]: {
+      name: string;
+      icon: JSX.Element;
+      link: string | null;
+      onClickFn: OnClickFnType;
+    }[];
+  } = {
+    jobseeker: [],
+
+    admin: [
+      dashboardSidebarTabs.createJobTab,
+      dashboardSidebarTabs.createCompanyTab,
+      dashboardSidebarTabs.addSkillTab,
+      dashboardSidebarTabs.addLocationTab,
+      dashboardSidebarTabs.addTitleTab,
+      dashboardSidebarTabs.allCandidatesTab,
+      dashboardSidebarTabs.searchCandidatesByNameTab,
+      dashboardSidebarTabs.searchCandidatesByEmailTab,
+      dashboardSidebarTabs.createRolesTab,
+    ],
+
+    operations_admin: [
+      dashboardSidebarTabs.createJobTab,
+      dashboardSidebarTabs.createCompanyTab,
+      dashboardSidebarTabs.addSkillTab,
+      dashboardSidebarTabs.addLocationTab,
+      dashboardSidebarTabs.addTitleTab,
+    ],
+  };
   // const creationTabs = [
   //   {
   //     name: "Create Job",
@@ -413,7 +297,6 @@ export default function DashboardSidebar() {
 
       {/* menus */}
       <div className="flex-1 space-y-2 overflow-y-scroll hide-scrollbar">
-
         {/* main menu */}
         <aside className="w-full py-4 text-gray-800 space-y-2">
           <div className="text-xs text-gray-500 tracking-wide uppercase flex items-center justify-between z-20 bg-[#F5F5F5]">
