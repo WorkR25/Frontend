@@ -4,6 +4,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TurndownService from "turndown";
 import { useFormContext } from "react-hook-form";
+// import {  }
 
 interface MarkdownEditorProps {
   fieldName: string;
@@ -22,13 +23,13 @@ export default function MarkdownEditor({ fieldName, showFormatOptions = true, is
     h3: false,
     h4: false,
   });
-
+  // const { watch, getValues } = useFormContext();
   const { setValue, register } = useFormContext();
   const turndownService = new TurndownService();
 
   const editor = useEditor({
     extensions: [StarterKit],
-    content: "",
+    content: undefined,
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
@@ -41,12 +42,13 @@ export default function MarkdownEditor({ fieldName, showFormatOptions = true, is
     },
   });
 
-  useEffect(()=>{
-    if(isSuccess){
-      editor?.commands.setContent(''); 
-    }
-  },[isSuccess, editor])
-
+  useEffect(() => {
+  if (isSuccess) {
+    // Reset the editor content
+    editor?.commands.setContent(null);
+    // editor?.commands.clearContent();
+  }
+}, [editor, isSuccess]);
   useEffect(() => {
     register(fieldName, { required: true });
   }, [fieldName, register]);
@@ -118,7 +120,7 @@ export default function MarkdownEditor({ fieldName, showFormatOptions = true, is
       )}
 
       {/* Editor displays PREVIEW */}
-      <EditorContent editor={editor} className="h-fit outline-none p-2" />
+      <EditorContent  editor={editor} className="h-fit outline-none p-2" />
     </div>
   );
 }
