@@ -66,6 +66,7 @@ export default function CreateCompanyForm() {
       // reset(undefined, { keepErrors: false });
       reset();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess, reset]);
 
   if (!jwtToken) return null;

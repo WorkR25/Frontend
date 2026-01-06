@@ -26,9 +26,17 @@ export default function AddRoles() {
     const { mutate, isSuccess } = useCreateRole();
     const { data: roleNames, refetch, isLoading, } = useGetRoles(authJwtToken, debouncedInput);
     // console.log(roleNames)
-    if (isSuccess) {
-        refetch();
-    }
+
+    useEffect(()=>{
+
+        if (isSuccess) {
+            refetch();
+            setInput("");
+            setDebouncedInput("");
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[isSuccess])
+
     const isDisabled = isLoading || (roleNames ? roleNames?.length > 0 : false) || debouncedInput.trim() === "";
 
     return (
@@ -69,7 +77,6 @@ export default function AddRoles() {
                         )
                     ) : null
                 }
-
             </div>
         </div>
     )

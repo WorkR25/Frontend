@@ -323,7 +323,7 @@ export default function DashboardSidebar() {
                       dispatch(isSidebarOpenToogle(false));
                       tab.onClickFn(dispatch, router, tab.link, isSuccess);
                     }}
-                    className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300  rounded-md hover:cursor-pointer ${mainMenuActiveTab === index
+                    className={`text-sm sm:text-lg py-2 sm:py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300  rounded-md hover:cursor-pointer ${mainMenuActiveTab === index
                       ? "border-blue-500 text-[#D8FFFF] bg-[#0470B8]"
                       : "border-transparent text-gray-500 hover:text-blue-500"
                       }`}
@@ -364,7 +364,7 @@ export default function DashboardSidebar() {
                     // setOtherMenuActiveTab(index);
                     tab.onClickFn(dispatch, router, tab.link, isSuccess);
                   }}
-                  className={`text-sm sm:text-lg py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300 border-2 rounded-md hover:cursor-pointer border-transparent text-gray-500 hover:text-blue-500`}
+                  className={`text-sm sm:text-lg py-2 sm:py-1.5 px-4 flex items-center gap-4 -mb-px font-medium transition-all duration-300 border-2 rounded-md hover:cursor-pointer border-transparent text-gray-500 hover:text-blue-500`}
                 >
                   {tab.icon}
                   {tab.name}
