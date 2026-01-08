@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import InputField from "../InputField";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useCreateJob from "@/utils/useCreateJob";
 import useGetUser from "@/utils/useGetUser";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,7 +44,7 @@ export default function CreateJobForm({ className }: { className?: string }) {
     return state.authJwtToken.value;
   });
 
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  // const [isAuthorized, setIsAuthorized] = useState(false);
   useEffect(() => {
     const token = localStorage.getItem("AuthJwtToken");
     if (token) {
@@ -60,9 +60,7 @@ export default function CreateJobForm({ className }: { className?: string }) {
   useEffect(() => {
     if (userRoles && !userRoles?.includes("admin")) {
       router.replace("/dashboard");
-    } else {
-      setIsAuthorized(true);
-    }
+    } 
   }, [userRoles, router]);
 
   const useFormMethods = useForm<CreateJobFormValues>({
@@ -90,9 +88,9 @@ export default function CreateJobForm({ className }: { className?: string }) {
   setValue('recruiter_id', Number(data?.id));
   const { mutate, isPending } = useCreateJob();
 
-  if (!isAuthorized || !userRoles || !userRoles.includes("admin")) {
-    return <div className="flex justify-center w-full">Authorizing...</div>;
-  }
+  // if (!isAuthorized || !userRoles || !userRoles.includes("admin")) {
+  //   return <div className="flex justify-center w-full">Authorizing...</div>;
+  // }
 
   return (
     <div

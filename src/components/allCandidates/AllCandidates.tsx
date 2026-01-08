@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { GetUserResponseType } from "@/types/GetUserResponseType";
 import { useEffect, useState } from "react";
 import TripleDotLoader from "../TripleDotLoader";
+import { useDownloadCandidatesCsv } from "@/utils/useDownloadAllCandiidateCSV";
 
 export default function AllCandidates() {
   const [pageCount, setPageCount] = useState(1);
@@ -16,7 +17,8 @@ export default function AllCandidates() {
   const dispatch = useDispatch();
 
   const { data, isPending } = useGetUserListPagination(jwtToken, pageCount, 10);
-
+  const { mutate: downloadCsv, isPending: downloadCsvPending } =
+    useDownloadCandidatesCsv({ jwtToken });
   useEffect(() => {
     if (data) {
       setTotalPages(data.pagination.totalPages);
@@ -34,20 +36,32 @@ export default function AllCandidates() {
         <X width={20} />
       </div>
       <div className="h-full flex flex-col justify-center ">
-        <div className="font-semibold text-lg text-center">
-        All Candidates{` ( Total : ${data?.pagination.totalCount ?? '...'} ) `}
+        <div className=" sm:flex justify-center mt-3 gap-5 md:gap-x-10 font-semibold text-lg text-center">
+          <div className="py-1.5">
+            All Candidates
+            {` ( Total : ${data?.pagination.totalCount ?? "..."} ) `}
+          </div>
+          <button
+            onClick={() => {
+              downloadCsv();
+            }}
+            className="px-5 py-1.5 rounded-2xl bg-blue-300 text-sm md:text-base border-0 hover:cursor-pointer "
+          >
+            {downloadCsvPending ? "Downloading..." : "Download CSV"}
+          </button>
         </div>
         <div className="overflow-y-scroll">
-          {isPending && (
-            <TripleDotLoader />
-          )}
+          {isPending && <TripleDotLoader />}
           {data &&
             data.records.map((user: GetUserResponseType) => (
               <div key={user.id} className="border rounded-lg p-4 m-4">
                 <div>Name: {user.fullName}</div>
                 <div>Email: {user.email}</div>
                 <div>Phone: {user.phoneNo}</div>
-                <div>{"Graduation Year: "}{user.graduationYear ?? "Not available"}</div>
+                <div>
+                  {"Graduation Year: "}
+                  {user.graduationYear ?? "Not available"}
+                </div>
               </div>
             ))}
         </div>

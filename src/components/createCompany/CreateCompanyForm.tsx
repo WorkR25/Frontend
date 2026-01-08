@@ -12,7 +12,7 @@ import InputField from "../InputField";
 import useCreateCompany from "@/utils/useCreateCompany";
 import DragAndDropFile from "./DragAndDropFile";
 import useUploadLogo from "@/utils/useUploadLogo";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MarkdownEditor from "../createJob/MarkdownEditor";
 import TripleDotLoader from "../TripleDotLoader";
 import Dropdown from "../createJob/Dropdown";
@@ -24,17 +24,18 @@ import useGetIndustry from "@/utils/useGetIndustry";
 export type CreateCompanyFormType = z.infer<typeof CreateCompanySchema>;
 
 export default function CreateCompanyForm() {
+  const [showDescriptionError, setShowDescriptionError] = useState(false);
   const methods = useForm<CreateCompanyFormType>({
-    mode: "onChange",
-    reValidateMode: "onBlur",
+    mode: "onSubmit",
+    reValidateMode: "onSubmit",
     resolver: zodResolver(CreateCompanySchema),
     defaultValues: {
       name: "",
       description: "",
       website: "",
       logo: "",
-      company_size_id: null,
-      industry_id: null,
+      company_size_id: undefined,
+      industry_id: undefined,
     },
   });
 
@@ -59,11 +60,16 @@ export default function CreateCompanyForm() {
 
   useEffect(() => {
     if (isSuccess) {
+      if (showDescriptionError) {
+        setShowDescriptionError(false);
+      }
+      // reset(undefined, { keepErrors: false });
       reset();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess, reset]);
 
-  if(!jwtToken) return null ;
+  if (!jwtToken) return null;
 
   return (
     <div className="components-createCompany-CreateCompanyForm text-black all-[unset] justify-center">
@@ -91,6 +97,7 @@ export default function CreateCompanyForm() {
               maxFileSize={3}
             />
           </div>
+          {errors.logo && <div className="text-red-400">Add company logo</div>}
 
           <div className="components-createCompany-CreateCompanyForm text-xs">
             Current logo: {logo}
@@ -130,7 +137,7 @@ export default function CreateCompanyForm() {
             setValue={setValue}
             resetOn={isSuccess}
           />
-            <div>Industry</div>
+          <div>Industry</div>
           <DebouncedDropdown
             error={errors.industry_id}
             fieldName="industry_id"
@@ -161,11 +168,14 @@ export default function CreateCompanyForm() {
             showFormatOptions={false}
             isSuccess={isSuccess}
           />
-          {errors.description && (
+          {( errors.description && showDescriptionError )&& (
             <div className="text-red-400">Provide a valid description</div>
           )}
           <div className="flex items-center justify-around">
             <button
+              onClick={() => {
+                setShowDescriptionError(true);
+              }}
               type="submit"
               className="rounded py-2 px-4 bg-blue-200 hover:bg-blue-400 font-semibold justify-center duration-200 "
             >

@@ -10,9 +10,18 @@ import { toast } from "react-toastify";
 export default function AddSkill() {
   const [skills, setSkills] = useState<string[]>([]);
   const [currentInput, setCurrentInput] = useState("");
+  const [debouncedInput, setDebouncedInput] = useState("");
   const dispatch = useDispatch();
 
   const { mutate, isPending, isSuccess } = useCreateSkill();
+
+  useEffect(()=>{
+    const timeout = setTimeout(()=>{
+      setDebouncedInput(currentInput);
+    }, 400);
+
+    return ()=> clearTimeout(timeout);
+  },[currentInput])
 
   useEffect(() => {
     if (isSuccess) {
@@ -23,7 +32,7 @@ export default function AddSkill() {
   const jwtToken = useSelector((state: RootState) => {
       return state.authJwtToken.value;
     });
-    const { data: skillList } = useGetSkill(jwtToken, currentInput) ;
+    const { data: skillList } = useGetSkill(jwtToken, debouncedInput) ;
 
   return (
     <div className="text-black all-[unset] py-3 justify-center h-full">

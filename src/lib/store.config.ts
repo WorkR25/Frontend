@@ -19,6 +19,7 @@ import showAllCandidates from "@/features/showAllCandidates/showAllCandidatesSli
 import  showSearchCandidatesSlice  from "@/features/showSearchCandidates/showSearchCandidates";
 import  showSearchCandidatesByNameSlice from "@/features/showSearchCandidates/showSearchCandidatesByName";
 import  showSearchCandidatesByEmailSlice from "@/features/showSearchCandidates/showSearchCandidatesByEmail";
+import  showAddRolesFormSlice  from "@/features/showAddRolesForm/showAddRolesFormSlice";
 
 export const store = configureStore({
   reducer: {
@@ -42,6 +43,7 @@ export const store = configureStore({
     showSearchCandidates: showSearchCandidatesSlice,
     showSearchCandidatesByName: showSearchCandidatesByNameSlice,
     showSearchCandidatesByEmail: showSearchCandidatesByEmailSlice,
+    showAddRolesForm: showAddRolesFormSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

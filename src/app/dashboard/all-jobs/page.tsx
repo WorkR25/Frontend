@@ -48,23 +48,35 @@ export default function Page() {
 
   const { data: userData, isError } = useGetUser(jwtToken);
   const { data: userRoles } = useGetUserRoles(jwtToken, userData?.id);
-  const { data: jobList, isPending } = useGetJobPagination(jwtToken, page, 20);
+  const { data: jobList, isPending, refetch } = useGetJobPagination(jwtToken, page, 20);
+  
+  const permission: { [key: string]: boolean } = {
+    admin: true,
+    user: false,
+    jobseeker: false,
+    operations_admin: true,
+  }
 
-  const { mutate } = useDeleteJob();
+
+  const { mutate, isSuccess } = useDeleteJob();
+  if(isSuccess) refetch();
 
   useEffect(() => {
+    if(jwtToken.trim() === '') router.push('/login');
+
     if(isError){
       router.push('/login')
     }
-    if (userRoles && !userRoles?.includes("admin")) {
+    if (userRoles && !permission[userRoles[0]]) {
       router.replace("/dashboard");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userRoles, router, isError]);
 
   if(!mounted) return null ;
 
-  if (!userRoles || !userRoles.includes("admin")) {
-    return <div className="flex justify-center w-full">Authorizing...</div>;
+  if (!userRoles || !permission[userRoles[0]]) {
+    return <div className="flex justify-center w-full">Authorizing... </div>;
   }
 
   return (
@@ -135,12 +147,12 @@ export default function Page() {
                     Delete
                   </button>
 
-                  <button
+                  <button 
                     onClick={() => {
                       dispatch(setShowJobApplicants(true));
                       dispatch(setJobId(String(job.id)));
                     }}
-                    className="all-jobs-page hover:cursor-pointer  border rounded-lg py-1 px-1.5 bg-[#32db97]"
+                    className={` ${userRoles[0] === 'admin' ? '' : 'hidden'} all-jobs-page hover:cursor-pointer  border rounded-lg py-1 px-1.5 bg-[#32db97] `}
                   >
                     View applicants
                   </button>
