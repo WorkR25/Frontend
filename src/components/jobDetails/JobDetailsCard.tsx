@@ -55,6 +55,7 @@ export default function JobDetailsCard({
             width={48}
             height={48}
             className="components-jobDetails-JobDetailsCard object-contain"
+            unoptimized
           />
         </div>
 
