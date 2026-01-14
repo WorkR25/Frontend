@@ -51,6 +51,7 @@ export default function JobCard({
               height={40}
               objectFit="cover"
               priority
+              unoptimized
             />
           </div>
           <div>
