@@ -2,7 +2,23 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['jobportalbucket1arijit.s3.ap-south-1.amazonaws.com'],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "jobportalbucket1arijit.s3.ap-south-1.amazonaws.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "csforall.in",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.ctfassets.net",
+        pathname: "/**",
+      },
+    ],
   },
 };
 
