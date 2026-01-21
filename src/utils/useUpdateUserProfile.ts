@@ -17,11 +17,6 @@ const useUpdateUserProfile = () => {
     }) => {
       const payload = {
         ...userProfileData,
-        currentCtc:
-          userProfileData.currentCtc?.trim() === ""
-            ? 0
-            : Number(userProfileData.currentCtc),
-
         yearsOfExperience: userProfileData.yearsOfExperience
           ? Number.isNaN(Number(userProfileData.yearsOfExperience))
             ? 0
@@ -36,11 +31,7 @@ const useUpdateUserProfile = () => {
             : Number(userProfileData.currentLocationId)
           : undefined,
 
-        currentCompanyId: userProfileData.currentCompanyId
-          ? Number.isNaN(Number(userProfileData.currentCompanyId))
-            ? 0
-            : Number(userProfileData.currentCompanyId)
-          : undefined,
+        currentCompany: userProfileData.currentCompany || null,
       };
 
 

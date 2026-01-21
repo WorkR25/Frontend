@@ -1,14 +1,14 @@
 import { userServiceApi } from "@/lib/axios.config";
 import { useMutation } from "@tanstack/react-query";
 
-export function useDownloadCandidatesCsv({jwtToken}: {jwtToken: string}) {
+export function useDownloadCandidatesCsv({jwtToken, details}: {jwtToken: string, details: string}) {
   return useMutation({
-    mutationFn: () => downloadCSV({ jwtToken })
+    mutationFn: () => downloadCSV({ jwtToken, details })
   });
 }
 
-const downloadCSV = async ({jwtToken}: {jwtToken: string}) => {
-  const res = await userServiceApi.get("/users/all-candiates/csv", {
+const downloadCSV = async ({jwtToken, details}: {jwtToken: string, details: string}) => {
+  const res = await userServiceApi.get("/users/all-candiates/csv?details=" + details, {
     responseType: "blob",
     headers:{
       Authorization: jwtToken

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import React, { useEffect, useState } from "react";
 import InputField from "../InputField";
@@ -20,13 +20,7 @@ export type UserDetailFormValues = z.infer<typeof UserDetailSchema>;
 
 export default function UserDetailForm() {
     const dispatch = useDispatch();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    watch,
-    formState: { errors },
-  } = useForm<UserDetailFormValues>({
+  const methods = useForm<UserDetailFormValues>({
     mode: "onChange",
     reValidateMode: "onBlur",
     resolver: zodResolver(UserDetailSchema),
@@ -37,6 +31,15 @@ export default function UserDetailForm() {
       graduationYear: "",
     },
   });
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = methods;
+
   const router = useRouter();
   const jwtToken = useSelector((state: RootState)=>{return state.authJwtToken.value})
   const [mounted, setMounted] = useState(false);
@@ -73,6 +76,7 @@ export default function UserDetailForm() {
   if(!mounted) return null ;
 
   return (
+    <FormProvider {...methods}>
     <div>
       <div>
         {isPending && (
@@ -89,7 +93,7 @@ export default function UserDetailForm() {
             icon={<></>}
             error={errors.fullName}
             fieldValue= {userData?.fullName || watch("fullName")}
-          />
+            />
           <div>Email</div>
           <InputField
             register={register}
@@ -99,7 +103,7 @@ export default function UserDetailForm() {
             type="text"
             error={errors.email}
             fieldValue= {userData?.email || watch('email')}
-          />
+            />
           <div>Phone No</div>
           <InputField
             register={register}
@@ -109,7 +113,7 @@ export default function UserDetailForm() {
             icon={<></>}
             error={errors.phoneNo}
             fieldValue= {userData?.phoneNo || watch('phoneNo')}
-          />
+            />
           <div>Graduation Year</div>
           <InputField
             register={register}
@@ -119,16 +123,17 @@ export default function UserDetailForm() {
             icon={<></>}
             error={errors.graduationYear}
             fieldValue= {userData?.graduationYear || watch('graduationYear')}
-          />
+            />
           
           <button
           type="submit"
           className="components-me-UserDetailForm bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 hover:cursor-pointer"
-        >
+          >
           Save Details
         </button>
         </form>
       </div>
     </div>
+  </FormProvider>
   );
 }

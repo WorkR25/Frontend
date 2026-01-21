@@ -2,29 +2,26 @@
 
 import { setShowAllCandidates } from "@/features/showAllCandidates/showAllCandidatesSlice";
 import { RootState } from "@/lib/store.config";
-import useGetUserListPagination from "@/utils/useGetUserListPaginated";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { GetUserResponseType } from "@/types/GetUserResponseType";
-import { useEffect, useState } from "react";
-import TripleDotLoader from "../TripleDotLoader";
 import { useDownloadCandidatesCsv } from "@/utils/useDownloadAllCandiidateCSV";
+import { FresherCandidatesList, WorkingCandidatesList } from "./CandidatesLists";
+import { JSX, useState } from "react";
+import { X } from "lucide-react";
 
 export default function AllCandidates() {
-  const [pageCount, setPageCount] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
+  const [candidateType, setCandidateType] = useState("Fresher");
+  const [totalCount, setTotalCount] = useState<number | null>(null);
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
   const dispatch = useDispatch();
-
-  const { data, isPending } = useGetUserListPagination(jwtToken, pageCount, 10);
   const { mutate: downloadCsv, isPending: downloadCsvPending } =
-    useDownloadCandidatesCsv({ jwtToken });
-  useEffect(() => {
-    if (data) {
-      setTotalPages(data.pagination.totalPages);
-    }
-  }, [data]);
+    useDownloadCandidatesCsv({ jwtToken, details: candidateType });
 
+  const CandidateTypesMap: { [key: string]: JSX.Element } = {
+    Fresher: <FresherCandidatesList setTotalCount={setTotalCount} />,
+    "Working Professional": (
+      <WorkingCandidatesList setTotalCount={setTotalCount} />
+    ),
+  };
   return (
     <div className="w-full h-full">
       <div
@@ -36,10 +33,16 @@ export default function AllCandidates() {
         <X width={20} />
       </div>
       <div className="h-full flex flex-col justify-center ">
-        <div className=" sm:flex justify-center mt-3 gap-5 md:gap-x-10 font-semibold text-lg text-center">
+        <div className=" sm:flex justify-center mt-3 my-1 gap-5 md:gap-x-10 font-semibold text-lg text-center">
           <div className="py-1.5">
-            All Candidates
-            {` ( Total : ${data?.pagination.totalCount ?? "..."} ) `}
+            All Candidates 
+            {` ( Total : ${totalCount ?? "..."} ) `}
+          </div>
+          <div className="w-full flex justify-center">
+            <div className="grid grid-cols-2 w-full sm:w-1/2 py-1 my-1.5 font-light rounded-xl bg-white">
+              <div onClick={()=>{setCandidateType("Fresher")}} className={(candidateType === "Fresher" ? "bg-blue-300" : "" )+ " rounded-lg py-0.5 hover:cursor-pointer"}>Fresher</div>
+              <div onClick={()=>{setCandidateType("Working Professional")}} className={(candidateType === "Working Professional" ? "bg-blue-300" : "" )+ " rounded-lg py-0.5 hover:cursor-pointer"}>Working</div>
+            </div>
           </div>
           <button
             onClick={() => {
@@ -47,10 +50,12 @@ export default function AllCandidates() {
             }}
             className="px-5 py-1.5 rounded-2xl bg-blue-300 text-sm md:text-base border-0 hover:cursor-pointer "
           >
-            {downloadCsvPending ? "Downloading..." : "Download CSV"}
+            {downloadCsvPending ? "Downloading..." : ("Download CSV (" + candidateType.split(" ")[0]+ ")")}
           </button>
         </div>
-        <div className="overflow-y-scroll">
+        {/* candidate list */}
+        {CandidateTypesMap[candidateType]}
+        {/* <div className="overflow-y-scroll">
           {isPending && <TripleDotLoader />}
           {data &&
             data.records.map((user: GetUserResponseType) => (
@@ -64,36 +69,9 @@ export default function AllCandidates() {
                 </div>
               </div>
             ))}
-        </div>
-        <div className="w-[100%] sticky bottom-0 bg-white border-t shadow-sm">
-          <div className="flex items-center justify-between px-4 py-2">
-            <button
-              className="flex items-center px-3 py-1 rounded-lg border disabled:opacity-50 hover:cursor-pointer disabled:cursor-not-allowed"
-              disabled={pageCount === 1}
-              onClick={() => {
-                setPageCount((prev) => prev - 1);
-              }}
-            >
-              <ChevronLeft size={16} className="mr-1" />
-              Prev
-            </button>
+        </div> */}
 
-            <span className="text-sm font-medium">
-              Page {pageCount} of {totalPages == -1 ? "" : totalPages}
-            </span>
-
-            <button
-              className="flex items-center px-3 py-1 rounded-lg border disabled:opacity-50 hover:cursor-pointer disabled:cursor-not-allowed"
-              disabled={pageCount === totalPages}
-              onClick={() => {
-                setPageCount((prev) => prev + 1);
-              }}
-            >
-              Next
-              <ChevronRight size={16} className="ml-1" />
-            </button>
-          </div>
-        </div>
+        {/* pagination */}
       </div>
     </div>
   );

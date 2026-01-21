@@ -25,7 +25,6 @@ export default function AddRoles() {
     // const roleNames = ["admin", "recruiter", "user"]
     const { mutate, isSuccess } = useCreateRole();
     const { data: roleNames, refetch, isLoading, } = useGetRoles(authJwtToken, debouncedInput);
-    // console.log(roleNames)
 
     useEffect(()=>{
 
