@@ -7,37 +7,38 @@ import { z } from "zod";
 import InputField from "../InputField";
 import useGetUser from "@/utils/useGetUser";
 import { RootState } from "@/lib/store.config";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { useDispatch, useSelector } from "react-redux";
 import TextAreaInput from "../createJob/TextAreaInput";
 import useUploadUserResume from "@/utils/useUploadUserResume";
 import DragAndDropFile from "../createCompany/DragAndDropFile";
 import useUpdateUserProfile from "@/utils/useUpdateUserProfile";
-import DebouncedDropdown from "../createJob/DebouncedDropdown";
-import { OptionType } from "../createJob/CreateJobForm";
-import useGetCompany from "@/utils/useGetCompany";
-import useGetCompanyById from "@/utils/useGetCompanyById";
-import useGetCity from "@/utils/useGetCity";
 import { UserProfileSchema } from "@/schema/userProfile.validator";
 import { useRouter } from "next/navigation";
 import TripleDotLoader from "../TripleDotLoader";
-
-
+import DropDownField from "../DropDownField";
+import {
+  ctcOptions,
+  domainOptions,
+  fresherOptions,
+} from "@/utils/signup.utils";
 
 export type UserProfileFormValues = z.infer<typeof UserProfileSchema>;
 export default function UserProfileForm() {
-  const [isFresher, setIsFresher] = useState<boolean>()
+  // const [isFresher, setIsFresher] = useState<boolean>();
   const methods = useForm<UserProfileFormValues>({
     resolver: zodResolver(UserProfileSchema),
     defaultValues: {
       bio: "",
       yearsOfExperience: "0",
-      isFresher: false,
-      currentCtc: "0",
+      details: "",
+      currentCtc: null,
       resumeUrl: "",
       linkedinUrl: "",
       currentLocation: null,
+      currentCompany: "",
+      domain: null,
     },
   });
 
@@ -52,35 +53,50 @@ export default function UserProfileForm() {
 
   const router = useRouter();
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
-  const { data: userData } = useGetUser(jwtToken);
+  const { data: userData, refetch } = useGetUser(jwtToken);
   const dispatch = useDispatch();
+  const isFresher = !(watch("details") == "Working Professional");
   useEffect(() => {
     const token = localStorage.getItem("AuthJwtToken");
     if (token) {
       dispatch(setAuthJwtToken(token));
-    }else{
-      router.replace('/login')
+    } else {
+      router.replace("/login");
     }
   }, [dispatch, router]);
+
+  useEffect(() => {
+    if (isFresher) {
+      setValue("currentCtc", null);
+      setValue("currentCompany", null);
+      setValue("yearsOfExperience", "0");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFresher]);
 
   useEffect(() => {
     if (userData?.profile) {
       const profile = userData.profile;
       reset({
         bio: profile.bio ?? "",
-        yearsOfExperience: profile.yearsOfExperience ? String(profile.yearsOfExperience) ?? '0' : '0',
-        isFresher: profile.isFresher ?? false,
+        yearsOfExperience: profile.yearsOfExperience
+          ? (String(profile.yearsOfExperience) ?? "0")
+          : "0",
+        details: profile.details ?? "",
         currentCtc:
-          profile.currentCtc !== null && profile.currentCtc !== undefined
-            ? String(profile.currentCtc)
-            : "0.00",
+          profile.currentCtc || null,
         resumeUrl: profile.resumeUrl ?? "",
         linkedinUrl: profile.linkedinUrl ?? "",
         currentLocation: profile.currentLocation?.name ?? null,
-        currentCompanyId: profile.currentCompanyId ?? null ,
+        currentCompany: profile.currentCompany ?? "",
+        domain: profile.domain ?? null
       });
     }
-    setIsFresher(userData?.profile.isFresher == null ? false : userData.profile.isFresher)
+    // setIsFresher(
+    //   userData?.profile.details == null
+    //     ? false
+    //     : userData.profile.details == "Fresher",
+    // );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
@@ -93,23 +109,40 @@ export default function UserProfileForm() {
       });
     }
   };
-  const { data: companyDetails } = useGetCompanyById(jwtToken,userData?.profile.currentCompanyId)
-  const { mutate: updateUserProfile, isPending } = useUpdateUserProfile();
+
+  // const { data: companyDetails } = useGetCompanyById(jwtToken,userData?.profile.currentCompany)
+  const { mutate: updateUserProfile, isPending, isSuccess } = useUpdateUserProfile();
+  useEffect(()=>{
+    if(isSuccess){
+      refetch();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[isSuccess])
 
   return (
     <FormProvider {...methods}>
-      <div className="components-me-UserProfileForm font-semibold text-lg mt-3">User Profile</div>
+      <div className="components-me-UserProfileForm font-semibold text-lg mt-3">
+        User Profile
+      </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="components-me-UserProfileForm space-y-4 p-4 mt-3 border rounded-lg shadow-md w-full"
       >
-        {isPending && (
-                  <TripleDotLoader />
-                )}
+        {isPending && <TripleDotLoader />}
         <div className="components-me-UserProfileForm flex flex-wrap justify-center gap-4 mt-4">
           <div className="components-me-UserProfileForm w-[90%]">
             <label className="components-me-UserProfileForm flex items-center gap-2">
-              <input
+              {/* details */}
+              <DropDownField
+                name="details"
+                options={fresherOptions}
+                defaultValue={
+                  userData?.profile.details ??
+                  "Select Fresher or Working Professional"
+                }
+              />
+
+              {/* <input
                 type="checkbox"
                 {...register("isFresher")}
                 onChange={(e) => {
@@ -123,72 +156,138 @@ export default function UserProfileForm() {
                   }
                 }}
               />
-              Fresher
+              Fresher */}
             </label>
           </div>
 
-          <div className={"components-me-UserProfileForm w-[90%] sm:w-[45%]"}>
-            <div>Current CTC in LPA</div>
-            <InputField
-              className={watch("isFresher") ? "cursor-not-allowed" : ""}
-              icon={<></>}
-              fieldName="currentCtc"
-              placeholder={"Current CTC in LPA"}
-              type="text"
-              register={register}
-              error={errors.currentCtc}
-              disabled={isFresher}
-              fieldValue={watch('currentCtc')}
-              onChangeFn={() => {}}
-            />
-          </div>
-          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
-            <div>Experience in Yrs</div>
-            <InputField
-              icon={<></>}
-              fieldName="yearsOfExperience"
-              placeholder={
-                watch("isFresher") ? "Not necessary" : "Experience in Yrs"
+          {watch("details") == "Working Professional" && (
+            <div
+              className={
+                "components-me-UserProfileForm w-[90%] sm:w-[45%] space-y-2"
               }
-              type="text"
-              register={register}
-              error={errors.yearsOfExperience}
-              disabled={isFresher}
-              fieldValue={watch('yearsOfExperience') ?? 0}
-              onChangeFn={() => {}}
-            />
-          </div>
+            >
+              <div>Current CTC in LPA</div>
+              {/* <DropDownField
+                name="currentCtc"
+                options={ctcOptions}
+                defaultValue={
+                  userData?.profile.currentCtc ?? "Select Current CTC Range"
+                }
+              /> */}
+              <DropDownField
+                name="currentCtc"
+                options={ctcOptions}
+                defaultValue={userData?.profile.currentCtc ?? "Select CTC"}
+              />
+              {errors.currentCtc?.message && (
+                <p className="text-[#E04B40] text-xs">{errors.currentCtc.message}</p>
+              )}
+
+              {/* <InputField
+                className={
+                  watch("details") == "Fresher" ? "cursor-not-allowed" : ""
+                }
+                icon={<></>}
+                fieldName="currentCtc"
+                placeholder={"Current CTC in LPA"}
+                type="text"
+                register={register}
+                error={errors.currentCtc}
+                disabled={isFresher}
+                fieldValue={watch("currentCtc")}
+                onChangeFn={() => {}}
+              /> */}
+
+              <div>Experience in Yrs</div>
+              <InputField
+                icon={<></>}
+                fieldName="yearsOfExperience"
+                placeholder={
+                  watch("details") == "Fresher"
+                    ? "Not necessary"
+                    : "Experience in Yrs"
+                }
+                type="text"
+                register={register}
+                error={errors.yearsOfExperience}
+                disabled={isFresher}
+                fieldValue={watch("yearsOfExperience") ?? 0}
+                onChangeFn={() => {}}
+              />
+            </div>
+          )}
+          {/* <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]"></div>
 
           <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
-            <div>Company</div>
             <DebouncedDropdown<UserProfileFormValues, OptionType>
               placeholder="Select a company"
-              fieldName="currentCompanyId"
-              error={errors.currentCompanyId}
+              fieldName="currentCompany"
+              error={errors.currentCompany}
               setValue={setValue}
               jwtToken={jwtToken}
               useQueryFn={useGetCompany}
               getOptionLabel={(value) => value.name}
               getOptionValue={(value) => value.id}
-              fieldValue={companyDetails? companyDetails.name :""}
+              fieldValue={? companyDetails.name :""}
               disabled={isFresher}
             />
-          </div>
+          </div> */}
 
-          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
-            <div>Location</div>
+          {/* <div>Location</div>
             <DebouncedDropdown<UserProfileFormValues, OptionType>
-              placeholder="Current Location"
-              fieldName='currentLocationId'
-              error={errors.currentLocationId}
-              setValue={setValue}
-              jwtToken={jwtToken}
-              useQueryFn={useGetCity}
-              getOptionLabel={(value) => value.name}
-              getOptionValue={(value) => value.id}
-              fieldValue={userData?.profile.currentLocation?.name ?? ""}
-            />
-          </div>
+            placeholder="Current Location"
+            fieldName="currentLocationId"
+            error={errors.currentLocationId}
+            setValue={setValue}
+            jwtToken={jwtToken}
+            useQueryFn={useGetCity}
+            getOptionLabel={(value) => value.name}
+            getOptionValue={(value) => value.id}
+            fieldValue={userData?.profile.currentLocation?.name ?? ""}
+            /> */}
+
+          {watch("details") == "Working Professional" && (
+            <div className="components-me-UserProfileForm w-[90%] sm:w-[45%] space-y-2">
+              <div>Domain</div>
+              <DropDownField
+                name="domain"
+                options={domainOptions}
+                defaultValue={userData?.profile.domain ?? "Select Domain"}
+              />
+
+              {/* <InputField
+                icon={<></>}
+                fieldName="yearsOfExperience"
+                placeholder={
+                  watch("details") == "Fresher"
+                    ? "Not necessary"
+                    : "Experience in Yrs"
+                }
+                type="text"
+                register={register}
+                error={errors.yearsOfExperience}
+                disabled={isFresher}
+                fieldValue={watch("yearsOfExperience") ?? 0}
+                onChangeFn={() => {}}
+              /> */}
+
+              <div>Company</div>
+              <InputField
+                className={
+                  watch("details") == "Fresher" ? "cursor-not-allowed" : ""
+                }
+                icon={<></>}
+                fieldName="currentCompany"
+                placeholder={"Current Company"}
+                type="text"
+                register={register}
+                error={errors.currentCompany}
+                disabled={isFresher}
+                fieldValue={watch("currentCompany")}
+                onChangeFn={() => {}}
+              />
+            </div>
+          )}
 
           <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
             <div>Resume</div>
@@ -201,7 +300,11 @@ export default function UserProfileForm() {
               onChangeFn={() => {}}
             />
             <div className="p-2 border-blue-300 text-xs">
-              <a href={watch("resumeUrl")} target="_blank">
+              <a
+                href={watch("resumeUrl") ? watch("resumeUrl") : "#"}
+                className={watch("resumeUrl") ? "text-blue-600" : ""}
+                target="_blank"
+              >
                 Resume
               </a>
             </div>

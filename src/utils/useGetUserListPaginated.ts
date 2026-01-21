@@ -1,11 +1,11 @@
 import { userServiceApi } from "@/lib/axios.config";
 import { useQuery } from "@tanstack/react-query";
 
-const useGetUserListPagination = (authJwtToken: string | null, page: number, limit: number) => {
+const useGetUserListPagination = (authJwtToken: string | null, page: number, limit: number, details: string) => {
   return useQuery({
     queryKey: ["useGetUserListPagination", authJwtToken ?? "", `${page}`, `${limit}`],
     queryFn: () => {
-      return getUserListPagination(authJwtToken, page, limit );
+      return getUserListPagination(authJwtToken, page, limit, details );
     },
     enabled: !!authJwtToken,
     refetchOnWindowFocus: false, 
@@ -13,9 +13,9 @@ const useGetUserListPagination = (authJwtToken: string | null, page: number, lim
   });
 };
 
-const getUserListPagination = async (authJwtToken: string | null, page: number, limit: number) => {
+const getUserListPagination = async (authJwtToken: string | null, page: number, limit: number, details: string) => {
   try {
-    const response = await userServiceApi.get(`/users/pages?page=${page}&limit=${limit}`, {
+    const response = await userServiceApi.get(`/users/pages?page=${page}&limit=${limit}&details=${details}`, {
       headers: {
         Authorization: authJwtToken,
       },

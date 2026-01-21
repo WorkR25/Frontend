@@ -9,11 +9,12 @@ import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { RootState } from "@/lib/store.config";
 import useGetUser from "@/utils/useGetUser";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function Page() {
   const dispatch = useDispatch();
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
   useEffect(() => {
@@ -26,12 +27,19 @@ export default function Page() {
   }, [dispatch, router]);
 
   const { isPending, isError, data } = useGetUser(jwtToken);
-
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   useEffect(() => {
     if (isError) {
       router.replace("/login");
     }
   }, [router, isError]);
+  
+    if (!mounted) {
+      return null;
+    }
+  
 
   if (isPending) {
     return <TripleDotLoader />;

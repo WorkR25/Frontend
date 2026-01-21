@@ -8,16 +8,17 @@ export type GetUserResponseType = {
   graduationYear: string;
   profile: {
     bio: string | null;
-    currentCompanyId: number | null;
+    currentCompany: string | null;
     currentCtc: string | null;
     currentLocation: {
       name: string | null;
     } | null;
     currentLocationId: number | null;
-    isFresher: boolean | null;
+    details: string | null;
     linkedinUrl: string | null;
     resumeUrl: string | null;
     yearsOfExperience: number | null;
+    domain: string | null;
   };
   skills: Skills[];
 };
