@@ -35,13 +35,13 @@ export default function AllCandidates() {
       <div className="h-full flex flex-col justify-center ">
         <div className=" sm:flex justify-center mt-3 my-1 gap-5 md:gap-x-10 font-semibold text-lg text-center">
           <div className="py-1.5">
-            All Candidates 
+            All Candidates
             {` ( Total : ${totalCount ?? "..."} ) `}
           </div>
           <div className="w-full flex justify-center">
-            <div className="grid grid-cols-2 w-full sm:w-1/2 py-1 my-1.5 font-light rounded-xl bg-white">
-              <div onClick={()=>{setCandidateType("Fresher")}} className={(candidateType === "Fresher" ? "bg-blue-300" : "" )+ " rounded-lg py-0.5 hover:cursor-pointer"}>Fresher</div>
-              <div onClick={()=>{setCandidateType("Working Professional")}} className={(candidateType === "Working Professional" ? "bg-blue-300" : "" )+ " rounded-lg py-0.5 hover:cursor-pointer"}>Working</div>
+            <div className="grid grid-cols-2 w-full sm:w-1/2 py-1 my-1.5 font-light rounded-xl bg-white h-10">
+              <div onClick={()=>{setCandidateType("Fresher")}} className={(candidateType === "Fresher" ? "bg-blue-300" : "" )+ " rounded-lg py-0.5 hover:cursor-pointer flex items-center justify-center"}><div>Fresher</div></div>
+              <div onClick={()=>{setCandidateType("Working Professional")}} className={(candidateType === "Working Professional" ? "bg-blue-300" : "" )+ " rounded-lg py-0.5 hover:cursor-pointer flex items-center justify-center"}><div>Working</div></div>
             </div>
           </div>
           <button
