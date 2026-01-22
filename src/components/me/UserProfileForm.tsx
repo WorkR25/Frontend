@@ -95,7 +95,7 @@ export default function UserProfileForm() {
     // setIsFresher(
     //   userData?.profile.details == null
     //     ? false
-    //     : userData.profile.details == "Fresher",
+    //     : userData.profile.details == "Student",
     // );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
@@ -185,7 +185,7 @@ export default function UserProfileForm() {
 
               {/* <InputField
                 className={
-                  watch("details") == "Fresher" ? "cursor-not-allowed" : ""
+                  watch("details") == "Student" ? "cursor-not-allowed" : ""
                 }
                 icon={<></>}
                 fieldName="currentCtc"
@@ -203,7 +203,7 @@ export default function UserProfileForm() {
                 icon={<></>}
                 fieldName="yearsOfExperience"
                 placeholder={
-                  watch("details") == "Fresher"
+                  watch("details") == "Student"
                     ? "Not necessary"
                     : "Experience in Yrs"
                 }
@@ -259,7 +259,7 @@ export default function UserProfileForm() {
                 icon={<></>}
                 fieldName="yearsOfExperience"
                 placeholder={
-                  watch("details") == "Fresher"
+                  watch("details") == "Student"
                     ? "Not necessary"
                     : "Experience in Yrs"
                 }
@@ -274,7 +274,7 @@ export default function UserProfileForm() {
               <div>Company</div>
               <InputField
                 className={
-                  watch("details") == "Fresher" ? "cursor-not-allowed" : ""
+                  watch("details") == "Student" ? "cursor-not-allowed" : ""
                 }
                 icon={<></>}
                 fieldName="currentCompany"

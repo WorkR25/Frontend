@@ -4,12 +4,12 @@ import { setShowAllCandidates } from "@/features/showAllCandidates/showAllCandid
 import { RootState } from "@/lib/store.config";
 import { useDispatch, useSelector } from "react-redux";
 import { useDownloadCandidatesCsv } from "@/utils/useDownloadAllCandiidateCSV";
-import { FresherCandidatesList, WorkingCandidatesList } from "./CandidatesLists";
+import { StudentCandidatesList, WorkingCandidatesList } from "./CandidatesLists";
 import { JSX, useState } from "react";
 import { X } from "lucide-react";
 
 export default function AllCandidates() {
-  const [candidateType, setCandidateType] = useState("Fresher");
+  const [candidateType, setCandidateType] = useState("Student");
   const [totalCount, setTotalCount] = useState<number | null>(null);
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ export default function AllCandidates() {
     useDownloadCandidatesCsv({ jwtToken, details: candidateType });
 
   const CandidateTypesMap: { [key: string]: JSX.Element } = {
-    Fresher: <FresherCandidatesList setTotalCount={setTotalCount} />,
+    Student: <StudentCandidatesList setTotalCount={setTotalCount} />,
     "Working Professional": (
       <WorkingCandidatesList setTotalCount={setTotalCount} />
     ),
@@ -40,7 +40,7 @@ export default function AllCandidates() {
           </div>
           <div className="w-full flex justify-center">
             <div className="grid grid-cols-2 w-full sm:w-1/2 py-1 my-1.5 font-light rounded-xl bg-white h-10">
-              <div onClick={()=>{setCandidateType("Fresher")}} className={(candidateType === "Fresher" ? "bg-blue-300" : "" )+ " rounded-lg py-0.5 hover:cursor-pointer flex items-center justify-center"}><div>Fresher</div></div>
+              <div onClick={()=>{setCandidateType("Student")}} className={(candidateType === "Student" ? "bg-blue-300" : "" )+ " rounded-lg py-0.5 hover:cursor-pointer flex items-center justify-center"}><div>Student</div></div>
               <div onClick={()=>{setCandidateType("Working Professional")}} className={(candidateType === "Working Professional" ? "bg-blue-300" : "" )+ " rounded-lg py-0.5 hover:cursor-pointer flex items-center justify-center"}><div>Working</div></div>
             </div>
           </div>

@@ -144,7 +144,7 @@ function Form() {
       )}
 
       {/* Fresher options */}
-      <DropDownField name="details" options={fresherOptions} defaultValue="Select Fresher or Working Professional" />
+      <DropDownField name="details" options={fresherOptions} defaultValue="Select Student or Working Professional" />
       {errors.details?.message && (
         <p className="text-[#E04B40] text-xs">{errors.details.message}</p>
       )}
