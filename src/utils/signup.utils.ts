@@ -18,6 +18,6 @@ export const domainOptions = [
 ];
 
 export const fresherOptions = [
-    'Fresher',
+    'Student',
     'Working Professional'
 ]

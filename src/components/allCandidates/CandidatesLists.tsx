@@ -10,14 +10,14 @@ type CandidatesListProps = {
   setTotalCount: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
-export function FresherCandidatesList({
+export function StudentCandidatesList({
   setTotalCount,
 }: CandidatesListProps) {
   const [pageCount, setPageCount] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const jwtToken = useSelector((state: RootState) => state.authJwtToken.value);
 
-  const { data, isPending } = useGetUserListPagination(jwtToken, pageCount, 10, "Fresher");
+  const { data, isPending } = useGetUserListPagination(jwtToken, pageCount, 10, "Student");
   useEffect(() => {
     if (data) {
       setTotalCount(data.pagination.totalCount);

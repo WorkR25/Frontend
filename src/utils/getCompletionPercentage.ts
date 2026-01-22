@@ -6,9 +6,9 @@ export const getCompletionPercentage = (data: GetUserResponseType) => {
     const phoneNo = data.phoneNo ? 1 : 0 ;
     const details = data.profile.details ? 1 : 0 ;
     const graduationYear = data.graduationYear ? 1 : 0 ;
-    const currentCompany = ( data.profile.details == "Freshers" ) ? 1: data.profile.currentCompany ? 1 : 0;
-    const currentCtc =  ( data.profile.details == "Freshers" ) ? 1 : data.profile.currentCtc == null ? 0 : 1 ;
-    const yearsOfExperience =  ( data.profile.details == "Freshers" ) ? 1 : data.profile.yearsOfExperience ? 1 : 0 ;
+    const currentCompany = ( data.profile.details == "Student" ) ? 1: data.profile.currentCompany ? 1 : 0;
+    const currentCtc =  ( data.profile.details == "Student") ? 1 : data.profile.currentCtc == null ? 0 : 1 ;
+    const yearsOfExperience =  ( data.profile.details == "Student" ) ? 1 : data.profile.yearsOfExperience ? 1 : 0 ;
     const bio = data.profile.bio ? 1 : 0 ;
     const skills = data.skills.length>0 ? 1 : 0 ;
     // const locations = data.profile.currentLocationId ? 1 : 0 ;
