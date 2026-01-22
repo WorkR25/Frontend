@@ -130,7 +130,7 @@ export default function UserProfileForm() {
       >
         {isPending && <TripleDotLoader />}
         <div className="components-me-UserProfileForm flex flex-wrap justify-center gap-4 mt-4">
-          <div className="components-me-UserProfileForm w-[90%]">
+          <div className="components-me-UserProfileForm w-[94%]">
             <label className="components-me-UserProfileForm flex items-center gap-2">
               {/* details */}
               <DropDownField
