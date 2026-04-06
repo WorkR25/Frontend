@@ -46,7 +46,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${inter.variable} antialiased bg-[#F5F5F5] w-full h-full`}
       >
-        <ToastContainer position="top-right" autoClose={3000} />
+        <ToastContainer
+          position="top-right"
+          className={"z-100"}
+          autoClose={3000}
+        />
         <StoreProvider>
           <QueryProvider>{children}</QueryProvider>
         </StoreProvider>

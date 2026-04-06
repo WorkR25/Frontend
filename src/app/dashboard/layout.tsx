@@ -292,7 +292,9 @@ export default function DashboardLayout({
           isSidebarOpen ? (showJobCreateForm ? "hidden" : "block") : "hidden"
         }`}
       ></div>
-      <div className={"dashboard-layout bg-[#f1f2f4] flex h-full w-full gap-x-2"}>
+      <div
+        className={"dashboard-layout bg-[#f1f2f4] flex h-full w-full gap-x-2"}
+      >
         <div
           className={`dashboard-layout hidden sm:block basis-1/5 bg-[#f1f2f4] overflow-y-scroll hide-scrollbar px-3`}
         >
@@ -386,7 +388,7 @@ export default function DashboardLayout({
 }
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
-  <div className="shadow-gray-500 border border-gray-700 dashboard-layout hidden sm:block sm:absolute top-[10%] right-[10%] rounded-lg shadow-lg px-10 hide-scrollbar justify-center z-20 h-[calc(100vh-20%)] w-full sm:w-[79%] bg-[#F5F5F5] overflow-y-auto">
+  <div className="shadow-gray-500 dashboard-layout hidden sm:block sm:absolute top-[2%] right-[5%] rounded-lg shadow-lg  hide-scrollbar justify-center z-20 px-2 h-[calc(100vh-5%)] w-full sm:w-[87%] bg-[#F5F5F5] overflow-scroll">
     <div className="dashboard-layout w-full min-h-full">{children}</div>
   </div>
 );

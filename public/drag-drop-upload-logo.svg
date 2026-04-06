@@ -1,0 +1,31 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="24" y1="20" x2="102" y2="108" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EAF3FF"/>
+      <stop offset="1" stop-color="#D7E8FF"/>
+    </linearGradient>
+    <linearGradient id="icon" x1="44" y1="40" x2="82" y2="86" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4A90FF"/>
+      <stop offset="1" stop-color="#1F6FE5"/>
+    </linearGradient>
+    <filter id="shadow" x="8" y="8" width="112" height="112" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="8"/>
+      <feGaussianBlur stdDeviation="8"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.121569 0 0 0 0 0.435294 0 0 0 0 0.898039 0 0 0 0.15 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <circle cx="64" cy="56" r="40" fill="url(#bg)"/>
+  </g>
+
+  <path d="M82.5 72.5C88.0228 72.5 92.5 68.0228 92.5 62.5C92.5 56.9772 88.0228 52.5 82.5 52.5C81.737 52.5 81.008 52.5874 80.308 52.7455C77.9707 45.9742 71.5401 41.125 64 41.125C55.0128 41.125 47.6023 48.0166 46.7761 56.789C42.5308 57.5581 39.3125 61.2712 39.3125 65.75C39.3125 70.7861 43.4014 74.875 48.4375 74.875H57.5" stroke="url(#icon)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <path d="M64 84V57.5" stroke="url(#icon)" stroke-width="5" stroke-linecap="round"/>
+  <path d="M54 67.5L64 57.5L74 67.5" stroke="url(#icon)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M52 88.5H76" stroke="url(#icon)" stroke-width="5" stroke-linecap="round"/>
+</svg>

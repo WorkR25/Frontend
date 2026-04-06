@@ -5,31 +5,23 @@ import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
 import remarkMath from "remark-math";
 
-interface MarkdownEditorProps {
+interface MdEdiotorProps {
   value: string | undefined;
-  onValueChange: (value: string | undefined) => void;
+  onFileChange: (value: string | undefined) => void;
   error?: FieldError;
-  placeholder: string;
+  onChangeFn?: () => void;
 }
 
-const MarkdownEditor: FC<MarkdownEditorProps> = ({
-  value,
-  onValueChange,
-  error,
-  placeholder,
-}) => {
+const MarkdownEditor: FC<MdEdiotorProps> = ({ value, onFileChange, error }) => {
   return (
-    <div>
+    <div className="h-[50px]">
       <MDEditor
-        value={value}
-        onChange={onValueChange}
+        value={value ?? undefined}
+        onChange={onFileChange}
         data-color-mode="light"
-        height={260}
-        overflow
+        height={600}
+        overflow={true}
         preview="edit"
-        textareaProps={{
-          placeholder,
-        }}
         previewOptions={{
           rehypePlugins: [rehypeRaw, rehypeKatex],
           remarkPlugins: [remarkMath],
