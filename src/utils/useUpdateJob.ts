@@ -1,6 +1,8 @@
 import { jobServiceApi } from "@/lib/axios.config";
 import { UpdateJobSchema } from "@/schema/updateJob.validator";
+import { ErrorResponse } from "@/types/ErrorResponse";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -26,7 +28,7 @@ const useUpdateJobs = () => {
       }
     },
     onSuccess: (data, variables) => {
-      toast.success("Job updated successfully!");
+      toast.success(data.message || "Job updated successfully!");
       queryClient.invalidateQueries({
 
         queryKey: ["getJobDetails", `${variables.updateJobData.id}`],
@@ -36,8 +38,13 @@ const useUpdateJobs = () => {
       queryClient.refetchQueries({ queryKey: ["jobListPage"] });
       queryClient.refetchQueries({ queryKey: ["getJobDetails", `${variables.updateJobData.id}` ] });
     },
-    onError: () => {
-      toast.error("Error updating job");
+    onError: (error: AxiosError<ErrorResponse>) => {
+       const message =
+              error.response?.data?.message ||
+              error.message ||
+              "Something went wrong";
+
+       toast.error(message);
     },
   });
 };

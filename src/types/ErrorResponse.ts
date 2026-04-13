@@ -5,7 +5,7 @@ export type ErrorResponse = {
     error: ErrorObject
 }
 
-type ErrorObject = {
+export type ErrorObject = {
     statusCode: number,
     message: string,
     name: string

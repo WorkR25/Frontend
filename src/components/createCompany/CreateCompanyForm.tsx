@@ -78,7 +78,7 @@ export default function CreateCompanyForm() {
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(setShowCreateCompanyForm(false))
+      dispatch(setShowCreateCompanyForm(false));
       reset();
     }
   }, [isSuccess, reset]);

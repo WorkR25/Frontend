@@ -1,7 +1,9 @@
 import { jobServiceApi } from "@/lib/axios.config";
 import { CreateCompanySchema } from "@/schema/createCompany.validator";
+import { ApiResponse } from "@/types/ApiResponse";
+import { ErrorResponse } from "@/types/ErrorResponse";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import  { AxiosError } from "axios";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -18,8 +20,36 @@ function useCreateCompany() {
       createData: CreateCompanyFormType;
       file: File | null;
     }) => {
-      try {
-        if (!file) return toast.error("Company logo is required");
+      return await createCompany(authJwtToken,createData,file);
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const message =
+           error.response?.data?.message ||
+           error.message ||
+           "Something went wrong";
+    
+      toast.error(message);
+        },
+
+    onSuccess: (data) => {
+      toast.success(data.message || "Company created successfully");
+    },
+  });
+}
+
+interface Company{
+  company_size_id: number;
+  description: string;
+  id: number;
+  industry_id: number;
+  logo: string;      
+  name: string;
+  website: string; 
+};
+
+const createCompany=async(authJwtToken: string, createData: CreateCompanyFormType, file: File | null):Promise<ApiResponse<Company>>=>{
+   try {
+        if (!file)throw new Error("Company logo is required");
         const formData = new FormData();
         formData.append("file", file);
         const fileUploadUrl = await jobServiceApi.post(
@@ -34,8 +64,6 @@ function useCreateCompany() {
         );
         const logoUrl = fileUploadUrl.data.data.fileUrl;
 
-        if(!logoUrl) return toast.error("Failed to upload logo. Please try again.");
-
         const response = await jobServiceApi.post(
           "/companies",
           { ...createData, logo: logoUrl},
@@ -49,22 +77,6 @@ function useCreateCompany() {
       } catch (error) {
         throw error;
       }
-    },
-    onError: (error) => {
-      if (axios.isAxiosError(error)) {
-        toast.error(
-          error.response?.data?.message ||
-            "Error occured while creating company",
-        );
-      } else {
-        toast.error("Error occured while creating company ");
-      }
-    },
-
-    onSuccess: () => {
-      toast.success("Company created successfully");
-    },
-  });
 }
 
 export default useCreateCompany;

@@ -1,7 +1,9 @@
 import { jobServiceApi } from "@/lib/axios.config";
+import { ErrorResponse } from "@/types/ErrorResponse";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import  { AxiosError } from "axios";
 import { toast } from "sonner";
+import { ApiResponse } from "@/types/ApiResponse";
 
 const useCreateJobTitle = () => {
   return useMutation({
@@ -12,24 +14,28 @@ const useCreateJobTitle = () => {
       authJwtToken: string | null;
       title: string;
     }) => {
-      return await createJob(authJwtToken, title);
+      return await createJobTitle(authJwtToken, title);
     },
-    onError: (error) => {
-      if (axios.isAxiosError(error)) {
-        toast.error(
-          error.response?.data?.message || "Error creating Job Title"
-        );
-      } else {
-        toast.error("Error creating Job Title");
-      }
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const message =
+                error.response?.data?.message ||
+                error.message ||
+                "Something went wrong";
+
+      toast.error(message);
     },
-    onSuccess: () => {
-      toast.success("Title created successfully");
+    onSuccess: (data) => {
+       toast.success(data.message || "Title created successfully");
     },
   });
 };
 
-const createJob = async (authJwtToken: string | null, title: string) => {
+interface JobTitle {
+  id: number;
+  title: string;
+}
+
+const createJobTitle= async (authJwtToken: string | null, title: string):Promise<ApiResponse<JobTitle>>  => {
   try {
     const response = await jobServiceApi.post(
       "/job-title",
@@ -40,8 +46,7 @@ const createJob = async (authJwtToken: string | null, title: string) => {
         },
       }
     );
-
-    return response;
+    return response.data;
   } catch (error) {
     throw error;
   }

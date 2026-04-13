@@ -1,7 +1,8 @@
 import { UserProfileFormValues } from "@/components/me/UserProfileForm";
 import { userServiceApi } from "@/lib/axios.config";
+import { ErrorResponse } from "@/types/ErrorResponse";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import  { AxiosError } from "axios";
 import { toast } from "sonner";
 
 const useUpdateUserProfile = () => {
@@ -46,12 +47,13 @@ const useUpdateUserProfile = () => {
       toast.success("Profile updated successfully");
     },
 
-    onError: (error) => {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data?.message || "Error updating profile");
-      } else {
-        toast.error("Error updating profile");
-      }
+    onError: (error: AxiosError<ErrorResponse>) => {
+       const message =
+            error.response?.data?.message ||
+            error.message ||
+            "Something went wrong";
+
+      toast.error(message);
     },
   });
 };

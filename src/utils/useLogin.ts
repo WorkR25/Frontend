@@ -1,8 +1,9 @@
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { userServiceApi } from "@/lib/axios.config";
 import { LogInFormSchema } from "@/schema/logIn.validator";
+import { ErrorResponse } from "@/types/ErrorResponse";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import  { AxiosError } from "axios";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import z from "zod";
@@ -21,18 +22,19 @@ const useLogin = () =>{
         throw error;
       }
     },
-    onError: (error) => {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data?.message || "Error while logging you in");
-      } else {
-        toast.error("Error occured while logging in");
-      }
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const message =
+            error.response?.data?.message ||
+            error.message ||
+            "Something went wrong";
+
+      toast.error(message);
     },
     onSuccess: (data) => {
-      toast.success("Logged in successfully");
-      const jwtToken = data.data;
-      localStorage.setItem("AuthJwtToken", String(jwtToken));
-      dispatch(setAuthJwtToken(jwtToken));
+       const jwtToken = data.data;
+       localStorage.setItem("AuthJwtToken", String(jwtToken));
+       dispatch(setAuthJwtToken(jwtToken));
+       toast.success(data.message || "Logged in successfully");
     },
   });
 }
