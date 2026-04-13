@@ -1,4 +1,5 @@
 import { jobServiceApi } from "@/lib/axios.config";
+import { ApiResponse } from "@/types/ApiResponse";
 import { ErrorResponse } from "@/types/ErrorResponse";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -19,18 +20,7 @@ const useDeleteJob = () => {
       authJwtToken: string | null;
       deleteJobdata: DeleteJobFormValues;
     }) => {
-      try {
-        if(!authJwtToken){
-            return new Error("No token provided");
-        }
-        const response = await jobServiceApi.delete("/jobs", {
-          headers: { Authorization: authJwtToken },
-          data: deleteJobdata,
-        });
-        return response.data;
-      } catch (error) {
-        throw error;
-      }
+      return await deleteJob( authJwtToken, deleteJobdata);
     },
     onSuccess: (data, variables) => {
       toast.success(data.message || "Job deleted successfully!");
@@ -49,5 +39,20 @@ const useDeleteJob = () => {
     },
   });
 };
+
+const deleteJob=async(authJwtToken: string | null, deleteJobdata: DeleteJobFormValues):Promise<ApiResponse<boolean>>=>{
+  try {
+        if(!authJwtToken){
+            throw new Error("No token provided");
+        }
+        const response = await jobServiceApi.delete("/jobs", {
+          headers: { Authorization: authJwtToken },
+          data: deleteJobdata,
+        });
+        return response.data;
+      } catch (error) {
+        throw error;
+      }
+}
 
 export default useDeleteJob;
