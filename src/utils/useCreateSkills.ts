@@ -48,8 +48,6 @@ const createSkill=async(jwtToken: string, skills: string[]):Promise<ApiResponse<
             },
           }
         );
-        console.log(response.data);
-        console.log("returning data")
         return response.data;
       } catch (error) {
         throw error;
