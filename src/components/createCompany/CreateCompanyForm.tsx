@@ -6,21 +6,12 @@ import {
   CreateCompanyFormData,
 } from "@/schema/createCompany.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Building2,
-  ChevronRight,
-  CloudUpload,
-  Link,
-  Link2,
-  Users,
-  X,
-} from "lucide-react";
+import { Building2, ChevronRight, Link, Users, X } from "lucide-react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import useCreateCompany from "@/utils/useCreateCompany";
 import { useEffect, useState } from "react";
 // import MarkdownEditor from "../createJob/MarkdownEditor";
-import TripleDotLoader from "../TripleDotLoader";
 import Dropdown from "../createJob/Dropdown";
 import useGetCompanySize from "@/utils/useGetCompanySize";
 import DebouncedDropdown from "../createJob/DebouncedDropdown";
@@ -32,7 +23,6 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import MarkdownEditor from "../MarkdownEditor";
 import NameExistsChecker from "./NameExistsChecker";
 import useFindCompanyName from "@/utils/useFindCompanyName";
-import Image from "next/image";
 import { MdOutlineDescription } from "react-icons/md";
 import { LiaIndustrySolid } from "react-icons/lia";
 

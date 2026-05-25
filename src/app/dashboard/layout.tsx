@@ -286,14 +286,14 @@ export default function DashboardLayout({
           panel.show && <Wrapper key={index}>{panel.element}</Wrapper>,
       )}
 
-      <CreateJobForm />
-      {showCreateCompanyForm &&<CreateCompanyForm />}
+      {showJobCreateForm && <CreateJobForm />}
+      {showCreateCompanyForm && <CreateCompanyForm />}
 
-      <div
+      {/* <div
         className={`dashboard-layout absolute w-[100%] h-[100%] sm:hidden  border top-0 left-0 bg-black opacity-35 z-10 ${
           isSidebarOpen ? (showJobCreateForm ? "hidden" : "block") : "hidden"
         }`}
-      ></div>
+      ></div> */}
       <div
         className={"dashboard-layout bg-[#f1f2f4] flex h-full w-full gap-x-2"}
       >

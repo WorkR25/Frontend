@@ -65,7 +65,6 @@
 //         />
 //       </div>
 
-      
 //       <span className="absolute bottom-0 left-0 h-[20vh] w-[20vh] overflow-hidden rounded-bl-2xl">
 //         <Image
 //           src="/Ellipse 36.svg"
@@ -98,12 +97,49 @@
 //     </div>
 //   );
 // }
-
+"use client";
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 export default function SignUpHero() {
+  const buffer = 20;
+  const textAreaRef = useRef<HTMLDivElement | null>(null);
+  // const imageDivRef = useRef<HTMLDivElement | null>(null);
+  const parentDivRef = useRef<HTMLDivElement | null>(null);
+  const [cords, setCords] = useState({ bottom: 0, left: 0 });
+
+  useEffect(() => {
+    const updateBottom = () => {
+      if (parentDivRef.current && textAreaRef.current) {
+        const parentDivHeight = parentDivRef.current.clientHeight;
+        const imgDivHeight = parentDivRef.current.clientWidth * 0.8;
+        const textAreaBottom =
+          textAreaRef.current.getBoundingClientRect().bottom;
+        if (imgDivHeight + textAreaBottom > parentDivHeight + buffer) {
+          setCords({ bottom: Math.floor(textAreaBottom), left: 0 });
+        } else {
+          setCords({
+            bottom: Math.floor(parentDivHeight - imgDivHeight + buffer),
+            left: 0,
+          });
+        }
+      }
+    };
+
+    updateBottom();
+
+    window.addEventListener("resize", updateBottom);
+
+    return () => {
+      window.removeEventListener("resize", updateBottom);
+    };
+  }, []);
+
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-[28px] bg-[linear-gradient(180deg,#EEF7FD_0%,#DCEEFF_100%)] font-poppins">
+    <div
+      ref={parentDivRef}
+      className="relative h-full w-full overflow-hidden rounded-[28px] bg-[linear-gradient(180deg,#EEF7FD_0%,#DCEEFF_100%)] font-poppins"
+    >
       {/* soft main glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_18%,rgba(255,255,255,0.95)_0%,rgba(255,255,255,0.82)_22%,rgba(255,255,255,0.30)_48%,rgba(255,255,255,0)_72%)]" />
 
@@ -124,7 +160,7 @@ export default function SignUpHero() {
       <div className="absolute bottom-[46px] left-[61%] h-1.5 w-1.5 rounded-full bg-white/65" />
 
       {/* heading section */}
-      <div className="absolute left-[52px] top-[88px] z-20">
+      <div ref={textAreaRef} className="absolute left-[52px] top-[68px] z-20">
         <div className="mb-8 flex items-center gap-3">
           <div className="h-[7px] w-[112px] rounded-full bg-[#1681D8]" />
           <div className="h-[9px] w-[9px] rounded-full bg-[#A7C8E8]" />
@@ -132,11 +168,11 @@ export default function SignUpHero() {
           <div className="h-[9px] w-[9px] rounded-full bg-[#A7C8E8]" />
         </div>
 
-        <h2 className="max-w-[540px] text-[54px] font-semibold leading-[1.08] tracking-[-0.03em] text-[#17315B]">
+        <h2 className="max-w-[540px] text-[44px] font-semibold leading-[1.08] tracking-[-0.03em] text-[#17315B]">
           Find Your Perfect Job Match
         </h2>
 
-        <p className="mt-8 max-w-[700px] text-[20px] leading-[1.8] text-[#334E73]">
+        <p className="mt-5 max-w-8/10 text-[18px] leading-[1.4] text-[#334E73]">
           Our dashboard streamlines your job search, offering personalized job
           recommendations based on your skills and preferences.
           <br />
@@ -145,18 +181,23 @@ export default function SignUpHero() {
       </div>
 
       {/* dashboard image */}
-      <div className="absolute bottom-[-8px] right-[-10px] z-20 w-[58%] min-w-[520px]">
-        <div className="rounded-tl-[28px] border border-white/70 bg-white/55 shadow-[0_30px_80px_rgba(70,112,151,0.18)] backdrop-blur-sm">
-          <Image
-            src="/Frame 3(1).png"
-            alt="WorkR dashboard preview"
-            width={980}
-            height={760}
-            priority
-            className="h-auto w-full"
-          />
+      {cords.bottom && (
+        <div
+          style={{ top: cords.bottom + buffer }}
+          className={`absolute right-[-10px] z-20 w-8/10 `}
+        >
+          <div className="rounded-tl-[28px] border border-white/70 bg-white/55 shadow-[0_30px_80px_rgba(70,112,151,0.18)] backdrop-blur-sm">
+            <Image
+              src="/Frame 3(1).png"
+              alt="WorkR dashboard preview"
+              width={980}
+              height={760}
+              priority
+              className="h-auto w-full"
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

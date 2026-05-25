@@ -1,6 +1,7 @@
 import { jobServiceApi } from "@/lib/axios.config";
 import { UpdateJobSchema } from "@/schema/updateJob.validator";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -36,8 +37,12 @@ const useUpdateJobs = () => {
       queryClient.refetchQueries({ queryKey: ["jobListPage"] });
       queryClient.refetchQueries({ queryKey: ["getJobDetails", `${variables.updateJobData.id}` ] });
     },
-    onError: () => {
-      toast.error("Error updating job");
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Error updating job");
+      } else {
+        toast.error("Error updating job");
+      }
     },
   });
 };

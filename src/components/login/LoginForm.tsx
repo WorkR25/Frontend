@@ -155,7 +155,6 @@
 //   );
 // }
 
-
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -170,6 +169,7 @@ import useLogin from "@/utils/useLogin";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import useGetUser from "@/utils/useGetUser";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import SignupTextInput from "../signup/SignupTextInput";
 
 type LogInFormValues = z.infer<typeof LogInFormSchema>;
 
@@ -177,25 +177,25 @@ export default function LogInForm() {
   const router = useRouter();
 
   return (
-    <div className="relative flex min-h-full w-full flex-col overflow-hidden">
-      <div className="flex justify-center px-8 pt-14">
+    <div className="relative flex min-h-full p-3 w-full flex-col overflow-hidden">
+      <div className="flex justify-center px-8 pt-3">
         <Image
           src="/WorkR-Full-Logo2.png"
           alt="WorkR Logo"
           width={138}
           height={42}
           priority
-          className="h-auto w-[138px]"
+          className="h-auto w-[100px]"
         />
       </div>
 
-      <div className="flex flex-1 items-center justify-center px-6 pb-32 pt-8 sm:px-10 sm:pt-0">
+      <div className="flex flex-1 items-center justify-center px-6 pb-8 pt-8 sm:px-10 sm:pt-0">
         <div className="w-full max-w-[440px] text-center">
-          <h1 className="text-[27px] font-semibold tracking-[-0.025em] text-[#263243] sm:text-[28px]">
+          <h1 className="text-[22px] font-semibold tracking-[-0.025em] text-[#263243] sm:text-[28px]">
             Log In to Your Account
           </h1>
 
-          <p className="mt-2 text-[15px] font-normal text-[#66788C]">
+          <p className=" text-[12px] font-normal text-[#66788C]">
             Welcome to WorkR! Log in to get started
           </p>
 
@@ -203,7 +203,7 @@ export default function LogInForm() {
         </div>
       </div>
 
-      <div className="pb-9 text-center text-[15px] text-[#445366]">
+      <div className="pb-4 text-center text-[15px] text-[#445366]">
         <span>Don&apos;t have an account? </span>
         <button
           className="font-medium text-[#1681D8] transition hover:cursor-pointer hover:text-[#0D63AA]"
@@ -226,7 +226,7 @@ function Form() {
     setValue,
   } = useForm<LogInFormValues>({
     mode: "onChange",
-    reValidateMode: "onBlur",
+    reValidateMode: "onChange",
     resolver: zodResolver(LogInFormSchema),
   });
 
@@ -265,9 +265,9 @@ function Form() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="mx-auto mt-10 w-full space-y-4 px-2"
+      className="mx-auto mt-6 w-full space-y-2 px-2"
     >
-      <div>
+      {/* <div>
         <div className="relative">
           <span className="absolute left-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-[14px] bg-[#EEF5FF] text-[#1681D8]">
             <Mail size={20} strokeWidth={2.1} />
@@ -286,9 +286,17 @@ function Form() {
             Enter valid email
           </p>
         )}
-      </div>
+      </div> */}
 
-      <div>
+      <SignupTextInput
+        error={errors.email}
+        fieldName="email"
+        icon={<Mail size={20} />}
+        placeholder="Email Address"
+        register={register}
+      />
+
+      {/* <div>
         <div className="relative">
           <span className="absolute left-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-[14px] bg-[#EEF5FF] text-[#1681D8]">
             <Lock size={20} strokeWidth={2.1} />
@@ -322,12 +330,48 @@ function Form() {
             {errors.password.message}
           </p>
         )}
+      </div> */}
+
+      <div>
+        <div className="relative">
+          <span className="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[14px] bg-[#EEF5FF] text-[#1681D8]">
+            <Lock size={20} strokeWidth={2.1} />
+          </span>
+
+          <input
+            {...register("password")}
+            onChange={(e) => {
+              setValue("password", e.target.value, { shouldValidate: true });
+            }}
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            className="h-[44px] w-full rounded-[14px] border border-[#D7E4F0] bg-white pl-[47px] pr-14 text-[16px] font-medium text-[#334155] shadow-[0_2px_8px_rgba(15,56,101,0.04)] outline-none transition placeholder:font-normal placeholder:text-[#9AA8B7] focus:border-[#8CC2EE] focus:ring-4 focus:ring-[#DDEEFF]"
+          />
+
+          <button
+            type="button"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-[#243446] hover:cursor-pointer"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? (
+              <EyeOff size={21} strokeWidth={2.1} />
+            ) : (
+              <Eye size={21} strokeWidth={2.1} />
+            )}
+          </button>
+        </div>
+
+        {errors.password?.message && (
+          <p className="mt-2 text-left text-xs text-[#E04B40]">
+            {errors.password.message}
+          </p>
+        )}
       </div>
 
       <button
         type="submit"
         disabled={!!errors.password || !!errors.email || isPending}
-        className={`mt-1 h-[54px] w-full rounded-[14px] text-[17px] font-semibold text-white transition ${
+        className={`mt-1 h-[40px] w-full rounded-[14px] text-[17px] font-semibold text-white transition ${
           errors.password || errors.email || isPending
             ? "cursor-not-allowed bg-[#C8D6E4]"
             : "cursor-pointer bg-[linear-gradient(90deg,#0F67B8_0%,#1681D8_55%,#0D72CC_100%)] shadow-[0_10px_24px_rgba(22,129,216,0.24)] hover:brightness-[1.03]"

@@ -97,14 +97,14 @@ export default function Dropdown<TFormValues extends FieldValues, TOption>({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex h-[58px] cursor-pointer w-full items-center rounded-[14px] border bg-white text-left transition outline-none ${
+        className={`flex h-[58px] cursor-pointer w-full items-center rounded-[18px] border bg-white text-left transition outline-none ${
           error
             ? "border-red-300 focus:ring-2 focus:ring-red-100"
             : "border-[#D6DBE4] focus:ring-2 focus:ring-[#DCE9FF]"
         } ${inputClassName}`}
       >
         {hasLeftIcon && (
-          <div className="ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#EAF3FF]">
+          <div className="ml-4 flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#EAF3FF]">
             {iconUrl ? (
               <Image
                 alt=""
@@ -169,9 +169,7 @@ export default function Dropdown<TFormValues extends FieldValues, TOption>({
       )}
 
       {error && (
-        <p className="ml-1 mt-2 text-sm font-medium text-red-500">
-          {error.message}
-        </p>
+        <p className="mt-2 text-left text-xs text-[#E04B40]">{error.message}</p>
       )}
     </div>
   );

@@ -1,6 +1,8 @@
 import { userServiceApi } from "@/lib/axios.config"
 import { GetUserResponseType } from "@/types/GetUserResponseType"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { AxiosError } from "axios"
+import { toast } from "sonner"
 
 const useCreateUserSkill =()=>{
     const queryClient = useQueryClient();
@@ -13,7 +15,15 @@ const useCreateUserSkill =()=>{
             })
             return response.data ;
         },
+        onError: (error) => {
+            if (error instanceof AxiosError) {
+                toast.error(error.response?.data?.message || "Error adding skill");
+            } else {
+                toast.error("Error adding skill");
+            }
+        },
         onSuccess: (_, variables)=>{
+            toast.success("Skill added");
             queryClient.setQueryData<GetUserResponseType>(["userDetails", variables.authJwtToken], (prev)=> {
                 if(prev){                    
                     return {

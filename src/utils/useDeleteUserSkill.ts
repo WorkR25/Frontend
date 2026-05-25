@@ -1,6 +1,8 @@
 import { userServiceApi } from "@/lib/axios.config"
 import { GetUserResponseType } from "@/types/GetUserResponseType"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { AxiosError } from "axios"
+import { toast } from "sonner"
 
 const useDeleteUserSkill =()=>{
     const queryClient = useQueryClient()
@@ -13,7 +15,15 @@ const useDeleteUserSkill =()=>{
             })
             return response.data ;
         },
+        onError: (error) => {
+            if (error instanceof AxiosError) {
+                toast.error(error.response?.data?.message || "Error removing skill");
+            } else {
+                toast.error("Error removing skill");
+            }
+        },
         onSuccess: (_, variables)=>{
+            toast.success("Skill removed");
                 queryClient.setQueryData<GetUserResponseType>(["userDetails", variables.authJwtToken], (prev)=> {
                     if(prev){                    
                         return {

@@ -1,5 +1,6 @@
 import { userServiceApi } from "@/lib/axios.config";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { toast } from "sonner";
 
 const useCreateSkill = () => {
@@ -29,8 +30,12 @@ const useCreateSkill = () => {
     onSuccess: ()=>{
         toast.success('Skills Added successfully')
     },
-    onError: ()=>{
-        toast.error('Error creating skills')
+    onError: (error) => {
+        if (error instanceof AxiosError) {
+            toast.error(error.response?.data?.message || "Error creating skills");
+        } else {
+            toast.error("Error creating skills");
+        }
     }
   });
 };

@@ -19,7 +19,7 @@ export const SignUpFormSchema = z
     currentCompany: z.string().optional(),
 
     details: z
-      .string({ message: "Details are required" })
+      .string({ message: "Professional details are required" })
       .trim()
       .min(1, "Details cannot be empty"),
 

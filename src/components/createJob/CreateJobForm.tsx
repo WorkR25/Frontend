@@ -20,10 +20,7 @@ import useGetCompany from "@/utils/useGetCompany";
 import useGetUserRoles from "@/utils/useGetUserRoles";
 import { useRouter } from "next/navigation";
 import { cn } from "@/utils/cn";
-import {
-  setShowJobCreateForm,
-  toogleShowJobCreateForm,
-} from "@/features/showJobCreateForm/showJobCreateForm";
+import { toogleShowJobCreateForm } from "@/features/showJobCreateForm/showJobCreateForm";
 import {
   BriefcaseBusiness,
   ChevronRight,
@@ -67,9 +64,6 @@ export default function CreateJobForm({ className }: { className?: string }) {
   const dispatch = useAppDispatch();
 
   const jwtToken = useAppSelector((state) => state.authJwtToken.value);
-  const showjobCreateForm = useAppSelector(
-    (state) => state.showJobCreateForm.value,
-  );
 
   useEffect(() => {
     const token = localStorage.getItem("AuthJwtToken");
@@ -155,8 +149,6 @@ export default function CreateJobForm({ className }: { className?: string }) {
     dispatch(toogleShowJobCreateForm());
     reset();
   };
-
-  if (!showjobCreateForm) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/20 backdrop-blur-[10px]">

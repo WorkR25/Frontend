@@ -25,13 +25,12 @@ const useCreateJob = () => {
       });
       return response.data;
     },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      const message =
-        error.response?.data?.message ||
-        error.message ||
-        "Something went wrong";
-
-      toast.error(message);
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Error creating the job");
+      } else {
+        toast.error("Error occured while creating job");
+      }
     },
     onSuccess: () => {
       toast.success("Job posted successfully!");
