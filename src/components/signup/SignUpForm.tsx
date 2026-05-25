@@ -449,22 +449,26 @@ function SignupDropdown<TFormValues extends FieldValues, TOption>({
   inputClassName = "",
 }: DropdownProps<TFormValues, TOption>) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLabel, setSelectedLabel] = useState<string | null>(
-    fieldValue || null,
-  );
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const selectedOption = optionArray?.find(
+    (option) => getOptionValue(option) === fieldValue,
+  );
+
+  const selectedLabel = selectedOption
+    ? getOptionLabel(selectedOption)
+    : null;
 
   useEffect(() => {
     if (resetOn) {
-      setSelectedLabel(null);
-    }
-  }, [resetOn]);
+      setValue(fieldName, "" as PathValue<TFormValues, Path<TFormValues>>, {
+        shouldValidate: false,
+        shouldDirty: false,
+      });
 
-  useEffect(() => {
-    if (fieldValue) {
-      setSelectedLabel(fieldValue);
+      setIsOpen(false);
     }
-  }, [fieldValue]);
+  }, [resetOn, fieldName, setValue]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -477,6 +481,7 @@ function SignupDropdown<TFormValues extends FieldValues, TOption>({
     };
 
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -484,25 +489,23 @@ function SignupDropdown<TFormValues extends FieldValues, TOption>({
 
   const handleSelectOption = (option: TOption) => {
     const value = getOptionValue(option);
-    const label = getOptionLabel(option);
 
     setValue(fieldName, value, {
       shouldValidate: true,
       shouldDirty: true,
     });
 
-    setSelectedLabel(label);
     setIsOpen(false);
   };
 
-  const hasLeftIcon = !!iconUrl || !!icon;
+  const hasLeftIcon = Boolean(iconUrl || icon);
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative w-full" ref={dropdownRef}>
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex h-[44px] cursor-pointer w-full items-center rounded-[18px] border bg-white text-left transition outline-none ${
+        className={`flex h-[44px] w-full cursor-pointer items-center rounded-[18px] border bg-white text-left outline-none transition ${
           error
             ? "border-red-300 focus:ring-2 focus:ring-red-100"
             : "border-[#D6DBE4] focus:ring-2 focus:ring-[#DCE9FF]"
@@ -532,7 +535,7 @@ function SignupDropdown<TFormValues extends FieldValues, TOption>({
           } pr-4`}
         >
           <span
-            className={`truncate text-[1rem]  ${
+            className={`truncate text-[1rem] ${
               selectedLabel ? "text-[#111827]" : "text-[#98A2B3]"
             }`}
           >
@@ -549,22 +552,27 @@ function SignupDropdown<TFormValues extends FieldValues, TOption>({
       </button>
 
       {isOpen && (
-        <div className="absolute z-20 mt-2 max-h-60 w-full overflow-y-auto rounded-2xl border border-[#E5E7EB] bg-white p-2 shadow-[0_12px_30px_rgba(15,23,42,0.10)]">
-          {optionArray && optionArray.length === 0 && (
+        <div className="mt-2 max-h-60 w-full overflow-y-auto rounded-2xl border border-[#E5E7EB] bg-white p-2 shadow-[0_12px_30px_rgba(15,23,42,0.10)]">
+          {optionArray?.length === 0 && (
             <div className="px-3 py-3 text-sm font-medium text-[#98A2B3]">
               No results found
             </div>
           )}
 
-          {optionArray?.map((option, index) => {
+          {optionArray?.map((option) => {
             const label = getOptionLabel(option);
+            const value = getOptionValue(option);
 
             return (
               <button
                 type="button"
-                key={index}
+                key={String(value)}
                 onClick={() => handleSelectOption(option)}
-                className="block w-full cursor-pointer rounded-xl px-3 py-3 text-left text-[0.98rem] font-medium text-[#374151] transition hover:bg-[#F3F6FB]"
+                className={`block w-full cursor-pointer rounded-xl px-3 py-3 text-left text-[0.98rem] font-medium transition ${
+                  fieldValue === value
+                    ? "bg-[#EAF3FF] text-[#1D63D6]"
+                    : "text-[#374151] hover:bg-[#F3F6FB]"
+                }`}
               >
                 {label}
               </button>
@@ -574,7 +582,9 @@ function SignupDropdown<TFormValues extends FieldValues, TOption>({
       )}
 
       {error && (
-        <p className="mt-2 text-left text-xs text-[#E04B40]">{error.message}</p>
+        <p className="mt-2 text-left text-xs text-[#E04B40]">
+          {error.message}
+        </p>
       )}
     </div>
   );
