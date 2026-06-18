@@ -2,7 +2,7 @@ import { GetUserResponseType } from "@/types/GetUserResponseType";
 import TripleDotLoader from "../TripleDotLoader";
 import { useEffect, useState } from "react";
 import useGetUserListPagination from "@/utils/useGetUserListPaginated";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Phone } from "lucide-react";
 import { useAppSelector } from "@/lib/hooks";
 
 type CandidatesListProps = {
@@ -28,25 +28,62 @@ export function StudentCandidatesList({ setTotalCount }: CandidatesListProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
   return (
-    <div className="w-full h-9/10 overflow-y-scroll hide-scrollbar">
-      <div className="">
-        {isPending && <TripleDotLoader />}
-        {data &&
-          data.records.map((user: GetUserResponseType) => (
-            <div key={user?.id ?? ""} className="border rounded-lg p-4 m-4">
-              <div>Name: {user?.fullName}</div>
-              <div>Email: {user?.email}</div>
-              <div>Phone: {user?.phoneNo}</div>
-              <div>Domain: {user?.profile?.domain ?? ""}</div>
+    <div className="w-full flex flex-col rounded-b-2xl  h-9/10 overflow-y-scroll hide-scrollbar">
+      <div className="flex-1 h-full min-h-0  p-4 pb-0 rounded-2xl mx-2">
+        <div className=" rounded-2xl h-full min-h-0 p-3 bg-linear-to-r from-[#d2e7f9] to-white">
+          {isPending && <TripleDotLoader />}
+          {data && data.records.length > 0 ? (
+            <div className="w-full rounded-2xl overflow-hidden h-full min-h-0  ">
+              {/* Header */}
+              <div className="grid grid-cols-3 h-14 text-xl font-semibold text-gray-800 tracking-wide items-center bg-gray-100/90 px-2">
+                <div className="px-4 h-full flex items-center border-r border-gray-200 font-medium">
+                  Name & Phone
+                </div>
+                <div className="px-4 h-full flex items-center border-r border-gray-200 font-medium">
+                  Email
+                </div>
+                <div className="px-4 h-full flex items-center font-medium">
+                  Domain & Graduation Year
+                </div>
+              </div>
 
-              <div>
-                {"Graduation Year: "}
-                {user.graduationYear ?? "Not available"}
+              {/* Body */}
+              <div className="flex flex-col gap-2 py-2 px-2 bg-gray-50 h-full min-h-0 max-h-[calc(100%-3.5rem)] overflow-y-auto">
+                {data.records.map((user: GetUserResponseType) => (
+                  <div
+                    key={user?.id ?? ""}
+                    className="grid grid-cols-3 text-lg text-gray-700 tracking-wide font-medium bg-white rounded-xl shadow-sm hover:bg-gray-50"
+                  >
+                    <div className="px-4 py-3 border-r border-gray-300">
+                      <div>{user?.fullName}</div>
+                      <div className="flex items-center gap-x-2">
+                        <Phone size={14} />
+                        <div className="text-sm text-gray-500">
+                          {user?.phoneNo}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="px-4 py-3 border-r border-gray-300">
+                      {user?.email}
+                    </div>
+
+                    <div className="px-4 py-3">
+                      <div>{user?.profile?.domain ?? ""}</div>
+                      <div className="text-sm text-gray-500">
+                        {user.graduationYear ?? "Not available"}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+          ) : (
+            <div>No records found</div>
+          )}
+        </div>
       </div>
-      <div className="w-[100%] sticky bottom-0 bg-white border-t shadow-sm">
+      <div className="w-[100%]  bg-white text-black shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
         <div className="flex items-center justify-between px-4 py-2">
           <button
             className="flex items-center px-3 py-1 rounded-lg border disabled:opacity-50 hover:cursor-pointer disabled:cursor-not-allowed"
@@ -98,33 +135,74 @@ export function WorkingCandidatesList({ setTotalCount }: CandidatesListProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
   return (
-    <div className="w-full h-9/10 overflow-y-scroll hide-scrollbar">
-      <div className="">
-        {isPending && <TripleDotLoader />}
-        {data &&
-          data.records.map((user: GetUserResponseType) => (
-            <div key={user?.id ?? ""} className="border rounded-lg p-4 m-4">
-              <div>Name: {user?.fullName}</div>
-              <div>Email: {user?.email}</div>
-              <div>Phone: {user?.phoneNo}</div>
-              <div>Company: {user?.profile?.currentCompany}</div>
-              <div>CTC: {user?.profile?.currentCtc}</div>
-              <div>Domain: {user?.profile?.domain ?? ""}</div>
-              <div>
-                {"Graduation Year: "}
-                {user?.graduationYear ?? "Not available"}
+    <div className="w-full flex flex-col h-full min-h-0 overflow-hidden">
+      <div className="flex-1 min-h-0 p-4 pb-0">
+        <div className="h-full min-h-0 rounded-2xl p-3 bg-linear-to-r from-[#d2e7f9] to-white">
+          {isPending && <TripleDotLoader />}
+          {data && data.records.length > 0 ? (
+            <div className="w-full h-full min-h-0 flex flex-col rounded-2xl overflow-hidden">
+              <div className="grid grid-cols-3 h-14 items-center bg-gray-100/90 px-2 flex-shrink-0">
+                <div className="px-4 h-full flex items-center border-r border-gray-200 font-medium">
+                  Name & Phone
+                </div>
+                <div className="px-4 h-full flex items-center border-r border-gray-200 font-medium">
+                  Email & Domain
+                </div>
+                <div className="px-4 h-full flex items-center font-medium">
+                  Company & CTC
+                </div>
+              </div>
+
+              <div className="flex-1 min-h-0 h-full max-h-[calc(100%-3.5rem)]  overflow-y-auto flex flex-col gap-2 py-2 px-2 bg-gray-50 hide-scrollbar">
+                {data.records.map((user: GetUserResponseType) => (
+                  <div
+                    key={user?.id ?? ""}
+                    className="grid grid-cols-3 bg-white rounded-xl shadow-sm hover:bg-gray-50"
+                  >
+                    <div className="px-4 py-3 border-r border-gray-300">
+                      <div>{user?.fullName}</div>
+                      <div className="flex items-center gap-x-2">
+                        <Phone size={14} />
+                        <div className="text-sm text-gray-500">
+                          {user?.phoneNo}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Email + Domain */}
+                    <div className="px-4 py-3 border-r border-gray-300">
+                      <div>{user?.email}</div>
+                      <div className="text-sm text-gray-500">
+                        {user?.profile?.domain ?? ""}
+                      </div>
+                    </div>
+
+                    {/* Company + CTC */}
+                    <div className="px-4 py-3">
+                      <div>{user?.profile?.currentCompany ?? "N/A"}</div>
+                      <div className="text-sm text-gray-500">
+                        {user?.profile?.currentCtc ?? "N/A"}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+          ) : (
+            <div className="flex items-center justify-center">
+              No records found
+            </div>
+          )}
+        </div>
       </div>
-      <div className="w-[100%] sticky bottom-0 bg-white border-t shadow-sm">
+
+      {/* Pagination (fixed at bottom) */}
+      <div className="w-full bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] flex-shrink-0">
         <div className="flex items-center justify-between px-4 py-2">
           <button
             className="flex items-center px-3 py-1 rounded-lg border disabled:opacity-50 hover:cursor-pointer disabled:cursor-not-allowed"
             disabled={pageCount === 1}
-            onClick={() => {
-              setPageCount((prev) => prev - 1);
-            }}
+            onClick={() => setPageCount((prev) => prev - 1)}
           >
             <ChevronLeft size={16} className="mr-1" />
             Prev
@@ -137,9 +215,7 @@ export function WorkingCandidatesList({ setTotalCount }: CandidatesListProps) {
           <button
             className="flex items-center px-3 py-1 rounded-lg border disabled:opacity-50 hover:cursor-pointer disabled:cursor-not-allowed"
             disabled={pageCount === totalPages}
-            onClick={() => {
-              setPageCount((prev) => prev + 1);
-            }}
+            onClick={() => setPageCount((prev) => prev + 1)}
           >
             Next
             <ChevronRight size={16} className="ml-1" />

@@ -187,6 +187,8 @@ export default function CreateCompanyForm() {
                       register={register}
                       useQueryFn={useFindCompanyName}
                       watch={watch}
+                      validationFn={(data) => data && data.id}
+                      errorMessage="This company already exists"
                     />
                   </div>
 

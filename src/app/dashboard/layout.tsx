@@ -85,14 +85,14 @@ export default function DashboardLayout({
   );
 
   const panels = [
-    {
-      show: showAddLocation,
-      element: <AddLocationForm />,
-    },
-    {
-      show: showAddTitleForm,
-      element: <AddTitleForm />,
-    },
+    // {
+    //   show: showAddLocation,
+    //   element: <AddLocationForm />,
+    // },
+    // {
+    //   show: showAddTitleForm,
+    //   element: <AddTitleForm />,
+    // },
     // {
     //   show: showCreateCompanyForm,
     //   element: <CreateCompanyForm />,
@@ -113,10 +113,10 @@ export default function DashboardLayout({
         />
       ),
     },
-    {
-      show: showAllCandidates,
-      element: <AllCandidates />,
-    },
+    // {
+    //   show: showAllCandidates,
+    //   element: <AllCandidates />,
+    // },
     {
       show: showSearchCandidates,
       element: <SearchCandidatesByName />,
@@ -288,6 +288,9 @@ export default function DashboardLayout({
 
       {showJobCreateForm && <CreateJobForm />}
       {showCreateCompanyForm && <CreateCompanyForm />}
+      {showAddLocation && <AddLocationForm />}
+      {showAddTitleForm && <AddTitleForm />}
+      {showAllCandidates && <AllCandidates />}
 
       {/* <div
         className={`dashboard-layout absolute w-[100%] h-[100%] sm:hidden  border top-0 left-0 bg-black opacity-35 z-10 ${

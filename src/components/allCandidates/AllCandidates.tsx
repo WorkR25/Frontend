@@ -25,30 +25,55 @@ export default function AllCandidates() {
     ),
   };
   return (
-    <div className="w-full h-full">
-      <div
-        className="components-createJob-CreateJobForm absolute top-2 right-2 hover:cursor-pointer "
-        onClick={() => {
-          dispatch(setShowAllCandidates(false));
-        }}
-      >
-        <X width={20} />
-      </div>
-      <div className="h-full flex flex-col justify-center ">
-        <div className=" sm:flex justify-center mt-3 my-1 gap-5 md:gap-x-10 font-semibold text-lg text-center">
-          <div className="py-1.5">
-            All Candidates
-            {` ( Total : ${totalCount ?? "..."} ) `}
+    <div className="fixed z-50 w-full h-full font-inter flex items-center justify-center bg-[#0F172A]/20 backdrop-blur-[10px] ">
+      <div className="w-full  sm:w-9/10 h-full sm:h-9/10 bg-white sm:rounded-[28px] bg-[radial-gradient(120%_130%_at_100%_50%,rgba(255,255,255,0)_64%,rgba(178,214,244,0.55)_80%,rgba(164,206,241,0.70)_94%,rgba(152,198,236,0.84)_100%)] shadow-2xl">
+        <div className="h-full flex flex-col ">
+          <div className="sm:flex items-center justify-between px-7 mt-5 my-1 gap-5 md:gap-x-10 font-semibold text-lg text-center">
+            <div className="py-1.5">
+              <span className="text-2xl font-semibold">All Candidates</span>
+              <span className="text-xl font-normal">
+                {` ( Total : ${totalCount ?? "..."} ) `}
+              </span>
+            </div>
+
+            <div className="flex items-center  gap-x-5">
+              <button
+                onClick={() => {
+                  downloadCsv();
+                }}
+                className="px-6  py-1.5 h-14  text-center flex items-center 
+                justify-center gap-x-2 rounded-2xl cursor-pointer border border-[#2D6BFF] 
+                bg-[linear-gradient(90deg,#2E63F5_0%,#3478FF_60%,#285BEB_100%)] 
+                shadow-[0_12px_24px_rgba(46,99,245,0.28)] hover:brightness-105 
+                active:translate-y-[1px] text-lg font-medium text-white transition"
+              >
+                {downloadCsvPending
+                  ? "Downloading..."
+                  : "Download CSV (" + candidateType.split(" ")[0] + ")"}
+              </button>
+              <div
+                className="components-createJob-CreateJobForm hover:cursor-pointer "
+                onClick={() => {
+                  dispatch(setShowAllCandidates(false));
+                }}
+              >
+                <X width={20} />
+              </div>
+            </div>
           </div>
           <div className="w-full flex justify-center">
-            <div className="grid grid-cols-2 w-full sm:w-1/2 py-1 my-1.5 font-light rounded-xl bg-white h-10">
+            <div className="grid grid-cols-2 border border-gray-200 overflow-hidden w-full sm:w-1/3  my-1.5 font-light rounded-xl bg-white h-10">
               <div
                 onClick={() => {
                   setCandidateType("Student");
                 }}
                 className={
-                  (candidateType === "Student" ? "bg-blue-300" : "") +
-                  " rounded-lg py-0.5 hover:cursor-pointer flex items-center justify-center"
+                  (candidateType === "Student"
+                    ? `bg-[linear-gradient(90deg,#2E63F5_0%,#3478FF_60%,#285BEB_100%)] 
+                        shadow-[0_12px_24px_rgba(46,99,245,0.28)] hover:brightness-105 
+                        active:translate-y-[1px] text-lg font-medium text-white transition`
+                    : " text-black ") +
+                  " rounded-lg py-0.5 hover:cursor-pointer font-medium flex items-center justify-center"
                 }
               >
                 <div>Student</div>
@@ -59,29 +84,21 @@ export default function AllCandidates() {
                 }}
                 className={
                   (candidateType === "Working Professional"
-                    ? "bg-blue-300"
-                    : "") +
-                  " rounded-lg py-0.5 hover:cursor-pointer flex items-center justify-center"
+                    ? `bg-[linear-gradient(90deg,#2E63F5_0%,#3478FF_60%,#285BEB_100%)] 
+                        shadow-[0_12px_24px_rgba(46,99,245,0.28)] hover:brightness-105 
+                        active:translate-y-[1px] text-lg font-medium text-white transition`
+                    : " text-black ") +
+                  " rounded-lg py-0.5 hover:cursor-pointer font-medium flex items-center justify-center"
                 }
               >
                 <div>Working</div>
               </div>
             </div>
           </div>
-          <button
-            onClick={() => {
-              downloadCsv();
-            }}
-            className="px-5 py-1.5 rounded-2xl bg-blue-300 text-sm md:text-base border-0 hover:cursor-pointer "
-          >
-            {downloadCsvPending
-              ? "Downloading..."
-              : "Download CSV (" + candidateType.split(" ")[0] + ")"}
-          </button>
-        </div>
-        {/* candidate list */}
-        {CandidateTypesMap[candidateType]}
-        {/* <div className="overflow-y-scroll">
+          {/* candidate list */}
+          {CandidateTypesMap[candidateType]}
+          <div className="hidden border border-red-600"></div>
+          {/* <div className="overflow-y-scroll">
           {isPending && <TripleDotLoader />}
           {data &&
             data.records.map((user: GetUserResponseType) => (
@@ -97,7 +114,8 @@ export default function AllCandidates() {
             ))}
         </div> */}
 
-        {/* pagination */}
+          {/* pagination */}
+        </div>
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import {
   Path,
   UseFormRegister,
 } from "react-hook-form";
+import { toast } from "sonner";
 
 function NameExistsChecker<T extends FieldValues>({
   name,
@@ -20,6 +21,9 @@ function NameExistsChecker<T extends FieldValues>({
   companyNameExists,
   setCompanyNameExists,
   placeholder,
+  validationFn,
+  errorMessage,
+  delay = 500,
 }: {
   name: Path<T>;
   register: UseFormRegister<T>;
@@ -30,14 +34,23 @@ function NameExistsChecker<T extends FieldValues>({
   companyNameExists: boolean;
   setCompanyNameExists: React.Dispatch<React.SetStateAction<boolean>>;
   placeholder: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  validationFn: (data: any) => boolean;
+  errorMessage: string;
+  delay?: number;
 }) {
   const fieldValue = watch(name) || "";
   const trimmedValue = fieldValue.trim();
-  const debouncedValue = useDebounce(trimmedValue, 500);
+  const debouncedValue = useDebounce(trimmedValue, delay);
   const jwtToken = useAppSelector((state) => state.authJwtToken.value);
 
   const shouldCheck = debouncedValue.length > 0;
-  const { data, isFetching, isError } = useQueryFn(jwtToken, debouncedValue);
+  const {
+    data,
+    isFetching,
+    isError,
+    error: queryError,
+  } = useQueryFn(jwtToken, debouncedValue);
 
   useEffect(() => {
     if (!shouldCheck) {
@@ -45,18 +58,18 @@ function NameExistsChecker<T extends FieldValues>({
       return;
     }
 
-    if (data && data.id) {
+    if (data && validationFn(data)) {
       setCompanyNameExists(true);
     } else {
-      setCompanyNameExists(false);
+      if (isError) {
+        setCompanyNameExists(true);
+        toast.error(queryError?.message || "Something went wrong");
+      } else {
+        setCompanyNameExists(false);
+      }
     }
-  }, [data, shouldCheck, setCompanyNameExists]);
-
-  useEffect(() => {
-    if (isError) {
-      setCompanyNameExists(false);
-    }
-  }, [isError, setCompanyNameExists]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, shouldCheck, setCompanyNameExists, validationFn, isError]);
 
   const hasError = companyNameExists || !!error;
   const showStatusIcon = trimmedValue.length > 0;
@@ -83,8 +96,8 @@ function NameExistsChecker<T extends FieldValues>({
   };
 
   return (
-    <div>
-      <div className="relative">
+    <div className="w-full">
+      <div className="relative w-full">
         <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#EAF3FF]">
             <Building2
@@ -112,7 +125,7 @@ function NameExistsChecker<T extends FieldValues>({
 
       {companyNameExists && (
         <p className="ml-1 mt-2 text-sm font-medium text-red-500">
-          Company name already exists
+          {errorMessage || "This name already exists"}
         </p>
       )}
 
