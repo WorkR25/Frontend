@@ -86,10 +86,6 @@ export default function DashboardLayout({
 
   const panels = [
     {
-      show: showAddLocation,
-      element: <AddLocationForm />,
-    },
-    {
       show: showAddTitleForm,
       element: <AddTitleForm />,
     },
@@ -287,6 +283,7 @@ export default function DashboardLayout({
       )}
 
       {showJobCreateForm && <CreateJobForm />}
+      {showAddLocation && <AddLocationForm />}
       {showCreateCompanyForm && <CreateCompanyForm />}
 
       {/* <div

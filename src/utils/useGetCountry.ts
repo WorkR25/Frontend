@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const useGetCountry = (authJwtToken: string | null, countryName: string | undefined) => {
   return useQuery({
-    queryKey: ["city", countryName ?? ""],
+    queryKey: ["country", countryName ?? ""],
     queryFn: () => {
       return getCountry(authJwtToken, countryName);
     },
