@@ -71,7 +71,7 @@ export function CandidateTableHeader({ type }: { type: CandidateType }) {
   return (
     <div
       className={cn(
-        "hidden gap-4 px-5 pb-2 text-xs font-bold tracking-[0.08em] text-[#5B6478] md:grid",
+        "hidden gap-4 border border-transparent px-5 pb-2 text-xs font-bold tracking-[0.08em] text-[#5B6478] md:grid",
         working ? GRID_WORKING : GRID_STUDENT,
       )}
     >

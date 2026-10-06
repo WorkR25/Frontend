@@ -41,7 +41,8 @@ const ALLOWED_ROLES: Record<string, boolean> = {
   admin: true,
   operations_admin: true,
 };
-const ROW_GRID = "lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1.1fr)_minmax(0,0.9fr)_minmax(0,0.8fr)_auto]";
+// Fixed-width actions column so the header and every row share the exact same column widths.
+const ROW_GRID = "lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1.1fr)_minmax(0,0.9fr)_minmax(0,0.8fr)_252px]";
 
 function IconButton({
   label,
@@ -223,7 +224,7 @@ export default function Page() {
         <div className="flex flex-col gap-2.5">
           <div
             className={cn(
-              "hidden gap-4 px-5 text-xs font-bold tracking-[0.08em] text-[#5B6478] lg:grid",
+              "hidden gap-4 border border-transparent px-5 text-xs font-bold tracking-[0.08em] text-[#5B6478] lg:grid",
               ROW_GRID,
             )}
           >
