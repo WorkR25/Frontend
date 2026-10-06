@@ -1,6 +1,6 @@
 import { userServiceApi } from "@/lib/axios.config";
 import { GetUserResponseType } from "@/types/GetUserResponseType";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 const useSearchCandidatesByName = (authJwtToken: string, name: string, page: number, limit: number) => {
   return useQuery({
@@ -8,6 +8,7 @@ const useSearchCandidatesByName = (authJwtToken: string, name: string, page: num
     queryFn: () => searchCandidatesByName(authJwtToken, name, page, limit),
     enabled: authJwtToken.length > 0 && name.trim().length > 0,
     refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
   });
 };
 

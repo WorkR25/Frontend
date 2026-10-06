@@ -9,8 +9,7 @@ import CreateCompanyForm from "@/components/createCompany/CreateCompanyForm";
 import CreateJobForm from "@/components/createJob/CreateJobForm";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import EditSkills from "@/components/me/EditSkills";
-import SearchCandidatesByEmail from "@/components/searchCandidates/SearchCandidatesByEmail";
-import SearchCandidatesByName from "@/components/searchCandidates/SearchCandidatesByName";
+import SearchCandidates from "@/components/searchCandidates/SearchCandidates";
 // import NameSearchWithParams from "@/components/searchCandidates/SearchCandidatesByName";
 // import SearchCandidatesCard from "@/components/searchCandidates/SearchCandidatesCard";
 import UpdateJobForm from "@/components/updateJob/UpdateJobForm";
@@ -106,10 +105,6 @@ export default function DashboardLayout({
       ),
     },
     {
-      show: showSearchCandidates,
-      element: <SearchCandidatesByName />,
-    },
-    {
       show: showJobApplicants,
       element: <ViewApplicants jobId={Number(jobId)} />,
     },
@@ -125,14 +120,6 @@ export default function DashboardLayout({
           className="dashboard-layout h-screen w-full"
         />
       ),
-    },
-    {
-      show: showSearchCandidatesByName,
-      element: <SearchCandidatesByName />,
-    },
-    {
-      show: showSearchCandidatesByEmail,
-      element: <SearchCandidatesByEmail />,
     },
     {
       show: showAddRolesForm,
@@ -279,6 +266,9 @@ export default function DashboardLayout({
       {showAddTitleForm && <AddTitleForm />}
       {showCreateCompanyForm && <CreateCompanyForm />}
       {showAllCandidates && <AllCandidates />}
+      {(showSearchCandidates || showSearchCandidatesByName || showSearchCandidatesByEmail) && (
+        <SearchCandidates initialMode={showSearchCandidatesByEmail ? "email" : "name"} />
+      )}
 
       {/* <div
         className={`dashboard-layout absolute w-[100%] h-[100%] sm:hidden  border top-0 left-0 bg-black opacity-35 z-10 ${

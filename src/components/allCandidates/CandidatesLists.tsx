@@ -84,7 +84,18 @@ export function CandidateTableHeader({ type }: { type: CandidateType }) {
   );
 }
 
-export function CandidateRow({ user, type }: { user: Candidate; type: CandidateType }) {
+export function CandidateRow({
+  user,
+  type,
+  showType = false,
+  gridClassName,
+}: {
+  user: Candidate;
+  type: CandidateType;
+  /** Show a Student / Working badge next to the name (for mixed lists like search). */
+  showType?: boolean;
+  gridClassName?: string;
+}) {
   const working = type === "Working Professional";
   const name = user.fullName?.trim() || "Unnamed";
   const tint = getCompanyTint(name);
@@ -97,7 +108,7 @@ export function CandidateRow({ user, type }: { user: Candidate; type: CandidateT
     <article
       className={cn(
         "grid grid-cols-1 items-center gap-3 rounded-2xl border border-[#E4E8F0] bg-white p-4 transition-colors hover:border-[#C5D3F2] md:gap-4 md:px-5",
-        working ? GRID_WORKING : GRID_STUDENT,
+        gridClassName ?? (working ? GRID_WORKING : GRID_STUDENT),
       )}
     >
       <div className="flex min-w-0 items-center gap-3">
@@ -109,7 +120,19 @@ export function CandidateRow({ user, type }: { user: Candidate; type: CandidateT
           {getCompanyMonogram(name)}
         </span>
         <div className="min-w-0">
-          <div className="truncate text-[15px] font-bold text-[#0F172A]">{name}</div>
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="truncate text-[15px] font-bold text-[#0F172A]">{name}</span>
+            {showType && (
+              <span
+                className={cn(
+                  "shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold",
+                  working ? "bg-[#FFF1DB] text-[#8A4B00]" : "bg-[#E3F6EC] text-[#11643C]",
+                )}
+              >
+                {working ? "Working" : "Student"}
+              </span>
+            )}
+          </div>
           <div className="text-xs text-[#5B6478]">
             {joinedAt ? `Joined ${timeAgo(String(joinedAt))}` : `ID #${user.id}`}
           </div>

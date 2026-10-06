@@ -739,8 +739,7 @@ export default function DashboardSidebar() {
         dashboardSidebarTabs.addLocationTab,
         dashboardSidebarTabs.addTitleTab,
         dashboardSidebarTabs.allCandidatesTab,
-        dashboardSidebarTabs.searchCandidatesByNameTab,
-        dashboardSidebarTabs.searchCandidatesByEmailTab,
+        dashboardSidebarTabs.searchCandidatesTab,
         dashboardSidebarTabs.createRolesTab,
       ],
       operations_admin: [

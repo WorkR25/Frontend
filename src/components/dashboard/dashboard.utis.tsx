@@ -8,6 +8,7 @@ import {
   Folder,
   Globe,
   ChartPie,
+  UserSearch,
 } from "lucide-react";
 
 import {
@@ -66,6 +67,13 @@ export const dashboardSidebarTabs = {
     icon: <PersonStanding className="w-5 h-5 mr-2" />,
     link: null,
     onClickFn: onClickAllCandidates,
+  },
+
+  searchCandidatesTab: {
+    name: "Search Candidates",
+    icon: <UserSearch className="w-5 h-5 mr-2" />,
+    link: null,
+    onClickFn: onClickSearchCandidatesByName,
   },
 
   searchCandidatesByNameTab: {
