@@ -17,8 +17,9 @@ export type LocationMatch = "empty" | "checking" | "existing" | "new";
 
 type LocationComboboxProps = {
   id: string;
-  step: number;
+  step?: number;
   label: string;
+  placeholder?: string;
   icon: ReactNode;
   value: string;
   onChange: (value: string) => void;
@@ -32,13 +33,14 @@ type LocationComboboxProps = {
 };
 
 /**
- * Searchable field that suggests existing locations and also accepts a new name
+ * Searchable field (used for locations and job titles) that suggests existing values and also accepts a new name
  * ("Add “X” as a new city"). Lookups are debounced.
  */
 export default function LocationCombobox({
   id,
   step,
   label,
+  placeholder,
   icon,
   value,
   onChange,
@@ -133,7 +135,7 @@ export default function LocationCombobox({
           htmlFor={id}
           className={cn("text-sm font-bold", disabled ? "text-[#8A93A6]" : "text-[#0F172A]")}
         >
-          <span className="mr-1.5 font-semibold text-[#5B6478]">{step}.</span>
+          {step !== undefined && <span className="mr-1.5 font-semibold text-[#5B6478]">{step}.</span>}
           {label}
         </label>
         {match === "existing" && (
@@ -177,7 +179,7 @@ export default function LocationCombobox({
           aria-invalid={!!error}
           aria-activedescendant={showList && activeIndex >= 0 ? `${listboxId}-${activeIndex}` : undefined}
           disabled={disabled}
-          placeholder={disabled ? disabledPlaceholder : `Search or type a ${noun}`}
+          placeholder={disabled ? disabledPlaceholder : (placeholder ?? `Search or type a ${noun}`)}
           value={value}
           onChange={(e) => {
             onChange(e.target.value);
