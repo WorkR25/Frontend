@@ -1,14 +1,15 @@
 import { userServiceApi } from "@/lib/axios.config";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 const useGetUserListPagination = (authJwtToken: string | null, page: number, limit: number, details: string) => {
   return useQuery({
-    queryKey: ["useGetUserListPagination", authJwtToken ?? "", `${page}`, `${limit}`],
+    queryKey: ["useGetUserListPagination", authJwtToken ?? "", details, `${page}`, `${limit}`],
     queryFn: () => {
       return getUserListPagination(authJwtToken, page, limit, details );
     },
     enabled: !!authJwtToken,
-    refetchOnWindowFocus: false, 
+    refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
 
   });
 };
