@@ -4,11 +4,14 @@ export type Skills = {
 };
 
 export type JobDetails = {
+  id?: number;
+  location_id?: number;
   apply_link: string;
   city: {
     name: string;
   };
   company: {
+    id?: number;
     website: string;  
     name: string;
     logo: string;

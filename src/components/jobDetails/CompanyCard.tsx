@@ -1,7 +1,8 @@
 "use client";
 
 import { CompanyCardProps } from "@/types/CompanyCardProps";
-import Image from "next/image";
+import { ExternalLink } from "lucide-react";
+import CompanyLogo from "@/components/CompanyLogo";
 import MarkdownHTML from "./MarkdownRender";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -23,7 +24,7 @@ export default function CompanyCard({
     [description]
   );
 
-  const collapsedHeight = 250;
+  const collapsedHeight = 110;
 
   useEffect(() => {
     const el = contentRef.current;
@@ -52,81 +53,83 @@ export default function CompanyCard({
   const shouldShowToggle = contentHeight > collapsedHeight + 4;
 
   return (
-    <div className="mb-10 mt-5 space-y-4 rounded-lg bg-[#d6dce3] bg-radial from-black/10 to-white p-5 shadow-[0px_7px_29px_0px_rgba(100,100,111,0.2)] backdrop-blur-2xl">
-      <h3 className="text-lg font-semibold text-gray-900">About Company</h3>
-
-      <div className="flex items-center gap-4">
-        {logoUrl && (
-          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-white">
-            <Image
-              src={logoUrl}
-              alt={name}
-              width={64}
-              height={64}
-              className="h-full w-full object-cover"
-              unoptimized
-            />
-          </div>
-        )}
-
-        <div>
-          <div className="text-lg font-medium text-gray-900">{name}</div>
-          <div className="text-sm font-medium text-gray-500">{location}</div>
+    <section className="overflow-hidden rounded-3xl border border-[#E4E8F0] bg-white">
+      <div className="flex items-center gap-3.5 border-b border-[#DFE7FA] bg-[#EEF3FF] bg-[radial-gradient(#CBD7F5_1.2px,transparent_1.2px)] bg-[size:20px_20px] px-6 py-5">
+        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-[0_6px_16px_rgba(16,32,80,0.10)]">
+          <CompanyLogo
+            name={name}
+            logo={logoUrl}
+            className="h-[42px] w-[42px] rounded-xl"
+            textClassName="text-[15px]"
+            imagePadding="p-0.5"
+          />
+        </span>
+        <div className="min-w-0">
+          <div className="text-xs font-bold tracking-[0.08em] text-[#5B6478]">ABOUT THE COMPANY</div>
+          <div className="truncate text-[19px] font-extrabold text-[#0F172A]">{name}</div>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <span className="rounded-full bg-white px-3 py-1 text-xs text-gray-700">
-          {industry}
-        </span>
-        <span className="rounded-full bg-white px-3 py-1 text-xs text-gray-700">
-          {size}
-        </span>
-      </div>
-
-      <div>
-        <div className="relative">
-          <div
-            className="overflow-hidden transition-[max-height] duration-500 ease-in-out"
-            style={{
-              maxHeight: expanded ? `${contentHeight}px` : `${collapsedHeight}px`,
-            }}
-          >
-            <div
-              ref={contentRef}
-              className="text-sm leading-relaxed text-gray-600 [&_p]:mb-3 [&_p:last-child]:mb-0"
-            >
-              <MarkdownHTML content={cleanDescription || "null"} />
+      <div className="flex flex-col gap-4 px-6 pb-6 pt-5">
+        <dl className="flex flex-col gap-3 text-sm">
+          {[
+            ["Industry", industry],
+            ["Company size", size],
+            ["Location", location],
+          ].map(([label, value]) => (
+            <div key={label} className="flex items-center justify-between gap-3">
+              <dt className="font-medium text-[#5B6478]">{label}</dt>
+              <dd className="text-right font-bold text-[#0F172A]">{value}</dd>
             </div>
+          ))}
+        </dl>
+
+        {cleanDescription && (
+          <div className="border-t border-dashed border-[#E1E6EF] pt-4">
+            <div className="relative">
+              <div
+                className="overflow-hidden transition-[max-height] duration-500 ease-in-out"
+                style={{
+                  maxHeight: expanded ? `${contentHeight}px` : `${collapsedHeight}px`,
+                }}
+              >
+                <div
+                  ref={contentRef}
+                  className="text-sm leading-relaxed text-[#344054] [&_p]:mb-3 [&_p]:!text-sm [&_p]:!leading-[1.65] [&_p:last-child]:mb-0"
+                >
+                  <MarkdownHTML content={cleanDescription} />
+                </div>
+              </div>
+
+              {!expanded && shouldShowToggle && (
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-b from-transparent to-white" />
+              )}
+            </div>
+
+            {shouldShowToggle && (
+              <button
+                type="button"
+                onClick={() => setExpanded((prev) => !prev)}
+                className="mt-2 inline-flex cursor-pointer items-center text-sm font-bold text-[#2451D6] hover:text-[#1A3FAF]"
+              >
+                {expanded ? "Read less" : "Read more"}
+              </button>
+            )}
           </div>
+        )}
 
-          {!expanded && shouldShowToggle && (
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent via-[rgba(214,220,227,0.12)] to-[rgba(214,220,227,0.38)]" />
-          )}
-        </div>
-
-        {shouldShowToggle && (
-          <button
-            type="button"
-            onClick={() => setExpanded((prev) => !prev)}
-            className="mt-3 inline-flex cursor-pointer items-center text-[15px] font-semibold text-[#2F5D9F] transition-colors duration-200 hover:text-[#1E4E8C] hover:underline hover:underline-offset-4"
+        {website && (
+          <a
+            href={website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-[46px] items-center justify-center gap-2 rounded-xl border-[1.5px] border-[#B9CBF3] text-sm font-bold text-[#2451D6] no-underline transition-colors hover:border-[#2451D6] hover:bg-[#F6F9FF]"
           >
-            {expanded ? "View less" : "View more"}
-          </button>
+            Visit website
+            <ExternalLink className="h-3.5 w-3.5" strokeWidth={2.2} aria-hidden="true" />
+          </a>
         )}
       </div>
-
-      <div className="text-sm font-semibold">
-        <a
-          href={website}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-sm font-semibold text-[#2F5D9F] transition-all duration-200 hover:translate-x-0.5 hover:text-[#1E4E8C] hover:underline hover:underline-offset-4"
-        >
-          Visit Website
-          <span aria-hidden="true">↗</span>
-        </a>
-      </div>
-    </div>
+    </section>
   );
 }

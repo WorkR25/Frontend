@@ -763,17 +763,17 @@ export default function DashboardSidebar() {
     [
       "group flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-3 text-left text-[15px] sm:text-[16px] font-medium transition-all duration-200",
       isActive
-        ? "bg-[linear-gradient(90deg,#0F76C5_0%,#2A87D7_100%)] text-white shadow-[0_6px_16px_rgba(14,121,201,0.16)]"
-        : "text-[#667085] hover:bg-[#EDF4FF] hover:text-[#1D4ED8]",
+        ? "bg-[#142463] font-bold text-white shadow-[0_6px_16px_rgba(20,36,99,0.22)]"
+        : "text-[#344054] hover:bg-[#EEF2FA] hover:text-[#1A3FAF]",
     ].join(" ");
 
   const getSubTabClasses = () =>
-    "group flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-3 text-left text-[15px] sm:text-[16px] font-medium text-[#667085] transition-all duration-200 hover:bg-[#EDF4FF] hover:text-[#1D4ED8]";
+    "group flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-3 text-left text-[15px] sm:text-[16px] font-medium text-[#344054] transition-all duration-200 hover:bg-[#EEF2FA] hover:text-[#1A3FAF]";
 
   return (
     <div
       ref={sidebarRef}
-      className="flex h-full flex-col overflow-hidden rounded-r-[28px] bg-[#f1f2f4] px-2 shadow-[6px_0_24px_rgba(15,23,42,0.05)]"
+      className="flex h-full flex-col overflow-hidden bg-white px-2 font-plus-jakarta"
     >
       <div className="shrink-0 pt-4">
         <div className="flex items-center justify-between">
@@ -821,7 +821,7 @@ export default function DashboardSidebar() {
 
       <div className="hide-scrollbar mt-5 flex-1 overflow-y-auto pb-4">
         <aside className="space-y-3">
-          <div className="flex items-center justify-between px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8A94A6]">
+          <div className="flex items-center justify-between px-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#5B6478]">
             <span>Main</span>
             <ChevronDown
               className={`h-4 w-4 cursor-pointer transition-transform duration-300 ${
@@ -856,7 +856,7 @@ export default function DashboardSidebar() {
                       className={`flex shrink-0 items-center justify-center ${
                         isActive
                           ? "text-white"
-                          : "text-[#667085] group-hover:text-[#1D4ED8]"
+                          : "text-[#344054] group-hover:text-[#1A3FAF]"
                       }`}
                     >
                       {tab.icon}
@@ -871,7 +871,7 @@ export default function DashboardSidebar() {
 
         {newCreationTabs[role]?.length > 0 && (
           <section className="mt-6 space-y-3">
-            <div className="flex items-center justify-between px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8A94A6]">
+            <div className="flex items-center justify-between px-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#5B6478]">
               <span>Creation</span>
               <ChevronDown
                 className={`h-4 w-4 cursor-pointer transition-transform duration-300 ${
@@ -898,7 +898,7 @@ export default function DashboardSidebar() {
                     }}
                     className={getSubTabClasses()}
                   >
-                    <span className="flex shrink-0 items-center justify-center text-[#667085] group-hover:text-[#1D4ED8]">
+                    <span className="flex shrink-0 items-center justify-center text-[#344054] group-hover:text-[#1A3FAF]">
                       {tab.icon}
                     </span>
                     <span>{tab.name}</span>
@@ -910,7 +910,7 @@ export default function DashboardSidebar() {
         )}
 
         <section className="mt-6 space-y-3">
-          <div className="flex items-center justify-between px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#8A94A6]">
+          <div className="flex items-center justify-between px-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#5B6478]">
             <span>Others</span>
             <ChevronDown
               className={`h-4 w-4 cursor-pointer transition-transform duration-300 ${

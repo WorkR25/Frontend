@@ -1,22 +1,15 @@
 "use client";
+import Link from "next/link";
+import { ArrowRight, Briefcase, Clock, MapPin, Laptop } from "lucide-react";
+import CompanyLogo from "@/components/CompanyLogo";
 import { JobCardParams } from "@/types/JobCard";
 import { cn } from "@/utils/cn";
+import { getCompanyTint } from "@/utils/companyBrand";
+import { SHOW_JOB_SKILLS } from "@/utils/featureFlags";
 import { timeAgo } from "@/utils/getTime";
-import {
-  BadgeDollarSign,
-  Bookmark,
-  Clock,
-  MapPin,
-  ChevronRight,
-} from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { Inter } from "next/font/google";
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["600"],
-});
+const NEW_JOB_WINDOW_MS = 24 * 60 * 60 * 1000;
+const MAX_SKILLS_ON_CARD = 3;
 
 export default function JobCard({
   id,
@@ -25,106 +18,104 @@ export default function JobCard({
   company,
   employmentType,
   city,
-  country,
-  minPay,
-  maxPay,
-  className = "sm:w-[45%]",
+  className,
   created_at,
+  skills = [],
+  isRemote,
 }: JobCardParams) {
-  const router = useRouter();
+  const tint = getCompanyTint(company);
+  const remote = isRemote ?? city?.trim().toLowerCase() === "remote";
+  const isNew =
+    !!created_at && Date.now() - new Date(created_at).getTime() < NEW_JOB_WINDOW_MS;
+  const visibleSkills = skills.filter(Boolean).slice(0, MAX_SKILLS_ON_CARD);
+  const extraSkills = skills.filter(Boolean).length - visibleSkills.length;
 
   return (
-    <div
+    <Link
+      href={`/dashboard/jobs/${id}`}
       className={cn(
-        "group w-full rounded-2xl border border-[#E5E7EB] bg-white px-5 py-4",
-        "flex flex-col justify-between space-y-3",
-        "shadow-[0_2px_8px_rgba(0,0,0,0.05),0_10px_24px_rgba(0,0,0,0.06)]",
-        "transition-all duration-300 hover:-translate-y-1 hover:border-[#D7DEE8]",
-        "hover:shadow-[0_8px_20px_rgba(0,0,0,0.08),0_18px_40px_rgba(0,0,0,0.10)]",
-        "hover:cursor-pointer",
+        "group relative flex w-full flex-col gap-4 overflow-hidden rounded-[20px] border border-[#E4E8F0] bg-white p-[22px] text-[#0F172A] no-underline",
+        "transition-[border-color,box-shadow,transform] duration-200",
+        "hover:-translate-y-[3px] hover:border-[#B9CBF3] hover:shadow-[0_16px_36px_rgba(16,32,80,0.10)]",
+        "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#2451D6]/25",
         className,
       )}
-      onClick={() => {
-        router.push("/dashboard/jobs/" + id);
-      }}
     >
-      <div className="h-fit">
-        <div className="flex items-center justify-end text-sm">
-          <span className="hidden rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-600">
-            Suit You Best!
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-10 -top-10 h-[120px] w-[120px] rounded-full opacity-70"
+        style={{ background: tint.bg }}
+      />
+
+      <div className="relative flex items-start justify-between gap-3">
+        <CompanyLogo
+          name={company}
+          logo={img}
+          className="h-[52px] w-[52px] rounded-2xl border-[3px] border-white shadow-[0_4px_12px_rgba(16,32,80,0.10)]"
+          textClassName="text-[15px]"
+          imagePadding="p-1.5"
+        />
+        {isNew && (
+          <span className="flex items-center gap-1.5 rounded-full border border-[#BFE8D2] bg-white px-2.5 py-[5px] text-xs font-bold text-[#11643C]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#1FA463]" />
+            New
           </span>
-          <div className="text-end text-[#98A2B3] text-xs">
-            {created_at ? timeAgo(String(created_at)) : "3 days ago"}
-          </div>
-        </div>
+        )}
+      </div>
 
-        <div className="flex items-start gap-3">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[#E9EEF5] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
-            <Image
-              className="h-10 w-10 rounded-full object-cover"
-              src={img ? img : "/google-icon-logo-svgrepo-com.svg"}
-              alt="photo"
-              width={110}
-              height={110}
-              priority
-              unoptimized
-            />
-          </div>
+      <div className="relative">
+        <h3 className="text-lg font-extrabold leading-[1.3] tracking-[-0.015em]">{title}</h3>
+        <p className="mt-1 text-sm font-semibold text-[#5B6478]">{company}</p>
+      </div>
 
-          <div className="min-w-0">
-            <div
-              className={cn(
-                "truncate text-[21px] font-semibold text-[#111827]",
-                inter.className,
-              )}
+      <div className="flex flex-wrap gap-2 text-[13px] font-semibold">
+        {!remote && city && (
+          <span className="flex items-center gap-1.5 rounded-lg bg-[#EAF0FD] px-2.5 py-1.5 text-[#1A3FAF]">
+            <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
+            {city}
+          </span>
+        )}
+        <span className="flex items-center gap-1.5 rounded-lg bg-[#E3F6EC] px-2.5 py-1.5 text-[#11643C]">
+          <Laptop className="h-3.5 w-3.5" aria-hidden="true" />
+          {remote ? "Remote" : "On-site"}
+        </span>
+        {employmentType && (
+          <span className="flex items-center gap-1.5 rounded-lg bg-[#FFF4E0] px-2.5 py-1.5 text-[#8A4B00]">
+            <Briefcase className="h-3.5 w-3.5" aria-hidden="true" />
+            {employmentType}
+          </span>
+        )}
+      </div>
+
+      {/* Skills: built, hidden until SHOW_JOB_SKILLS is enabled. */}
+      {visibleSkills.length > 0 && (
+        <div className={cn("flex flex-wrap gap-1.5", !SHOW_JOB_SKILLS && "hidden")}>
+          {visibleSkills.map((skill) => (
+            <span
+              key={skill}
+              className="rounded-full border border-[#E4E8F0] px-2.5 py-1 text-xs font-semibold text-[#344054]"
             >
-              {title}
-            </div>
-            <div className="text-base font-medium text-[#667085]">
-              {company}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-3 flex flex-wrap gap-2 text-xs text-gray-600">
-          <div className="flex items-center gap-1 rounded-full bg-[#F2F4F7] px-2.5 py-1.5">
-            <MapPin className="h-3.5 w-3.5 text-[#667085]" />
-            <span className="text-[#344054]">{city + ", " + country}</span>
-          </div>
-
-          <div className="flex items-center gap-1 rounded-full bg-[#F2F4F7] px-2.5 py-1.5">
-            <Clock className="h-3.5 w-3.5 text-[#667085]" />
-            <span className="text-[#344054]">{employmentType}</span>
-          </div>
-
-          <div className="hidden items-center gap-1 rounded-full bg-[#F2F4F7] px-2.5 py-1.5">
-            <BadgeDollarSign className="hidden h-3.5 w-3.5 text-[#667085]" />
-            <span className="text-[#344054]">
-              {`${minPay} - ${maxPay} ${employmentType === "Internship" ? "K" : "LPA"}`}
+              {skill}
             </span>
-          </div>
-
-          <div className="rounded-full bg-[#F2F4F7] px-2.5 py-1.5 text-[#667085]">
-            +2
-          </div>
+          ))}
+          {extraSkills > 0 && (
+            <span className="rounded-full bg-[#F1F4F9] px-2.5 py-1 text-xs font-semibold text-[#5B6478]">
+              +{extraSkills} more
+            </span>
+          )}
         </div>
-      </div>
+      )}
 
-      <div className="flex items-center justify-between">
-        <button
-          className="w-full cursor-pointer rounded-xl bg-[linear-gradient(90deg,#4A70BE_0%,#567CC3_50%,#658BC6_100%)] py-2.5 text-white text-sm font-medium shadow-[0_4px_14px_rgba(74,112,190,0.28)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(74,112,190,0.34)] active:translate-y-0"
-          onClick={() => {
-            router.push("/dashboard/jobs/" + id);
-          }}
-        >
-          <div className="flex items-center justify-center">
-            <h4 className="mr-1 text-sm font-medium">Apply</h4>
-            <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-          </div>
-        </button>
-
-        <Bookmark className="hidden w-5 h-5 basis-1/10 text-gray-400" />
+      <div className="mt-auto flex items-center justify-between border-t border-dashed border-[#E1E6EF] pt-4 text-[13px]">
+        <span className="flex items-center gap-1.5 font-medium text-[#5B6478]">
+          <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+          {created_at ? timeAgo(String(created_at)) : "Recently"}
+        </span>
+        <span className="flex items-center gap-1.5 rounded-[10px] bg-[#2451D6] px-3.5 py-2 font-bold text-white transition-[gap,background-color] duration-200 group-hover:gap-2.5 group-hover:bg-[#1A3FAF]">
+          View &amp; apply
+          <ArrowRight className="h-[15px] w-[15px]" strokeWidth={2.4} aria-hidden="true" />
+        </span>
       </div>
-    </div>
+    </Link>
   );
 }

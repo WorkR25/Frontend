@@ -295,21 +295,21 @@ export default function DashboardLayout({
         }`}
       ></div> */}
       <div
-        className={"dashboard-layout bg-[#f1f2f4] flex h-full w-full gap-x-2"}
+        className={"dashboard-layout bg-[#F4F6FA] flex h-full w-full"}
       >
         <div
-          className={`dashboard-layout hidden sm:block basis-1/5 bg-[#f1f2f4] overflow-y-scroll hide-scrollbar px-3`}
+          className={`dashboard-layout hidden sm:block basis-1/5 max-w-[300px] bg-white border-r border-[#E4E8F0] overflow-y-scroll hide-scrollbar px-3`}
         >
           <DashboardSidebar />
         </div>
         <div
-          className={`dashboard-layout absolute rounded-r-lg bg-[#F5F5F5] h-full w-[75%] sm:hidden overflow-y-scroll px-5 z-50 transform transition-transform duration-300 ease-in-out ${
+          className={`dashboard-layout absolute rounded-r-2xl bg-white shadow-xl h-full w-[75%] sm:hidden overflow-y-scroll px-5 z-50 transform transition-transform duration-300 ease-in-out ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
           <DashboardSidebar />
         </div>
-        <div className="dashboard-layout w-full h-full sm:basis-4/5 rounded-lg overflow-hidden">
+        <div className="dashboard-layout w-full h-full sm:basis-4/5 sm:flex-1 overflow-hidden">
           {/* {showEditSkills.value && (
             <div className="dashboard-layout absolute sm:hidden px-5 hide-scrollbar flex justify-center z-40 h-screen w-full sm:w-[79%] bg-white overflow-y-auto">
               <div className="dashboard-layout w-full min-h-full">

@@ -24,14 +24,17 @@ export default function DashboardTopbarLogoutButton() {
     <div>
       {isSuccess && (
         <button
-          className="rounded-full bg-blue-200 hover:cursor-pointer hover:bg-blue-300 p-2"
+          type="button"
+          aria-label="Log out"
+          title="Log out"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-[10px] border border-[#E4E8F0] bg-white text-[#344054] transition-colors hover:bg-[#EEF2FA]"
           onClick={() => {
             localStorage.removeItem("AuthJwtToken");
             dispatch(setAuthJwtToken(""));
             router.replace("/login");
           }}
         >
-          <LogOut height={16} width={16} />
+          <LogOut height={18} width={18} />
         </button>
       )}
     </div>

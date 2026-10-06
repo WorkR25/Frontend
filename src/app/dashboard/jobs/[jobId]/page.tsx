@@ -1,274 +1,163 @@
 "use client";
-import { IoIosArrowForward } from "react-icons/io";
-import BackButton from "@/components/BackButton";
-import JobDetailsCard from "@/components/jobDetails/JobDetailsCard";
-import JobDescription from "@/components/jobDetails/JobDescription";
-import JobSpecification from "@/components/jobDetails/JobSpecification";
+import Link from "next/link";
+import { ChevronLeft, FileText } from "lucide-react";
 import { Suspense, use, useEffect } from "react";
-import { setJobId } from "@/features/jobId/jobId";
-import useGetJobDetails from "@/utils/useGetJobDetails";
-import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import TripleDotLoader from "@/components/TripleDotLoader";
-import { setJobDetails } from "@/features/jobDetails/jobDetails";
-import CompanyCard from "@/components/jobDetails/CompanyCard";
-import JobSkills from "@/components/jobDetails/JobSkills";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { Calendar } from "lucide-react";
-import { getFormattedDate } from "@/utils/getTime";
-import DashboardTopbarLogoutButton from "@/components/dashboard/DashboardTopbarLogoutButton";
 import DashboardTopbarHamburgerMenu from "@/components/dashboard/DashboardTopbarHamburgerMenu";
+import DashboardTopbarLogoutButton from "@/components/dashboard/DashboardTopbarLogoutButton";
+import TodayDate from "@/components/dashboard/TodayDate";
+import ApplyCta from "@/components/jobDetails/ApplyCta";
+import CompanyCard from "@/components/jobDetails/CompanyCard";
+import { companyJobsHref } from "@/components/jobDetails/companyJobsHref";
+import JobDescription from "@/components/jobDetails/JobDescription";
+import JobDetailsCard from "@/components/jobDetails/JobDetailsCard";
+import JobSkills from "@/components/jobDetails/JobSkills";
+import MoreJobsAtCompany from "@/components/jobDetails/MoreJobsAtCompany";
+import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
+import { setJobDetails } from "@/features/jobDetails/jobDetails";
+import { setJobId } from "@/features/jobId/jobId";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { JobDetails } from "@/types/JobDetailsType";
+import useGetJobDetails from "@/utils/useGetJobDetails";
 
-export default function Page({
-  params,
-}: {
-  params: Promise<{ jobId: string }>;
-}) {
+function formatCompanySize(companySize: JobDetails["company"]["companySize"] | null | undefined) {
+  if (!companySize) return "—";
+  const { min_employees: min, max_employees: max } = companySize;
+  const fmt = (n: number) => n.toLocaleString("en-IN");
+  if (min != null && (max == null || max > 100002)) return `${fmt(min)}+ employees`;
+  if (min != null && max != null) return `${fmt(min)}–${fmt(max)} employees`;
+  return "—";
+}
+
+export default function Page({ params }: { params: Promise<{ jobId: string }> }) {
   const { jobId } = use(params);
   const dispatch = useAppDispatch();
-
-  const jwtToken = useAppSelector((state) => {
-    return state.authJwtToken.value;
-  });
-  const jobDetails = useAppSelector((state) => {
-    return state.jobDetails.value;
-  });
+  const jwtToken = useAppSelector((state) => state.authJwtToken.value);
 
   useEffect(() => {
     const token = localStorage.getItem("AuthJwtToken");
-    if (token) {
-      dispatch(setAuthJwtToken(token));
-    }
+    if (token) dispatch(setAuthJwtToken(token));
   }, [dispatch]);
 
-  const { data, isPending, isError } = useGetJobDetails(jwtToken, jobId);
+  const { data: job, isPending, isError } = useGetJobDetails(jwtToken, jobId);
 
   useEffect(() => {
     dispatch(setJobId(jobId));
-  });
+  }, [dispatch, jobId]);
 
   useEffect(() => {
-    if (data) {
-      dispatch(setJobDetails(data));
-    }
-  }, [data, dispatch]);
+    if (job) dispatch(setJobDetails(job));
+  }, [job, dispatch]);
 
-  if (!jobDetails)
-    return (
-      <div>
-        <TripleDotLoader />
-      </div>
-    );
+  if (isPending) return <TripleDotLoader />;
 
-  if (isPending) {
+  if (isError || !job) {
     return (
-      <div>
-        <TripleDotLoader />
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="w-full h-full flex text-center items-center justify-center ">
-        Not found
+      <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-[#F4F6FA] text-center font-plus-jakarta">
+        <p className="text-lg font-bold text-[#0F172A]">This job could not be found.</p>
+        <Link
+          href="/dashboard/jobs"
+          className="rounded-xl bg-[#2451D6] px-5 py-3 text-sm font-bold text-white no-underline hover:bg-[#1A3FAF]"
+        >
+          Back to jobs
+        </Link>
       </div>
     );
   }
+
+  const numericJobId = Number(jobId);
+  const cityName = job.city?.name ?? "";
+  const companyHref = companyJobsHref(job.company.name, job.company.id);
 
   return (
-    <div className="jobId-page  text-black bg-[#f1f2f4] h-full flex flex-col px-3">
-      <div className="jobId-page grid grid-cols-[5fr_95fr]  items-center pl-3 md:pl-0">
-        <div className="jobId-page hidden sm:block">
-          <BackButton />
-        </div>
-        <div className="sm:hidden">
-          <Suspense fallback={<div>...</div>}>
-            <DashboardTopbarHamburgerMenu />
-          </Suspense>
-        </div>
-        <div className=" w-full py-2 ">
-          {/* <DashboardTopbar className="basis-[95%]" pageName="Job Details" /> */}
-          <div className="grid grid-cols-[1fr_auto] h-full w-full items-center py-1">
-            <div className="min-w-0 ml-3 pr-2 sm:ml-0 md:text-lg text-base text-gray-500 flex items-center gap-x-2 sm:gap-x-3 w-full font-semibold">
-              <p>Jobs</p>
-              <IoIosArrowForward className=" w-10" />
-              <p>{data?.company.name}</p>
-              <IoIosArrowForward className=" w-10" />
-              <p className="text-black truncate ">{data?.jobTitle.title}</p>
-            </div>
-            <div className="components-dashboard-DashboardTopbar gap-2 flex items-center justify-end px-3 py-2 rounded-lg">
-              <div className="hidden sm:block">
-                <Calendar className="components-dashboard-DashboardTopbar w-5 h-5 hidden sm:block" />
-              </div>
-              <div className="components-dashboard-DashboardTopbar text-sm hidden sm:block">
-                {getFormattedDate()}
-              </div>
-              <Suspense fallback={<div>...</div>}>
-                <DashboardTopbarLogoutButton />
-              </Suspense>
-            </div>
+    <div className="h-full overflow-y-auto bg-[#F4F6FA] font-plus-jakarta text-[#0F172A]">
+      <div className="mx-auto flex max-w-[1440px] flex-col gap-5 px-4 py-5 sm:px-8 sm:py-7 lg:px-10">
+        <header className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <Suspense fallback={null}>
+              <DashboardTopbarHamburgerMenu />
+            </Suspense>
+            <Link
+              href="/dashboard/jobs"
+              aria-label="Back to jobs"
+              className="hidden h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-[#E4E8F0] bg-white text-[#344054] hover:bg-[#EEF2FA] sm:flex"
+            >
+              <ChevronLeft className="h-[18px] w-[18px]" />
+            </Link>
+            <nav
+              aria-label="Breadcrumb"
+              className="flex min-w-0 flex-wrap items-center gap-2 text-[15px] font-medium text-[#5B6478]"
+            >
+              <Link href="/dashboard/jobs" className="text-[#5B6478] no-underline hover:text-[#2451D6]">
+                Jobs
+              </Link>
+              <span className="text-[#A3ACBD]">/</span>
+              <Link href={companyHref} className="text-[#5B6478] no-underline hover:text-[#2451D6]">
+                {job.company.name}
+              </Link>
+              <span className="text-[#A3ACBD]">/</span>
+              <span className="truncate font-semibold text-[#0F172A]">{job.jobTitle.title}</span>
+            </nav>
           </div>
-        </div>
-        {/* custom top bar */}
-      </div>
+          <div className="flex items-center gap-2.5">
+            <TodayDate />
+            <DashboardTopbarLogoutButton />
+          </div>
+        </header>
 
-      <div className="jobId-page flex flex-1 overflow-y-scroll rounded-lg border-gray-200 sm:overflow-hidden">
-        {/* mobile */}
-        {/* mobile */}
-        <div className="jobId-page flex h-full min-h-0 w-full flex-col sm:hidden bg-[linear-gradient(180deg,#F8FAFD_0%,#F3F6FB_100%)]">
-          <div className="shrink-0 p-2 pb-0">
-            <JobDetailsCard
-              isRemote={jobDetails.is_remote}
-              img={jobDetails?.company.logo}
-              title={jobDetails.jobTitle.title}
-              companyName={jobDetails?.company.name}
-              city={jobDetails.city.name}
-              jobId={Number(jobId)}
-              created_at={jobDetails.created_at}
-              apply_link={jobDetails.apply_link}
+        <JobDetailsCard
+          jobId={numericJobId}
+          img={job.company.logo}
+          title={job.jobTitle.title}
+          companyName={job.company.name}
+          companyId={job.company.id}
+          city={cityName}
+          industry={job.company.industry?.name}
+          created_at={job.created_at}
+          apply_link={job.apply_link}
+          isRemote={job.is_remote}
+          specification={{
+            experienceLevelName: job.experienceLevel.name,
+            experienceLevel: `${job.experienceLevel.min_years}–${job.experienceLevel.max_years} years`,
+            employmentType: job.employmentType.name,
+            salaryMin: job.salary_min,
+            salaryMax: job.salary_max,
+            location: cityName,
+          }}
+        />
+
+        <div className="flex flex-wrap items-start gap-5">
+          <article className="min-w-0 flex-[999_1_520px] rounded-3xl border border-[#E4E8F0] bg-white p-5 sm:p-8">
+            <JobSkills skills={job.skills} />
+
+            <h2 className="mb-4 flex items-center gap-2.5 text-lg font-extrabold">
+              <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[#EAF0FD] text-[#2451D6]">
+                <FileText className="h-4 w-4" aria-hidden="true" />
+              </span>
+              About the role
+            </h2>
+            <JobDescription description={job.description} />
+
+            <ApplyCta jobId={numericJobId} applyLink={job.apply_link} companyName={job.company.name} />
+          </article>
+
+          <aside className="flex min-w-0 flex-[1_1_320px] flex-col gap-5">
+            <CompanyCard
+              website={job.company.website ?? ""}
+              description={job.company.description ?? ""}
+              industry={job.company.industry?.name ?? "—"}
+              location={cityName}
+              logoUrl={job.company.logo}
+              name={job.company.name}
+              size={formatCompanySize(job.company.companySize)}
             />
-          </div>
-
-          <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-3 pt-3">
-            <div className="flex flex-col gap-3">
-              <JobSpecification
-                experienceLevelName={jobDetails.experienceLevel.name}
-                experienceLevel={`${jobDetails.experienceLevel.min_years} - ${jobDetails.experienceLevel.max_years} years`}
-                employmentType={jobDetails.employmentType.name}
-                salaryMax={jobDetails.salary_max}
-                salaryMin={jobDetails.salary_min}
-                location={jobDetails.city.name}
-                img={jobDetails.company.logo}
-                city={jobDetails.city.name}
-                companyName={jobDetails.company.name}
-              />
-
-              <div className="rounded-[20px] border border-[#E6EBF4] bg-white shadow-[0_8px_18px_rgba(15,23,42,0.05)]">
-                <div className="border-b border-[#EEF2F7] px-5 py-4">
-                  <h2 className="text-[18px] font-semibold tracking-[-0.02em] text-[#111827]">
-                    Job Description
-                  </h2>
-                </div>
-
-                <JobDescription />
-              </div>
-
-              <CompanyCard
-                website={jobDetails.company.website ?? "https://example.com"}
-                description={jobDetails.company.description ?? "Description"}
-                industry={
-                  jobDetails.company.industry
-                    ? jobDetails.company.industry.name
-                    : "industry"
-                }
-                location={jobDetails.city.name}
-                logoUrl={jobDetails.company.logo}
-                name={jobDetails.company.name}
-                size={
-                  jobDetails.company.companySize
-                    ? `${jobDetails.company.companySize.min_employees ?? "min"} ${
-                        jobDetails.company.companySize.max_employees
-                          ? jobDetails.company.companySize.max_employees >
-                            100002
-                            ? "+"
-                            : `- ${jobDetails.company.companySize.max_employees}`
-                          : "max"
-                      } employees`
-                    : "Company Size"
-                }
-              />
-
-              <JobSkills skills={jobDetails.skills} className="hidden" />
-            </div>
-          </div>
-        </div>
-
-        {/* desktop */}
-        <div className="jobId-page hidden min-h-0 flex-1 flex-col gap-4 bg-[linear-gradient(180deg,#F8FAFD_0%,#F3F6FB_100%)] px-4 py-4 sm:flex">
-          {/* full-width top hero */}
-          {/* <div className="shrink-0 rounded-[26px] border border-[#E6EBF4] bg-[linear-gradient(180deg,#FFFFFF_0%,#FCFDFF_100%)] p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-            <JobDetailsCard
-              isRemote={jobDetails.is_remote}
-              img={jobDetails?.company.logo}
-              title={jobDetails.jobTitle.title}
-              companyName={jobDetails?.company.name}
-              city={jobDetails.city.name}
-              jobId={Number(jobId)}
-              created_at={jobDetails.created_at}
-              apply_link={jobDetails.apply_link}
+            <MoreJobsAtCompany
+              currentJobId={numericJobId}
+              companyName={job.company.name}
+              companyId={job.company.id}
+              companyLogo={job.company.logo}
             />
-          </div> */}
-
-          <JobDetailsCard
-            isRemote={jobDetails.is_remote}
-            img={jobDetails?.company.logo}
-            title={jobDetails.jobTitle.title}
-            companyName={jobDetails?.company.name}
-            city={jobDetails.city.name}
-            jobId={Number(jobId)}
-            created_at={jobDetails.created_at}
-            apply_link={jobDetails.apply_link}
-          />
-
-          {/* split body */}
-          <div className="grid min-h-0 flex-1 grid-cols-[1fr_320px] gap-4">
-            {/* left description */}
-            <div className="min-h-0 overflow-hidden rounded-[24px] border border-[#E6EBF4] bg-white shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-              <div className="flex h-full min-h-0 flex-col">
-                <div className="shrink-0 border-b border-[#EEF2F7] px-6 py-4">
-                  <h2 className="text-[20px] font-semibold tracking-[-0.02em] text-[#111827]">
-                    Job Description
-                  </h2>
-                </div>
-
-                <div className="min-h-0 flex-1 overflow-y-auto hide-scrollbar px-6 py-5">
-                  <JobDescription />
-                </div>
-              </div>
-            </div>
-
-            {/* right sidebar */}
-            <div className="min-h-0 overflow-y-auto hide-scrollbar pr-1">
-              <div className="flex flex-col gap-4">
-                <JobSpecification
-                  experienceLevelName={jobDetails.experienceLevel.name}
-                  experienceLevel={`${jobDetails.experienceLevel.min_years} - ${jobDetails.experienceLevel.max_years} years`}
-                  employmentType={jobDetails.employmentType.name}
-                  salaryMax={jobDetails.salary_max}
-                  salaryMin={jobDetails.salary_min}
-                  location={jobDetails.city.name}
-                  img={jobDetails.company.logo}
-                  city={jobDetails.city.name}
-                  companyName={jobDetails.company.name}
-                />
-
-                <CompanyCard
-                  website={jobDetails.company.website ?? "https://example.com"}
-                  description={jobDetails.company.description ?? "Description"}
-                  industry={
-                    jobDetails.company.industry
-                      ? jobDetails.company.industry.name
-                      : "industry"
-                  }
-                  location={jobDetails.city.name}
-                  logoUrl={jobDetails.company.logo}
-                  name={jobDetails.company.name}
-                  size={
-                    jobDetails.company.companySize
-                      ? `${jobDetails.company.companySize.min_employees ?? "min"} ${
-                          jobDetails.company.companySize.max_employees
-                            ? jobDetails.company.companySize.max_employees >
-                              100002
-                              ? "+"
-                              : `- ${jobDetails.company.companySize.max_employees}`
-                            : "max"
-                        } employees`
-                      : "Company Size"
-                  }
-                />
-              </div>
-            </div>
-          </div>
+          </aside>
         </div>
       </div>
     </div>

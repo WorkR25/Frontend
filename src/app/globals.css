@@ -368,3 +368,27 @@ body {
   font-size: 14px;
   line-height: 1.7; */
 }
+
+/* ---- Jobs redesign ---------------------------------------------------- */
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-bob { animation: bob 6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-bob { animation: none; }
+}
+
+/* Job description: green check bullets instead of plain dots. */
+.job-description ul { list-style: none; margin-left: 0; padding-left: 0; }
+.job-description ul > li { position: relative; padding-left: 34px; }
+.job-description ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background: #E3F6EC url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2311643C' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / 12px no-repeat;
+}
