@@ -12,6 +12,7 @@ import {
 import { ChevronDown, LoaderCircle } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { cn } from "@/utils/cn";
 
 export interface DebouncedDropdownProps<
   TFormValues extends FieldValues,
@@ -41,6 +42,12 @@ export interface DebouncedDropdownProps<
   resetOn?: boolean;
   inputClassName?: string;
   inputTerm?: string;
+  /** Render the icon on its own, without the tinted square behind it. */
+  plainIcon?: boolean;
+  /** Called with the whole option when the user picks one. */
+  onSelectOption?: (option: TQueryData) => void;
+  /** Extra row at the bottom of the open list, e.g. an "Add new" shortcut. */
+  footerAction?: React.ReactNode;
 }
 
 export default function DebouncedDropdown<
@@ -63,6 +70,9 @@ export default function DebouncedDropdown<
   disabled = false,
   resetOn = false,
   inputTerm,
+  plainIcon = false,
+  onSelectOption,
+  footerAction,
 }: DebouncedDropdownProps<TFormValues, TQueryData>) {
   const [isOpen, setIsOpen] = useState(false);
   const [optionArray, setOptionArray] = useState<TQueryData[]>([]);
@@ -123,6 +133,7 @@ export default function DebouncedDropdown<
     setInputValue(label);
     setSearchTerm(label);
     setIsOpen(false);
+    onSelectOption?.(option);
   };
 
   const hasLeftIcon = !!iconUrl || !!icon;
@@ -130,17 +141,27 @@ export default function DebouncedDropdown<
   return (
     <div className="relative w-full" ref={dropdownRef}>
       <div
-        className={`flex h-[58px] w-full items-center rounded-[14px] border bg-white transition ${
+        className={cn(
+          "flex h-[58px] w-full items-center rounded-[14px] border bg-white transition",
           error
             ? "border-red-300 focus-within:ring-2 focus-within:ring-red-100"
-            : "border-[#D6DBE4] focus-within:ring-2 focus-within:ring-[#DCE9FF]"
-        } ${disabled ? "cursor-not-allowed opacity-70" : "cursor-text"} ${inputClassName}`}
+            : "border-[#D6DBE4] focus-within:ring-2 focus-within:ring-[#DCE9FF]",
+          disabled ? "cursor-not-allowed opacity-70" : "cursor-text",
+          inputClassName,
+          error && "border-red-300",
+        )}
         onClick={() => {
           if (!disabled) setIsOpen(true);
         }}
       >
         {hasLeftIcon && (
-          <div className="ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#EAF3FF]">
+          <div
+            className={
+              plainIcon
+                ? "ml-4 flex shrink-0 items-center justify-center text-[#2451D6]"
+                : "ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#EAF3FF]"
+            }
+          >
             {iconUrl ? (
               <Image
                 alt=""
@@ -150,7 +171,7 @@ export default function DebouncedDropdown<
                 className="h-[18px] w-[18px] object-contain"
               />
             ) : (
-              <span className="flex items-center justify-center text-[#2B6DEB]">
+              <span className={cn("flex items-center justify-center", plainIcon ? "text-[#2451D6]" : "text-[#2B6DEB]")}>
                 {icon}
               </span>
             )}
@@ -233,6 +254,10 @@ export default function DebouncedDropdown<
                 );
               })}
             </div>
+          )}
+
+          {footerAction && (
+            <div className="mt-1 border-t border-[#EEF1F6] pt-1">{footerAction}</div>
           )}
         </div>
       )}

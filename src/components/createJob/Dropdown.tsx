@@ -11,6 +11,7 @@ import {
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { cn } from "@/utils/cn";
 
 export interface DropdownProps<TFormValues extends FieldValues, TOption> {
   optionArray: TOption[] | undefined;
@@ -27,6 +28,10 @@ export interface DropdownProps<TFormValues extends FieldValues, TOption> {
   fieldValue?: string;
   resetOn?: boolean;
   inputClassName?: string;
+  /** Render the icon on its own, without the tinted square behind it. */
+  plainIcon?: boolean;
+  /** Called with the whole option when the user picks one. */
+  onSelectOption?: (option: TOption) => void;
 }
 
 export default function Dropdown<TFormValues extends FieldValues, TOption>({
@@ -42,6 +47,8 @@ export default function Dropdown<TFormValues extends FieldValues, TOption>({
   icon,
   resetOn = false,
   inputClassName = "",
+  plainIcon = false,
+  onSelectOption,
 }: DropdownProps<TFormValues, TOption>) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLabel, setSelectedLabel] = useState<string | null>(
@@ -88,6 +95,7 @@ export default function Dropdown<TFormValues extends FieldValues, TOption>({
 
     setSelectedLabel(label);
     setIsOpen(false);
+    onSelectOption?.(option);
   };
 
   const hasLeftIcon = !!iconUrl || !!icon;
@@ -97,14 +105,23 @@ export default function Dropdown<TFormValues extends FieldValues, TOption>({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex h-[58px] cursor-pointer w-full items-center rounded-[18px] border bg-white text-left transition outline-none ${
+        className={cn(
+          "flex h-[58px] cursor-pointer w-full items-center rounded-[18px] border bg-white text-left transition outline-none",
           error
             ? "border-red-300 focus:ring-2 focus:ring-red-100"
-            : "border-[#D6DBE4] focus:ring-2 focus:ring-[#DCE9FF]"
-        } ${inputClassName}`}
+            : "border-[#D6DBE4] focus:ring-2 focus:ring-[#DCE9FF]",
+          inputClassName,
+          error && "border-red-300",
+        )}
       >
         {hasLeftIcon && (
-          <div className="ml-4 flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#EAF3FF]">
+          <div
+            className={
+              plainIcon
+                ? "ml-4 flex shrink-0 items-center justify-center text-[#2451D6]"
+                : "ml-4 flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#EAF3FF]"
+            }
+          >
             {iconUrl ? (
               <Image
                 alt=""
@@ -114,7 +131,7 @@ export default function Dropdown<TFormValues extends FieldValues, TOption>({
                 className="h-[18px] w-[18px] object-contain"
               />
             ) : (
-              <span className="flex items-center justify-center text-[#2B6DEB]">
+              <span className={cn("flex items-center justify-center", plainIcon ? "text-[#2451D6]" : "text-[#2B6DEB]")}>
                 {icon}
               </span>
             )}

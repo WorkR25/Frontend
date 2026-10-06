@@ -86,9 +86,9 @@ function NameExistsChecker<T extends FieldValues>({
     <div>
       <div className="relative">
         <div className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#EAF3FF]">
+          <div className="flex items-center justify-center">
             <Building2
-              className="h-[18px] w-[18px] text-[#2B6DEB]"
+              className="h-[18px] w-[18px] text-[#2451D6]"
               strokeWidth={2.1}
             />
           </div>
@@ -98,10 +98,10 @@ function NameExistsChecker<T extends FieldValues>({
           type="text"
           {...register(name)}
           placeholder={placeholder}
-          className={`h-[58px] w-full rounded-[14px] border bg-white pl-16 pr-12 text-[1rem] font-medium text-[#111827] outline-none transition placeholder:font-medium placeholder:text-[#98A2B3] ${
+          className={`h-[52px] w-full rounded-[14px] border-[1.5px] bg-white pl-12 pr-12 text-[15px] font-semibold text-[#0F172A] outline-none transition placeholder:font-medium placeholder:text-[#8A93A6] ${
             hasError
-              ? "border-red-300 ring-1 ring-red-100 focus:border-red-400 focus:ring-2 focus:ring-red-100"
-              : "border-[#D6DBE4] focus:border-[#B8D1FF] focus:ring-2 focus:ring-[#DCE9FF]"
+              ? "border-red-300 focus:border-red-400 focus:ring-4 focus:ring-red-100"
+              : "border-[#E4E8F0] focus:border-[#2451D6] focus:ring-4 focus:ring-[#2451D6]/10"
           }`}
         />
 

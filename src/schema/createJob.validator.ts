@@ -35,6 +35,9 @@ export const CreateJobFormSchema = z.object({
 
     return cleaned.length > 0;
   }, { error: "Description is required" }),
+}).refine((data) => !data.salary_min || !data.salary_max || data.salary_max >= data.salary_min, {
+  path: ["salary_max"],
+  error: "Maximum can’t be lower than minimum",
 });
 
 export type CreateJobFormData = z.infer<typeof CreateJobFormSchema>;

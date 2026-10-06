@@ -135,17 +135,17 @@ export default function SkillsDropdown<TFormValues extends FieldValues>({
 
       {/* Dropdown */}
       <div>
-        <div className="flex items-center justify-start w-full  border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div className="flex min-h-[52px] w-full items-center justify-start rounded-[14px] border-[1.5px] border-[#E4E8F0] bg-white px-2 py-1 transition focus-within:border-[#2451D6] focus-within:ring-4 focus-within:ring-[#2451D6]/10">
           {
             <div className="flex flex-wrap items-center gap-2  w-full">
               {skillNameArray &&
                 skillNameArray.length > 0 &&
                 skillNameArray.map((skill) => (
                   <div
-                    className="flex justify-between items-center m-1 px-2 py-0.5 border rounded-2xl w-fit gap-x-3"
+                    className="m-0.5 flex w-fit items-center gap-x-2 rounded-full bg-[#EAF0FD] py-1 pl-3 pr-2 text-[#1A3FAF]"
                     key={skill.id}
                   >
-                    <div className="text-sm">{skill.name}</div>
+                    <div className="text-[13px] font-semibold">{skill.name}</div>
                     <div
                       onClick={() => {
                         handleRemoveSkill(skill.id);
@@ -158,11 +158,11 @@ export default function SkillsDropdown<TFormValues extends FieldValues>({
                   </div>
                 ))}
               <input
-                className="min-w-[200px] flex-1 h-full pl-5 pr-3 py-2 outline-none placeholder:text-[#7C8599]"
+                className="h-10 min-w-[200px] flex-1 bg-transparent px-2 text-[15px] font-medium text-[#0F172A] outline-none placeholder:text-[#8A93A6]"
                 onChange={(e) => setSkillName(e.target.value)}
                 value={skillName ?? ""}
                 type="text"
-                placeholder="Search a skill"
+                placeholder="Search and add skills"
               />
             </div>
           }

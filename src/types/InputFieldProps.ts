@@ -18,4 +18,6 @@ export type InputFieldProps<T extends FieldValues> = {
   disabled?: boolean | null;
   onChangeFn?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   inputClassName?: string ;
+  /** Render the icon on its own, without the tinted square behind it. */
+  plainIcon?: boolean;
 };

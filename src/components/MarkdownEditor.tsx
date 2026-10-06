@@ -32,6 +32,8 @@ interface MarkdownEditorProps {
   error?: FieldError;
   placeholder: string;
   usingFor?: string;
+  /** "basic" keeps only what job/company descriptions need. */
+  toolbar?: "full" | "basic";
 }
 
 const MarkdownEditor: FC<MarkdownEditorProps> = ({
@@ -39,7 +41,8 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
   onValueChange,
   error,
   placeholder,
-  usingFor
+  usingFor,
+  toolbar = "full",
 }) => {
   // const editorRef = useRef<HTMLDivElement>(null);
   // const [dynamicHeight, setDynamicHeight] = useState(height);
@@ -90,7 +93,20 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
           imagePlugin(),
           tablePlugin(),
           toolbarPlugin({
-            toolbarContents: () => (
+            toolbarContents: () =>
+              toolbar === "basic" ? (
+                <DiffSourceToggleWrapper>
+                  <UndoRedo />
+                  <Separator />
+                  <BlockTypeSelect />
+                  <Separator />
+                  <BoldItalicUnderlineToggles />
+                  <Separator />
+                  <ListsToggle options={["bullet", "number"]} />
+                  <Separator />
+                  <CreateLink />
+                </DiffSourceToggleWrapper>
+              ) : (
               <DiffSourceToggleWrapper>
                 <UndoRedo />
                 <Separator />
@@ -110,7 +126,7 @@ const MarkdownEditor: FC<MarkdownEditorProps> = ({
                 <InsertImage />
                 <InsertThematicBreak />
               </DiffSourceToggleWrapper>
-            ),
+              ),
           }),
         ]}
       />
