@@ -60,7 +60,7 @@ type CompanyOption = OptionType & { logo?: string | null };
 const ICON = "h-[18px] w-[18px]";
 
 /** "+ Add new" shortcut shown next to a field label and inside its dropdown. */
-function AddNewButton({ label, onClick, block }: { label: string; onClick: () => void; block?: boolean }) {
+export function AddNewButton({ label, onClick, block }: { label: string; onClick: () => void; block?: boolean }) {
   return (
     <button
       type="button"

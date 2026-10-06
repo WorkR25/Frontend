@@ -1,13 +1,14 @@
 import { jobServiceApi } from "@/lib/axios.config"
-import { useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 const useGetJobApplicantsPagination = ({jwtToken, jobId, limit, page }:{jwtToken: string | null, jobId: number, page: number, limit: number}) => {
     return useQuery({
-        queryKey: [jwtToken ?? "", `${jobId}`, `${limit}`, `${page}`],
+        queryKey: ["jobApplicants", jwtToken ?? "", `${jobId}`, `${limit}`, `${page}`],
         queryFn: ()=>{
             return getJobApplicantsPagination({jwtToken, jobId, limit, page})
         },
         enabled: !!jwtToken,
+        placeholderData: keepPreviousData,
     })
 }
 

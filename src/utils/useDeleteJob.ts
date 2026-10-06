@@ -37,6 +37,8 @@ const useDeleteJob = () => {
         queryKey: ["jobDetails", variables.deleteJobdata.id],
       });
       queryClient.invalidateQueries({ queryKey: ["jobList"] });
+      queryClient.invalidateQueries({ queryKey: ["jobListPage"] });
+      queryClient.invalidateQueries({ queryKey: ["exploreJobs"] });
     },
     onError: (error) => {
       if (error instanceof AxiosError) {

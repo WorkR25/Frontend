@@ -34,6 +34,7 @@ const useUpdateJobs = () => {
         refetchType: "active",
       });
       queryClient.invalidateQueries({ queryKey: ["jobListPage"] });
+      queryClient.invalidateQueries({ queryKey: ["exploreJobs"] });
       queryClient.refetchQueries({ queryKey: ["jobListPage"] });
       queryClient.refetchQueries({ queryKey: ["getJobDetails", `${variables.updateJobData.id}` ] });
     },

@@ -104,23 +104,10 @@ export default function DashboardLayout({
         />
       ),
     },
-    {
-      show: showJobApplicants,
-      element: <ViewApplicants jobId={Number(jobId)} />,
-    },
     // {
     //   show: showJobCreateForm,
     //   element: <CreateJobForm className="dashboard-layout h-screen w-full" />,
     // },
-    {
-      show: showJobUpdateForm,
-      element: (
-        <UpdateJobForm
-          id={Number(jobId)}
-          className="dashboard-layout h-screen w-full"
-        />
-      ),
-    },
     {
       show: showAddRolesForm,
       element: <AddRoles />,
@@ -262,9 +249,11 @@ export default function DashboardLayout({
       )}
 
       {showJobCreateForm && <CreateJobForm />}
+      {showJobUpdateForm && <UpdateJobForm id={Number(jobId)} />}
       {showAddLocation && <AddLocationForm />}
       {showAddTitleForm && <AddTitleForm />}
       {showCreateCompanyForm && <CreateCompanyForm />}
+      {showJobApplicants && <ViewApplicants jobId={Number(jobId)} />}
       {showAllCandidates && <AllCandidates />}
       {(showSearchCandidates || showSearchCandidatesByName || showSearchCandidatesByEmail) && (
         <SearchCandidates initialMode={showSearchCandidatesByEmail ? "email" : "name"} />

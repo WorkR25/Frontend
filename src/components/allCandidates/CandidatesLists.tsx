@@ -89,12 +89,15 @@ export function CandidateRow({
   type,
   showType = false,
   gridClassName,
+  subtitle,
 }: {
   user: Candidate;
   type: CandidateType;
   /** Show a Student / Working badge next to the name (for mixed lists like search). */
   showType?: boolean;
   gridClassName?: string;
+  /** Replaces the "Joined …" line under the name. */
+  subtitle?: string;
 }) {
   const working = type === "Working Professional";
   const name = user.fullName?.trim() || "Unnamed";
@@ -134,7 +137,7 @@ export function CandidateRow({
             )}
           </div>
           <div className="text-xs text-[#5B6478]">
-            {joinedAt ? `Joined ${timeAgo(String(joinedAt))}` : `ID #${user.id}`}
+            {subtitle ?? (joinedAt ? `Joined ${timeAgo(String(joinedAt))}` : `ID #${user.id}`)}
           </div>
         </div>
       </div>
