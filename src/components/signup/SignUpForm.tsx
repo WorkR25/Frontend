@@ -1,627 +1,273 @@
 "use client";
 
-// import InputField from "../InputField";
-import {
-  FieldError,
-  FieldErrors,
-  FieldValues,
-  FormProvider,
-  Path,
-  PathValue,
-  useForm,
-  UseFormRegister,
-  UseFormSetValue,
-} from "react-hook-form";
-import {
-  Eye,
-  EyeOff,
-  User,
-  Mail,
-  Lock,
-  Phone,
-  Calendar,
-  Building2,
-  School,
-  IndianRupee,
-  CodeXml,
-  ChevronDown,
-} from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
-import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SignUpFormSchema } from "@/schema/signUp.validator";
-import useSignup from "@/utils/useSignup";
 import {
-  ctcOptions,
-  domainOptions,
-  fresherOptions,
-} from "@/utils/signup.utils";
-import SignupTextInput from "./SignupTextInput";
+  BriefcaseBusiness,
+  Building2,
+  Check,
+  GraduationCap,
+  IndianRupee,
+  Layers,
+  Loader2,
+  Mail,
+  Phone,
+  UserRound,
+} from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useId } from "react";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import AuthShell from "@/components/auth/AuthShell";
+import PasswordInput, { PasswordRules } from "@/components/auth/PasswordInput";
+import { Field, SelectInput, TextInput } from "@/components/me/profileUi";
+import { SignUpFormSchema } from "@/schema/signUp.validator";
+import { cn } from "@/utils/cn";
+import { safeReturnUrl } from "@/utils/safeReturnUrl";
+import { ctcOptions, domainOptions } from "@/utils/signup.utils";
+import useSignup from "@/utils/useSignup";
 
 type FormValues = z.infer<typeof SignUpFormSchema>;
 
+const ICON = "h-[18px] w-[18px]";
+const WORKING = "Working Professional";
+
+const STATUS_OPTIONS = [
+  { value: "Student", title: "Student", hint: "Studying or recently graduated", icon: GraduationCap },
+  { value: WORKING, title: "Working professional", hint: "Currently employed", icon: BriefcaseBusiness },
+] as const;
+
 export default function SignUpForm() {
-  const router = useRouter();
+  const searchParams = useSearchParams();
+  const rawReturnUrl = searchParams.get("returnUrl");
+  const loginHref = rawReturnUrl ? `/login?returnUrl=${encodeURIComponent(rawReturnUrl)}` : "/login";
 
   return (
-    <div className="relative  w-full h-full p-3 grid grid-rows-[auto_1fr_auto]">
-      <div className="flex justify-center px-6 pt-3">
-        <Image
-          src="/WorkR-Full-Logo2.png"
-          alt="photo"
-          width={80}
-          height={80}
-          className="h-auto w-[100px]"
-          priority
-        />
-      </div>
-
-      <div className="flex h-full items-center justify-center px-6 min-h-0">
-        <div className="w-full  max-h-full max-w-[440px] text-center flex flex-col min-h-0">
-          <div className="shrink-0">
-            <h1 className="text-[22px] font-semibold tracking-[-0.025em] text-[#263243] sm:text-[28px]">
-              Create Your Account
-            </h1>
-            <p className="text-[12px] font-normal text-[#66788C]">
-              {"Welcome to Workr! Let's get started by creating your Account"}
-            </p>
-          </div>
-
-          <div className="flex-1 min-h-0 overflow-y-auto">
-            <Form />
-          </div>
-        </div>
-      </div>
-
-      <div className="pb-4 text-center text-[15px] text-[#445366]">
-        <span>Already have an account? </span>
-        <button
-          className="font-medium text-[#1681D8] transition hover:cursor-pointer hover:text-[#0D63AA]"
-          onClick={() => router.push("/login")}
-        >
-          Login
-        </button>
-      </div>
-    </div>
+    <AuthShell
+      title="Create your account"
+      subtitle="Takes a minute. We use this to match you with the right jobs."
+      switchText="Already have an account?"
+      switchLabel="Log in"
+      switchHref={loginHref}
+      wide
+    >
+      <Form returnUrl={safeReturnUrl(rawReturnUrl)} />
+    </AuthShell>
   );
 }
 
-function Form() {
-  const methods = useForm<FormValues>({
-    mode: "onChange",
-    reValidateMode: "onChange",
-    resolver: zodResolver(SignUpFormSchema),
-  });
-
+function Form({ returnUrl }: { returnUrl: string }) {
+  const uid = useId();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     watch,
-    setValue,
     formState: { errors },
-  } = methods;
+  } = useForm<FormValues>({
+    mode: "onTouched",
+    resolver: zodResolver(SignUpFormSchema),
+    defaultValues: {
+      fullName: "",
+      phoneNo: "",
+      email: "",
+      graduationYear: "",
+      details: "",
+      domain: "",
+      currentCompany: "",
+      currentCtc: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-  const searchParams = useSearchParams();
-  const returnUrl = searchParams.get("returnUrl");
-  const router = useRouter();
-  const password = watch("password");
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const details = watch("details");
+  const working = details === WORKING;
+  const password = watch("password") ?? "";
 
   const { mutate, isPending, isSuccess } = useSignup();
+  const busy = isPending || isSuccess;
 
-  useEffect(() => {
-    if (isSuccess) {
-      router.push(returnUrl || "/dashboard");
-    }
-  }, [isSuccess, router, returnUrl]);
-
-  const onSubmit = (formData: FormValues) => {
-    mutate(formData, {
-      onSuccess: () => {
-        router.push(returnUrl || "/dashboard");
-      },
-    });
+  const onSubmit = (values: FormValues) => {
+    // Company and CTC only apply to working professionals.
+    const payload: FormValues = working
+      ? values
+      : { ...values, currentCompany: undefined, currentCtc: undefined };
+    mutate(payload, { onSuccess: () => router.push(returnUrl) });
   };
 
   return (
-    <FormProvider {...methods}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="max-w-md mx-auto space-y-1.5 pt-3 rounded-lg font-poppins text-sm px-2"
-      >
-        {/* {isError ? (<ErrorPopup message="Error while Siging up" />):(<></>)} */}
-
-        {/* <InputField
-          register={register}
-          fieldName="fullName"
-          placeholder="Full Name"
-          type="text"
-          icon={<User size={20} />}
-          error={errors.fullName}
-        /> */}
-
-        {/* Full Name */}
-        <SignupTextInput
-          register={register}
-          fieldName="fullName"
-          placeholder="Full Name"
-          icon={<User size={20} strokeWidth={2.1} />}
-          error={errors.fullName}
-        />
-
-        {/* <InputField
-          register={register}
-          fieldName="phoneNo"
-          placeholder="Phone No."
-          type="text"
-          icon={<Phone size={20} />}
-          error={errors.phoneNo}
-        /> */}
-
-        {/* Phone No. */}
-        <SignupTextInput
-          register={register}
-          fieldName="phoneNo"
-          placeholder="Phone No."
-          icon={<Phone size={20} strokeWidth={2.1} />}
-          error={errors.phoneNo}
-        />
-
-        {/* <InputField
-          register={register}
-          fieldName="email"
-          placeholder="Email Address"
-          type="email"
-          icon={<Mail size={20} />}
-          error={errors.email}
-        /> */}
-
-        {/* Email Address */}
-        <SignupTextInput
-          register={register}
-          fieldName="email"
-          placeholder="Email Address"
-          icon={<Mail size={20} strokeWidth={2.1} />}
-          error={errors.email}
-        />
-
-        {/* <InputField
-          register={register}
-          fieldName="graduationYear"
-          placeholder="Graduation Year"
-          type="number"
-          icon={<Calendar size={20} />}
-          error={errors.graduationYear}
-        /> */}
-
-        {/* Graduation Year */}
-        <SignupTextInput
-          register={register}
-          fieldName="graduationYear"
-          placeholder="Graduation Year"
-          icon={<Calendar size={20} strokeWidth={2.1} />}
-          error={errors.graduationYear}
-        />
-
-        {/* Fresher options */}
-        {/* <DropDownField
-          name="details"
-          options={fresherOptions}
-          defaultValue="Select Student or Working Professional"
-        /> */}
-
-        <SignupDropdown
-          error={errors.details}
-          fieldName="details"
-          optionArray={fresherOptions}
-          getOptionLabel={(option) => option}
-          getOptionValue={(option) => option}
-          placeholder="Student or Professional"
-          setValue={setValue}
-          fieldValue=""
-          icon={<School size={20} />}
-        />
-        {/* {errors.details?.message && (
-          <p className="text-[#E04B40] text-xs">{errors.details.message}</p>
-        )} */}
-
-        {watch("details") === "Working Professional" && (
-          <>
-            {/* Current Company */}
-            {/* <InputField
-              register={register}
-              fieldName="currentCompany"
-              placeholder="Current Company"
-              type="text"
-              icon={<Building2 size={20} />}
-              error={errors.currentCompany}
-            /> */}
-
-            {/* Current Company */}
-            <SignupTextInput
-              register={register}
-              fieldName="currentCompany"
-              placeholder="Current Company Name"
-              icon={<Building2 size={20} strokeWidth={2.1} />}
-              error={errors.currentCompany}
-            />
-
-            <SignupDropdown
-              error={errors.currentCtc}
-              fieldName="currentCtc"
-              optionArray={ctcOptions}
-              getOptionLabel={(option) => option}
-              getOptionValue={(option) => option}
-              placeholder="Select Current CTC Range"
-              setValue={setValue}
-              fieldValue=""
-              icon={<IndianRupee size={20} />}
-            />
-          </>
-        )}
-
-        {/* Domain Dropdown options */}
-        {/* <DropDownField
-          name="domain"
-          options={domainOptions}
-          defaultValue="Select Domain"
-        /> */}
-
-        <SignupDropdown
-          error={errors.domain}
-          fieldName="domain"
-          optionArray={domainOptions}
-          getOptionLabel={(option) => option}
-          getOptionValue={(option) => option}
-          placeholder="Select Domain"
-          setValue={setValue}
-          fieldValue=""
-          icon={<CodeXml size={20} />}
-        />
-
-        {/* <InputField
-          register={register}
-          fieldName="password"
-          placeholder="Password"
-          type={showPassword ? "text" : "password"}
-          icon={<Lock size={20} />}
-          error={errors.password}
-          other={
-            <span
-              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </span>
-          }
-        /> */}
-        <div>
-          <div className="relative">
-            <span className="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[14px] bg-[#EEF5FF] text-[#1681D8]">
-              <Lock size={20} strokeWidth={2.1} />
-            </span>
-
-            <input
-              {...register("password")}
-              onChange={(e) => {
-                setValue("password", e.target.value, { shouldValidate: true });
-              }}
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              className="h-[44px] w-full rounded-[14px] border border-[#D7E4F0] bg-white pl-[47px] pr-14 text-[16px] font-medium text-[#334155] shadow-[0_2px_8px_rgba(15,56,101,0.04)] outline-none transition placeholder:font-normal placeholder:text-[#9AA8B7] focus:border-[#8CC2EE] focus:ring-4 focus:ring-[#DDEEFF]"
-            />
-
-            <button
-              type="button"
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#243446] hover:cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? (
-                <EyeOff size={21} strokeWidth={2.1} />
-              ) : (
-                <Eye size={21} strokeWidth={2.1} />
-              )}
-            </button>
-          </div>
-
-          {errors.password?.message && (
-            <p className="mt-2 text-left text-xs text-[#E04B40]">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
-
-        {/* <InputField
-          register={register}
-          fieldName="confirmPassword"
-          placeholder="Confirm Password"
-          type={showConfirm ? "text" : "password"}
-          icon={<Lock size={20} />}
-          error={errors.confirmPassword}
-          other={
-            <span
-              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer "
-              onClick={() => setShowConfirm(!showConfirm)}
-            >
-              {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
-            </span>
-          }
-          validate={(value) => value === password}
-        /> */}
-
-        <div>
-          <div className="relative">
-            <span className="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-[14px] bg-[#EEF5FF] text-[#1681D8]">
-              <Lock size={20} strokeWidth={2.1} />
-            </span>
-
-            <input
-              {...register("confirmPassword")}
-              onChange={(e) => {
-                setValue("confirmPassword", e.target.value, {
-                  shouldValidate: true,
-                });
-              }}
-              type={showConfirm ? "text" : "password"}
-              placeholder="Confirm Password"
-              className="h-[44px] w-full rounded-[14px] border border-[#D7E4F0] bg-white pl-[47px] pr-14 text-[16px] font-medium text-[#334155] shadow-[0_2px_8px_rgba(15,56,101,0.04)] outline-none transition placeholder:font-normal placeholder:text-[#9AA8B7] focus:border-[#8CC2EE] focus:ring-4 focus:ring-[#DDEEFF]"
-            />
-
-            <button
-              type="button"
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#243446] hover:cursor-pointer"
-              onClick={() => setShowConfirm(!showConfirm)}
-            >
-              {showConfirm ? (
-                <EyeOff size={21} strokeWidth={2.1} />
-              ) : (
-                <Eye size={21} strokeWidth={2.1} />
-              )}
-            </button>
-          </div>
-
-          {errors.confirmPassword?.message && (
-            <p className="mt-2 text-left text-xs text-[#E04B40]">
-              {errors.confirmPassword.message}
-            </p>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          disabled={
-            !!errors.confirmPassword ||
-            !!errors.password ||
-            !!errors.email ||
-            !!errors.fullName ||
-            !!errors.phoneNo
-          }
-          className={`sticky bottom-0 z-50 mt-1 h-[40px] w-full rounded-[12px] text-[17px] font-semibold text-white transition ${
-            errors.confirmPassword ||
-            errors.password ||
-            errors.email ||
-            errors.fullName ||
-            errors.phoneNo
-              ? "cursor-not-allowed bg-[#C8D6E4]"
-              : "cursor-pointer bg-[linear-gradient(90deg,#0F67B8_0%,#1681D8_55%,#0D72CC_100%)] shadow-[0_10px_24px_rgba(22,129,216,0.24)] hover:brightness-[1.03]"
-          }`}
-        >
-          {isPending || isSuccess ? "Signing Up" : "Sign up"}
-        </button>
-      </form>
-    </FormProvider>
-  );
-}
-
-export interface DropdownProps<TFormValues extends FieldValues, TOption> {
-  optionArray: TOption[] | undefined;
-  fieldName: Path<TFormValues>;
-  setValue: UseFormSetValue<TFormValues>;
-  error: FieldError | undefined;
-  placeholder: string;
-  getOptionLabel: (option: TOption) => string;
-  getOptionValue: (
-    option: TOption,
-  ) => PathValue<TFormValues, Path<TFormValues>>;
-  iconUrl?: string;
-  icon?: React.ReactNode;
-  fieldValue?: string;
-  resetOn?: boolean;
-  inputClassName?: string;
-}
-
-function SignupDropdown<TFormValues extends FieldValues, TOption>({
-  optionArray,
-  fieldName,
-  setValue,
-  error,
-  placeholder,
-  getOptionLabel,
-  getOptionValue,
-  fieldValue,
-  iconUrl,
-  icon,
-  resetOn = false,
-  inputClassName = "",
-}: DropdownProps<TFormValues, TOption>) {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const selectedOption = optionArray?.find(
-    (option) => getOptionValue(option) === fieldValue,
-  );
-
-  const selectedLabel = selectedOption
-    ? getOptionLabel(selectedOption)
-    : null;
-
-  useEffect(() => {
-    if (resetOn) {
-      setValue(fieldName, "" as PathValue<TFormValues, Path<TFormValues>>, {
-        shouldValidate: false,
-        shouldDirty: false,
-      });
-
-      setIsOpen(false);
-    }
-  }, [resetOn, fieldName, setValue]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const handleSelectOption = (option: TOption) => {
-    const value = getOptionValue(option);
-
-    setValue(fieldName, value, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-
-    setIsOpen(false);
-  };
-
-  const hasLeftIcon = Boolean(iconUrl || icon);
-
-  return (
-    <div className="relative w-full" ref={dropdownRef}>
-      <button
-        type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex h-[44px] w-full cursor-pointer items-center rounded-[18px] border bg-white text-left outline-none transition ${
-          error
-            ? "border-red-300 focus:ring-2 focus:ring-red-100"
-            : "border-[#D6DBE4] focus:ring-2 focus:ring-[#DCE9FF]"
-        } ${inputClassName}`}
-      >
-        {hasLeftIcon && (
-          <div className="ml-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-[14px] bg-[#EAF3FF]">
-            {iconUrl ? (
-              <Image
-                alt=""
-                src={iconUrl}
-                width={18}
-                height={18}
-                className="h-[18px] w-[18px] object-contain"
-              />
-            ) : (
-              <span className="flex items-center justify-center text-[#2B6DEB]">
-                {icon}
-              </span>
-            )}
-          </div>
-        )}
-
-        <div
-          className={`flex w-full items-center justify-between ${
-            hasLeftIcon ? "pl-3" : "pl-4"
-          } pr-4`}
-        >
-          <span
-            className={`truncate text-[1rem] ${
-              selectedLabel ? "text-[#111827]" : "text-[#98A2B3]"
-            }`}
-          >
-            {selectedLabel || placeholder}
-          </span>
-
-          <ChevronDown
-            className={`h-[20px] w-[20px] shrink-0 text-[#111827] transition-transform duration-200 ${
-              isOpen ? "rotate-180" : ""
-            }`}
-            strokeWidth={2.2}
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-5">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Full name" htmlFor={`${uid}-name`} error={errors.fullName?.message}>
+          <TextInput
+            id={`${uid}-name`}
+            autoComplete="name"
+            icon={<UserRound className={ICON} aria-hidden="true" />}
+            placeholder="Your full name"
+            invalid={!!errors.fullName}
+            {...register("fullName")}
           />
-        </div>
-      </button>
+        </Field>
+        <Field label="Phone number" htmlFor={`${uid}-phone`} error={errors.phoneNo?.message}>
+          <TextInput
+            id={`${uid}-phone`}
+            type="tel"
+            inputMode="numeric"
+            maxLength={10}
+            autoComplete="tel-national"
+            icon={<Phone className={ICON} aria-hidden="true" />}
+            placeholder="10-digit mobile"
+            invalid={!!errors.phoneNo}
+            {...register("phoneNo")}
+          />
+        </Field>
+        <Field label="Email" htmlFor={`${uid}-email`} error={errors.email?.message}>
+          <TextInput
+            id={`${uid}-email`}
+            type="email"
+            autoComplete="email"
+            icon={<Mail className={ICON} aria-hidden="true" />}
+            placeholder="you@example.com"
+            invalid={!!errors.email}
+            {...register("email")}
+          />
+        </Field>
+        <Field label="Graduation year" htmlFor={`${uid}-grad`} error={errors.graduationYear?.message}>
+          <TextInput
+            id={`${uid}-grad`}
+            inputMode="numeric"
+            maxLength={4}
+            icon={<GraduationCap className={ICON} aria-hidden="true" />}
+            placeholder="e.g. 2024"
+            invalid={!!errors.graduationYear}
+            {...register("graduationYear")}
+          />
+        </Field>
+      </div>
 
-      {isOpen && (
-        <div className="mt-2 max-h-60 w-full overflow-y-auto rounded-2xl border border-[#E5E7EB] bg-white p-2 shadow-[0_12px_30px_rgba(15,23,42,0.10)]">
-          {optionArray?.length === 0 && (
-            <div className="px-3 py-3 text-sm font-medium text-[#98A2B3]">
-              No results found
-            </div>
-          )}
-
-          {optionArray?.map((option) => {
-            const label = getOptionLabel(option);
-            const value = getOptionValue(option);
-
+      <fieldset>
+        <legend className="mb-2 block text-sm font-bold text-[#0F172A]">I am a</legend>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {STATUS_OPTIONS.map((opt) => {
+            const selected = details === opt.value;
+            const Icon = opt.icon;
             return (
-              <button
-                type="button"
-                key={String(value)}
-                onClick={() => handleSelectOption(option)}
-                className={`block w-full cursor-pointer rounded-xl px-3 py-3 text-left text-[0.98rem] font-medium transition ${
-                  fieldValue === value
-                    ? "bg-[#EAF3FF] text-[#1D63D6]"
-                    : "text-[#374151] hover:bg-[#F3F6FB]"
-                }`}
+              <label
+                key={opt.value}
+                className={cn(
+                  "flex cursor-pointer items-center gap-3 rounded-2xl border-[1.5px] p-3.5 transition-colors has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-[#2451D6]/20",
+                  selected
+                    ? "border-[#2451D6] bg-[#F4F7FF]"
+                    : errors.details
+                      ? "border-red-300 bg-white"
+                      : "border-[#E4E8F0] bg-white hover:border-[#B9CBF3]",
+                )}
               >
-                {label}
-              </button>
+                <input type="radio" value={opt.value} className="sr-only" {...register("details")} />
+                <span
+                  className={cn(
+                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
+                    selected ? "bg-[#2451D6] text-white" : "bg-[#F1F4F9] text-[#5B6478]",
+                  )}
+                >
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[15px] font-bold">{opt.title}</span>
+                  <span className="block text-[13px] text-[#5B6478]">{opt.hint}</span>
+                </span>
+                <span
+                  className={cn(
+                    "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-[1.5px]",
+                    selected ? "border-[#2451D6] bg-[#2451D6] text-white" : "border-[#C9D0DC]",
+                  )}
+                  aria-hidden="true"
+                >
+                  {selected && <Check className="h-3 w-3" strokeWidth={3.2} />}
+                </span>
+              </label>
             );
           })}
         </div>
-      )}
+        {errors.details?.message && (
+          <p className="ml-1 mt-1.5 text-[13px] font-medium text-[#D92D20]">{errors.details.message}</p>
+        )}
+      </fieldset>
 
-      {error && (
-        <p className="mt-2 text-left text-xs text-[#E04B40]">
-          {error.message}
-        </p>
-      )}
-    </div>
+      <div className="grid gap-5 sm:grid-cols-2">
+        {working && (
+          <>
+            <Field label="Current company" htmlFor={`${uid}-company`} error={errors.currentCompany?.message}>
+              <TextInput
+                id={`${uid}-company`}
+                autoComplete="organization"
+                icon={<Building2 className={ICON} aria-hidden="true" />}
+                placeholder="e.g. Infosys"
+                invalid={!!errors.currentCompany}
+                {...register("currentCompany")}
+              />
+            </Field>
+            <Field label="Current CTC" htmlFor={`${uid}-ctc`} error={errors.currentCtc?.message}>
+              <SelectInput
+                id={`${uid}-ctc`}
+                icon={<IndianRupee className={ICON} aria-hidden="true" />}
+                placeholder="Select a range"
+                options={ctcOptions}
+                invalid={!!errors.currentCtc}
+                {...register("currentCtc")}
+              />
+            </Field>
+          </>
+        )}
+        <Field
+          label="Domain"
+          htmlFor={`${uid}-domain`}
+          error={errors.domain?.message}
+          className="sm:col-span-2"
+        >
+          <SelectInput
+            id={`${uid}-domain`}
+            icon={<Layers className={ICON} aria-hidden="true" />}
+            placeholder={working ? "The field you work in" : "The field you want to work in"}
+            options={domainOptions}
+            invalid={!!errors.domain}
+            {...register("domain")}
+          />
+        </Field>
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Password" htmlFor={`${uid}-password`} error={errors.password?.message ? "Password doesn't meet the rules below" : undefined}>
+          <PasswordInput
+            id={`${uid}-password`}
+            autoComplete="new-password"
+            placeholder="Create a password"
+            invalid={!!errors.password}
+            {...register("password")}
+          />
+        </Field>
+        <Field label="Confirm password" htmlFor={`${uid}-confirm`} error={errors.confirmPassword?.message}>
+          <PasswordInput
+            id={`${uid}-confirm`}
+            autoComplete="new-password"
+            placeholder="Repeat password"
+            invalid={!!errors.confirmPassword}
+            {...register("confirmPassword")}
+          />
+        </Field>
+      </div>
+      <div className="-mt-3">
+        <PasswordRules value={password} />
+      </div>
+
+      <button
+        type="submit"
+        disabled={busy}
+        className="mt-1 flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-[14px] bg-[#2451D6] text-[15px] font-bold text-white shadow-[0_10px_24px_rgba(36,81,214,0.25)] transition-colors hover:bg-[#1A3FAF] disabled:cursor-wait disabled:opacity-80"
+      >
+        {busy && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+        {busy ? "Creating your account…" : "Create account"}
+      </button>
+    </form>
   );
 }
-
-// function SignupTextInput<T extends FieldValues>({
-//   register,
-//   error,
-//   fieldName,
-//   placeholder,
-//   icon,
-// }: {
-//   register: UseFormRegister<T>;
-//   error: FieldError | undefined;
-//   fieldName: Path<T>;
-//   placeholder: string;
-//   icon: React.ReactNode;
-// }) {
-//   return (
-//     <div>
-//       <div className="relative">
-//         <span className="absolute left-2 top-1/2 z-10 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-[14px] bg-[#EEF5FF] text-[#1681D8]">
-//           {/* <User size={20} strokeWidth={2.1} /> */}
-//           {icon}
-//         </span>
-
-//         <input
-//           {...register(fieldName)}
-//           type="text"
-//           placeholder={placeholder}
-//           className="h-[40px] w-full rounded-[14px] border border-[#D7E4F0] bg-white pl-[47px] pr-4 text-[16px] font-medium text-[#334155] shadow-[0_2px_8px_rgba(15,56,101,0.04)] outline-none transition placeholder:font-normal placeholder:text-[#9AA8B7] focus:border-[#8CC2EE] focus:ring-4 focus:ring-[#DDEEFF]"
-//         />
-//       </div>
-
-//       {error && error?.message && (
-//         <p className="mt-2 text-left text-xs text-[#E04B40]">{error.message}</p>
-//       )}
-//     </div>
-//   );
-// }

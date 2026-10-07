@@ -12,21 +12,21 @@ export const SignUpFormSchema = z
     phoneNo: z
       .string({ message: "Phone number is required" })
       .regex(/^[6-9]\d{9}$/, {
-        message: "Phone number must be a valid 10-digit Indian mobile number",
+        message: "Enter a valid 10-digit Indian mobile number",
       }),
 
     currentCtc: z.string().optional(),
     currentCompany: z.string().optional(),
 
     details: z
-      .string({ message: "Professional details are required" })
+      .string({ message: "Choose Student or Working professional" })
       .trim()
-      .min(1, "Details cannot be empty"),
+      .min(1, "Choose Student or Working professional"),
 
     domain: z
-      .string({ message: "Domain details are required" })
+      .string({ message: "Choose your domain" })
       .trim()
-      .min(1, "Domain details cannot be empty"),
+      .min(1, "Choose your domain"),
 
     password: z
       .string({ message: "Password is required" })
@@ -62,7 +62,7 @@ export const SignUpFormSchema = z
       if (!data.currentCtc?.trim()) {
         ctx.addIssue({
           path: ["currentCtc"],
-          message: "Current CTC is required for working professionals",
+          message: "Choose your current CTC range",
           code: z.ZodIssueCode.custom,
         });
       }
@@ -70,7 +70,7 @@ export const SignUpFormSchema = z
       if (!data.currentCompany?.trim()) {
         ctx.addIssue({
           path: ["currentCompany"],
-          message: "Current company is required for working professionals",
+          message: "Enter your current company",
           code: z.ZodIssueCode.custom,
         });
       }
