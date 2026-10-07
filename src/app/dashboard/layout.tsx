@@ -98,10 +98,6 @@ export default function DashboardLayout({
     //   element: <CreateCompanyForm />,
     // },
     {
-      show: showAddSkillsForm,
-      element: <AddSkill />,
-    },
-    {
       show: showEditSkills.value,
       element: (
         <EditSkills
@@ -293,6 +289,7 @@ export default function DashboardLayout({
       {showJobApplicants && <ViewApplicants jobId={Number(jobId)} />}
       {showAllCandidates && <AllCandidates />}
       {showAddRolesForm && <AddRoles />}
+      {showAddSkillsForm && <AddSkill />}
       {(showSearchCandidates || showSearchCandidatesByName || showSearchCandidatesByEmail) && (
         <SearchCandidates initialMode={showSearchCandidatesByEmail ? "email" : "name"} />
       )}

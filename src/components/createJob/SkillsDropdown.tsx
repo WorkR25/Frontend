@@ -133,8 +133,9 @@ export default function SkillsDropdown<TFormValues extends FieldValues>({
     <div>
       {/* Selected skills */}
 
-      {/* Dropdown */}
-      <div>
+      {/* Dropdown — "relative" anchors the results list under the input, so it
+          scrolls with the field instead of being placed off-screen inside scrolling pop-ups. */}
+      <div className="relative">
         <div className="flex min-h-[52px] w-full items-center justify-start rounded-[14px] border-[1.5px] border-[#E4E8F0] bg-white px-2 py-1 transition focus-within:border-[#2451D6] focus-within:ring-4 focus-within:ring-[#2451D6]/10">
           {
             <div className="flex flex-wrap items-center gap-2  w-full">
@@ -171,7 +172,7 @@ export default function SkillsDropdown<TFormValues extends FieldValues>({
         </div>
 
         {toggle && (
-          <div className="absolute z-10 mt-2 w-full max-h-60 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+          <div className="absolute left-0 right-0 top-full z-20 mt-2 max-h-60 overflow-y-auto rounded-xl border border-[#E4E8F0] bg-white p-1 shadow-[0_18px_40px_rgba(15,23,42,0.14)]">
             {skills.length === 0 && (
               <div className="px-4 py-3 text-sm text-gray-500">
                 No skills found
