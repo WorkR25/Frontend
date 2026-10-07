@@ -1,352 +1,297 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, useForm } from "react-hook-form";
-
-import { z } from "zod";
-import InputField from "../InputField";
-import useGetUser from "@/utils/useGetUser";
-import { useEffect } from "react";
-import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
-import TextAreaInput from "../createJob/TextAreaInput";
-import useUploadUserResume from "@/utils/useUploadUserResume";
-import DragAndDropFile from "../createCompany/DragAndDropFile";
-import useUpdateUserProfile from "@/utils/useUpdateUserProfile";
-import { UserProfileSchema } from "@/schema/userProfile.validator";
-import { useRouter } from "next/navigation";
-import TripleDotLoader from "../TripleDotLoader";
-import DropDownField from "../DropDownField";
+import { useQueryClient } from "@tanstack/react-query";
 import {
-  ctcOptions,
-  domainOptions,
-  fresherOptions,
-} from "@/utils/signup.utils";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+  Briefcase,
+  BriefcaseBusiness,
+  Building2,
+  Check,
+  Clock3,
+  GraduationCap,
+  IndianRupee,
+  Layers,
+  Linkedin,
+} from "lucide-react";
+import { useEffect, useId } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { UserProfileSchema } from "@/schema/userProfile.validator";
+import { GetUserResponseType } from "@/types/GetUserResponseType";
+import { cn } from "@/utils/cn";
+import { ctcOptions, domainOptions } from "@/utils/signup.utils";
+import useUpdateUserProfile from "@/utils/useUpdateUserProfile";
+import ResumeUploader from "./ResumeUploader";
+import { Field, ProfileCard, SaveBar, SelectInput, SubHeading, TextInput } from "./profileUi";
 
 export type UserProfileFormValues = z.infer<typeof UserProfileSchema>;
-export default function UserProfileForm() {
-  // const [isFresher, setIsFresher] = useState<boolean>();
-  const methods = useForm<UserProfileFormValues>({
-    resolver: zodResolver(UserProfileSchema),
-    defaultValues: {
-      bio: "",
-      yearsOfExperience: "0",
-      details: "",
-      currentCtc: null,
-      resumeUrl: "",
-      linkedinUrl: "",
-      currentLocation: null,
-      currentCompany: "",
-      domain: null,
-    },
-  });
 
+const ICON = "h-[18px] w-[18px]";
+const WORKING = "Working Professional";
+// Matches the 255-character limit on the profile API.
+const BIO_MAX = 255;
+
+const STATUS_OPTIONS = [
+  {
+    value: "Student",
+    title: "Student",
+    description: "Studying or recently graduated",
+    icon: GraduationCap,
+  },
+  {
+    value: WORKING,
+    title: "Working professional",
+    description: "Currently employed",
+    icon: BriefcaseBusiness,
+  },
+] as const;
+
+function toValues(user: GetUserResponseType): UserProfileFormValues {
+  const p = user.profile;
+  return {
+    bio: p?.bio ?? "",
+    yearsOfExperience: p?.yearsOfExperience ? String(p.yearsOfExperience) : "0",
+    details: p?.details ?? "",
+    currentCtc: p?.currentCtc || "",
+    resumeUrl: p?.resumeUrl ?? "",
+    linkedinUrl: p?.linkedinUrl ?? "",
+    currentLocation: p?.currentLocation?.name ?? null,
+    currentCompany: p?.currentCompany ?? "",
+    domain: p?.domain ?? "",
+  };
+}
+
+export default function UserProfileForm({
+  user,
+  jwtToken,
+}: {
+  user: GetUserResponseType;
+  jwtToken: string;
+}) {
+  const uid = useId();
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
+    reset,
     watch,
     setValue,
-    reset,
-    formState: { errors },
-  } = methods;
-
-  const router = useRouter();
-  const jwtToken = useAppSelector((state) => state.authJwtToken.value);
-  const { data: userData, refetch } = useGetUser(jwtToken);
-  const dispatch = useAppDispatch();
-  const isFresher = !(watch("details") == "Working Professional");
-  useEffect(() => {
-    const token = localStorage.getItem("AuthJwtToken");
-    if (token) {
-      dispatch(setAuthJwtToken(token));
-    } else {
-      router.replace("/login");
-    }
-  }, [dispatch, router]);
+    formState: { errors, isDirty, dirtyFields },
+  } = useForm<UserProfileFormValues>({
+    mode: "onTouched",
+    resolver: zodResolver(UserProfileSchema),
+    defaultValues: toValues(user),
+  });
 
   useEffect(() => {
-    if (isFresher) {
-      setValue("currentCtc", null);
-      setValue("currentCompany", null);
-      setValue("yearsOfExperience", "0");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFresher]);
+    reset(toValues(user), { keepDirtyValues: true });
+  }, [user, reset]);
 
-  useEffect(() => {
-    if (userData?.profile) {
-      const profile = userData.profile;
-      reset({
-        bio: profile.bio ?? "",
-        yearsOfExperience: profile.yearsOfExperience
-          ? (String(profile.yearsOfExperience) ?? "0")
-          : "0",
-        details: profile.details ?? "",
-        currentCtc: profile.currentCtc || null,
-        resumeUrl: profile.resumeUrl ?? "",
-        linkedinUrl: profile.linkedinUrl ?? "",
-        currentLocation: profile.currentLocation?.name ?? null,
-        currentCompany: profile.currentCompany ?? "",
-        domain: profile.domain ?? null,
-      });
-    }
-    // setIsFresher(
-    //   userData?.profile.details == null
-    //     ? false
-    //     : userData.profile.details == "Student",
-    // );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userData]);
+  const details = watch("details");
+  const working = details === WORKING;
+  const resumeUrl = watch("resumeUrl");
+  const bioLength = (watch("bio") ?? "").length;
 
-  const onSubmit = (data: UserProfileFormValues) => {
-    if (userData?.id) {
-      updateUserProfile({
-        authJwtToken: jwtToken,
-        id: String(userData.id),
-        userProfileData: data,
-      });
-    }
+  const { mutate, isPending } = useUpdateUserProfile();
+
+  const onSubmit = (values: UserProfileFormValues) => {
+    // Students don't have a current job, so clear those fields (they stay in the form if they switch back).
+    const payload: UserProfileFormValues = {
+      ...values,
+      currentCtc: working ? values.currentCtc || null : null,
+      currentCompany: working ? values.currentCompany : null,
+      yearsOfExperience: working ? values.yearsOfExperience : "0",
+      domain: values.domain || null,
+    };
+    mutate(
+      { authJwtToken: jwtToken, id: String(user.id), userProfileData: payload },
+      {
+        onSuccess: () => {
+          reset(values);
+          queryClient.invalidateQueries({ queryKey: ["userDetails"] });
+        },
+      },
+    );
   };
 
-  // const { data: companyDetails } = useGetCompanyById(jwtToken,userData?.profile.currentCompany)
-  const {
-    mutate: updateUserProfile,
-    isPending,
-    isSuccess,
-  } = useUpdateUserProfile();
-  useEffect(() => {
-    if (isSuccess) {
-      refetch();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccess]);
-
   return (
-    <FormProvider {...methods}>
-      <div className="components-me-UserProfileForm font-semibold text-lg mt-3">
-        User Profile
-      </div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="components-me-UserProfileForm space-y-4 p-4 mt-3 border rounded-lg shadow-md w-full"
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <ProfileCard
+        id="professional"
+        icon={<Briefcase className="h-5 w-5" aria-hidden="true" />}
+        title="Professional profile"
+        description="Helps us match you to the right jobs and referrals."
+        footer={
+          <SaveBar
+            dirty={isDirty}
+            pending={isPending}
+            onDiscard={() => reset(toValues(user))}
+            label="Save profile"
+          />
+        }
       >
-        {isPending && <TripleDotLoader />}
-        <div className="components-me-UserProfileForm flex flex-wrap justify-center gap-4 mt-4">
-          <div className="components-me-UserProfileForm w-[94%]">
-            <label className="components-me-UserProfileForm flex items-center gap-2">
-              {/* details */}
-              <DropDownField
-                name="details"
-                options={fresherOptions}
-                defaultValue={
-                  userData?.profile.details ??
-                  "Select Fresher or Working Professional"
-                }
-              />
-
-              {/* <input
-                type="checkbox"
-                {...register("isFresher")}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setIsFresher(true);
-                    setValue("currentCtc", "0");
-                    setValue("yearsOfExperience", "0");
-                    setValue("currentCompanyId", null);
-                  }else{
-                    setIsFresher(false);
-                  }
-                }}
-              />
-              Fresher */}
-            </label>
-          </div>
-
-          {watch("details") == "Working Professional" && (
-            <div
-              className={
-                "components-me-UserProfileForm w-[90%] sm:w-[45%] space-y-2"
-              }
-            >
-              <div>Current CTC in LPA</div>
-              {/* <DropDownField
-                name="currentCtc"
-                options={ctcOptions}
-                defaultValue={
-                  userData?.profile.currentCtc ?? "Select Current CTC Range"
-                }
-              /> */}
-              <DropDownField
-                name="currentCtc"
-                options={ctcOptions}
-                defaultValue={userData?.profile.currentCtc ?? "Select CTC"}
-              />
-              {errors.currentCtc?.message && (
-                <p className="text-[#E04B40] text-xs">
-                  {errors.currentCtc.message}
-                </p>
-              )}
-
-              {/* <InputField
-                className={
-                  watch("details") == "Student" ? "cursor-not-allowed" : ""
-                }
-                icon={<></>}
-                fieldName="currentCtc"
-                placeholder={"Current CTC in LPA"}
-                type="text"
-                register={register}
-                error={errors.currentCtc}
-                disabled={isFresher}
-                fieldValue={watch("currentCtc")}
-                onChangeFn={() => {}}
-              /> */}
-
-              <div>Experience in Yrs</div>
-              <InputField
-                icon={<></>}
-                fieldName="yearsOfExperience"
-                placeholder={
-                  watch("details") == "Student"
-                    ? "Not necessary"
-                    : "Experience in Yrs"
-                }
-                type="text"
-                register={register}
-                error={errors.yearsOfExperience}
-                disabled={isFresher}
-                fieldValue={watch("yearsOfExperience") ?? 0}
-                onChangeFn={() => {}}
-              />
-            </div>
-          )}
-          {/* <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]"></div>
-
-          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
-            <DebouncedDropdown<UserProfileFormValues, OptionType>
-              placeholder="Select a company"
-              fieldName="currentCompany"
-              error={errors.currentCompany}
-              setValue={setValue}
-              jwtToken={jwtToken}
-              useQueryFn={useGetCompany}
-              getOptionLabel={(value) => value.name}
-              getOptionValue={(value) => value.id}
-              fieldValue={? companyDetails.name :""}
-              disabled={isFresher}
-            />
-          </div> */}
-
-          {/* <div>Location</div>
-            <DebouncedDropdown<UserProfileFormValues, OptionType>
-            placeholder="Current Location"
-            fieldName="currentLocationId"
-            error={errors.currentLocationId}
-            setValue={setValue}
-            jwtToken={jwtToken}
-            useQueryFn={useGetCity}
-            getOptionLabel={(value) => value.name}
-            getOptionValue={(value) => value.id}
-            fieldValue={userData?.profile.currentLocation?.name ?? ""}
-            /> */}
-
-          {watch("details") == "Working Professional" && (
-            <div className="components-me-UserProfileForm w-[90%] sm:w-[45%] space-y-2">
-              <div>Domain</div>
-              <DropDownField
-                name="domain"
-                options={domainOptions}
-                defaultValue={userData?.profile.domain ?? "Select Domain"}
-              />
-
-              {/* <InputField
-                icon={<></>}
-                fieldName="yearsOfExperience"
-                placeholder={
-                  watch("details") == "Student"
-                    ? "Not necessary"
-                    : "Experience in Yrs"
-                }
-                type="text"
-                register={register}
-                error={errors.yearsOfExperience}
-                disabled={isFresher}
-                fieldValue={watch("yearsOfExperience") ?? 0}
-                onChangeFn={() => {}}
-              /> */}
-
-              <div>Company</div>
-              <InputField
-                className={
-                  watch("details") == "Student" ? "cursor-not-allowed" : ""
-                }
-                icon={<></>}
-                fieldName="currentCompany"
-                placeholder={"Current Company"}
-                type="text"
-                register={register}
-                error={errors.currentCompany}
-                disabled={isFresher}
-                fieldValue={watch("currentCompany")}
-                onChangeFn={() => {}}
-              />
-            </div>
-          )}
-
-          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
-            <div>Resume</div>
-            <DragAndDropFile
-              fieldName="resumeUrl"
-              useMutationFn={useUploadUserResume}
-              fileExtension={[".png", ".pdf"]}
-              jwtToken={jwtToken}
-              maxFileSize={5}
-              onChangeFn={() => {}}
-            />
-            <div className="p-2 border-blue-300 text-xs">
-              <a
-                href={watch("resumeUrl") ? watch("resumeUrl") : "#"}
-                className={watch("resumeUrl") ? "text-blue-600" : ""}
-                target="_blank"
+        <SubHeading>CURRENT STATUS</SubHeading>
+        <div role="radiogroup" aria-label="Current status" className="grid gap-3 sm:grid-cols-2">
+          {STATUS_OPTIONS.map((opt) => {
+            const selected = details === opt.value;
+            const Icon = opt.icon;
+            return (
+              <label
+                key={opt.value}
+                className={cn(
+                  "relative flex cursor-pointer items-center gap-3.5 rounded-2xl border-[1.5px] p-4 transition-colors",
+                  selected
+                    ? "border-[#2451D6] bg-[#F4F7FF] ring-4 ring-[#2451D6]/10"
+                    : "border-[#E4E8F0] bg-white hover:border-[#B9CBF3]",
+                )}
               >
-                Resume
-              </a>
-            </div>
-          </div>
-          <div className="components-me-UserProfileForm w-[90%] sm:w-[45%]">
-            <div>LinkedIn url</div>
-            <InputField
-              icon={<></>}
-              fieldName="linkedinUrl"
-              placeholder="LinkedIn Profile"
-              type="url"
-              register={register}
-              error={errors.linkedinUrl}
-              fieldValue={userData?.profile.linkedinUrl}
-              onChangeFn={() => {}}
+                <input type="radio" value={opt.value} className="sr-only" {...register("details")} />
+                <span
+                  className={cn(
+                    "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl",
+                    selected ? "bg-[#2451D6] text-white" : "bg-[#F1F4F9] text-[#5B6478]",
+                  )}
+                >
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[15px] font-bold text-[#0F172A]">{opt.title}</span>
+                  <span className="block text-[13px] text-[#5B6478]">{opt.description}</span>
+                </span>
+                <span
+                  className={cn(
+                    "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-[1.5px]",
+                    selected ? "border-[#2451D6] bg-[#2451D6] text-white" : "border-[#C9D0DC]",
+                  )}
+                  aria-hidden="true"
+                >
+                  {selected && <Check className="h-3 w-3" strokeWidth={3.2} />}
+                </span>
+              </label>
+            );
+          })}
+        </div>
+        {errors.details?.message && (
+          <p className="ml-1 mt-1.5 text-[13px] font-medium text-[#D92D20]">{errors.details.message}</p>
+        )}
+
+        <div className="mt-5 grid gap-5 sm:grid-cols-2">
+          {working && (
+            <>
+              <Field
+                label="Current company"
+                htmlFor={`${uid}-company`}
+                error={errors.currentCompany?.message}
+                required
+              >
+                <TextInput
+                  id={`${uid}-company`}
+                  icon={<Building2 className={ICON} aria-hidden="true" />}
+                  placeholder="e.g. Infosys"
+                  autoComplete="organization"
+                  invalid={!!errors.currentCompany}
+                  {...register("currentCompany")}
+                />
+              </Field>
+              <Field
+                label="Experience"
+                htmlFor={`${uid}-exp`}
+                error={errors.yearsOfExperience?.message}
+              >
+                <TextInput
+                  id={`${uid}-exp`}
+                  inputMode="numeric"
+                  icon={<Clock3 className={ICON} aria-hidden="true" />}
+                  placeholder="0"
+                  suffix="years"
+                  invalid={!!errors.yearsOfExperience}
+                  {...register("yearsOfExperience")}
+                />
+              </Field>
+              <Field
+                label="Current CTC"
+                htmlFor={`${uid}-ctc`}
+                error={errors.currentCtc?.message}
+                hint="Only used for matching. Never shown to other candidates."
+                required
+              >
+                <SelectInput
+                  id={`${uid}-ctc`}
+                  icon={<IndianRupee className={ICON} aria-hidden="true" />}
+                  placeholder="Select a range"
+                  options={ctcOptions}
+                  invalid={!!errors.currentCtc}
+                  {...register("currentCtc")}
+                />
+              </Field>
+            </>
+          )}
+          <Field
+            label="Domain"
+            htmlFor={`${uid}-domain`}
+            error={errors.domain?.message}
+            hint={working ? undefined : "The field you want to work in."}
+          >
+            <SelectInput
+              id={`${uid}-domain`}
+              icon={<Layers className={ICON} aria-hidden="true" />}
+              placeholder="Select a domain"
+              options={domainOptions}
+              {...register("domain")}
             />
-          </div>
-          <div className="components-me-UserProfileForm w-[90%]">
-            <TextAreaInput
-              onChangeFn={() => {}}
-              icon={<></>}
-              fieldName="bio"
-              placeholder="Bio"
-              register={register}
-              error={errors.bio}
-              fieldValue={userData?.profile.bio}
-            />
-          </div>
+          </Field>
         </div>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          className="components-me-UserProfileForm bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 hover:cursor-pointer"
+        <div className="my-6 h-px bg-[#EEF1F6]" />
+
+        <SubHeading>RESUME & LINKS</SubHeading>
+        <div className="grid gap-5">
+          <Field label="Resume">
+            <ResumeUploader
+              value={resumeUrl}
+              jwtToken={jwtToken}
+              unsaved={!!dirtyFields.resumeUrl}
+              onUploaded={(url) => setValue("resumeUrl", url, { shouldDirty: true })}
+            />
+          </Field>
+          <Field label="LinkedIn profile" htmlFor={`${uid}-linkedin`} error={errors.linkedinUrl?.message}>
+            <TextInput
+              id={`${uid}-linkedin`}
+              type="url"
+              icon={<Linkedin className={ICON} aria-hidden="true" />}
+              placeholder="https://linkedin.com/in/your-name"
+              invalid={!!errors.linkedinUrl}
+              {...register("linkedinUrl")}
+            />
+          </Field>
+        </div>
+
+        <div className="my-6 h-px bg-[#EEF1F6]" />
+
+        <SubHeading>ABOUT YOU</SubHeading>
+        <Field
+          label="Bio"
+          htmlFor={`${uid}-bio`}
+          error={errors.bio?.message}
+          hint={
+            <span className="flex justify-between gap-3">
+              <span>A few lines about what you do and what you&apos;re looking for.</span>
+              <span className={cn("shrink-0 tabular-nums", bioLength >= BIO_MAX && "text-[#8A4B00]")}>
+                {bioLength}/{BIO_MAX}
+              </span>
+            </span>
+          }
         >
-          Save Profile
-        </button>
-      </form>
-    </FormProvider>
+          <textarea
+            id={`${uid}-bio`}
+            rows={4}
+            maxLength={BIO_MAX}
+            placeholder="e.g. Backend engineer with 3 years of Node.js experience, looking for product roles in Bangalore."
+            className="w-full resize-y rounded-[14px] border-[1.5px] border-[#E4E8F0] bg-white px-4 py-3.5 text-[15px] leading-relaxed text-[#0F172A] outline-none transition placeholder:text-[#98A2B3] focus:border-[#2451D6] focus:ring-4 focus:ring-[#2451D6]/10"
+            {...register("bio")}
+          />
+        </Field>
+      </ProfileCard>
+    </form>
   );
 }

@@ -5,32 +5,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GetUserResponseType } from "@/types/GetUserResponseType";
 import { getCompletionPercentage } from "@/utils/getCompletionPercentage";
+import { getProfileChecklist } from "@/utils/profileChecklist";
 
 const RADIUS = 38;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
-/** Profile items in the order we nudge people to fill them in. */
-function getChecklist(user: GetUserResponseType) {
-  const p = user.profile ?? ({} as GetUserResponseType["profile"]);
-  const working = p.details === "Working Professional";
-  const items = [
-    { label: "Add your resume", done: !!p.resumeUrl },
-    { label: "Add your skills", done: (user.skills?.length ?? 0) > 0 },
-    { label: "Add your LinkedIn profile", done: !!p.linkedinUrl },
-    { label: "Choose your domain", done: !!p.domain },
-    { label: "Write a short bio", done: !!p.bio },
-    { label: "Add your graduation year", done: !!user.graduationYear },
-    { label: "Add your phone number", done: !!user.phoneNo },
-  ];
-  if (working) {
-    items.push(
-      { label: "Add your current company", done: !!p.currentCompany },
-      { label: "Add your current CTC", done: p.currentCtc != null },
-      { label: "Add your years of experience", done: !!p.yearsOfExperience },
-    );
-  }
-  return items;
-}
 
 const CARD =
   "flex flex-col gap-[18px] rounded-[22px] bg-[#142463] bg-[radial-gradient(rgba(255,255,255,0.09)_1.2px,transparent_1.2px)] bg-[size:22px_22px] p-6 text-white";
@@ -61,7 +39,7 @@ export default function ProfileStrength({ user, loading }: { user?: GetUserRespo
   }
 
   const percent = getCompletionPercentage(user);
-  const checklist = getChecklist(user);
+  const checklist = getProfileChecklist(user);
   const done = checklist.filter((i) => i.done);
   const todo = checklist.filter((i) => !i.done);
   // Show up to three items: the most useful missing ones, topped up with a completed one for context.
