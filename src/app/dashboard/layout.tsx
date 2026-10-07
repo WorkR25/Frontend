@@ -117,10 +117,6 @@ export default function DashboardLayout({
     //   show: showJobCreateForm,
     //   element: <CreateJobForm className="dashboard-layout h-screen w-full" />,
     // },
-    {
-      show: showAddRolesForm,
-      element: <AddRoles />,
-    },
   ];
 
   const dispatch = useAppDispatch();
@@ -296,6 +292,7 @@ export default function DashboardLayout({
       {showCreateCompanyForm && <CreateCompanyForm />}
       {showJobApplicants && <ViewApplicants jobId={Number(jobId)} />}
       {showAllCandidates && <AllCandidates />}
+      {showAddRolesForm && <AddRoles />}
       {(showSearchCandidates || showSearchCandidatesByName || showSearchCandidatesByEmail) && (
         <SearchCandidates initialMode={showSearchCandidatesByEmail ? "email" : "name"} />
       )}
