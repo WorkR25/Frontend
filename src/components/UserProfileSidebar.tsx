@@ -14,7 +14,7 @@ import useGetUser from "@/utils/useGetUser";
 const MENU_ITEM =
   "flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition-colors";
 
-export default function UserProfileSidebar() {
+export default function UserProfileSidebar({ compact = false }: { compact?: boolean }) {
   const router = useRouter();
   const pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -22,6 +22,9 @@ export default function UserProfileSidebar() {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  // In the collapsed rail the menu can't fit above the avatar, so it opens to the right (fixed position).
+  const [menuPos, setMenuPos] = useState<{ left: number; bottom: number } | null>(null);
   const menuId = useId();
 
   useEffect(() => {
@@ -49,7 +52,15 @@ export default function UserProfileSidebar() {
     };
   }, [open]);
 
-  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => setOpen(false), [pathname, compact]);
+
+  const toggleMenu = () => {
+    if (!open && compact && buttonRef.current) {
+      const r = buttonRef.current.getBoundingClientRect();
+      setMenuPos({ left: r.right + 12, bottom: window.innerHeight - r.bottom });
+    }
+    setOpen((v) => !v);
+  };
 
   const go = (href: string) => {
     setOpen(false);
@@ -66,6 +77,9 @@ export default function UserProfileSidebar() {
   };
 
   if (!mounted || (authJwtToken.length > 0 && isPending)) {
+    if (compact) {
+      return <div className="h-10 w-10 animate-pulse rounded-full bg-[#EEF1F6]" aria-busy="true" />;
+    }
     return (
       <div className="flex items-center gap-3 p-1.5" aria-busy="true">
         <div className="h-10 w-10 shrink-0 animate-pulse rounded-full bg-[#EEF1F6]" />
@@ -79,6 +93,19 @@ export default function UserProfileSidebar() {
 
   if (authJwtToken.length === 0 || !data) {
     const returnUrl = encodeURIComponent(pathname);
+    if (compact) {
+      return (
+        <button
+          type="button"
+          aria-label="Log in"
+          title="Log in"
+          onClick={() => go(`/login?returnUrl=${returnUrl}`)}
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-[#2451D6] text-white hover:bg-[#1A3FAF]"
+        >
+          <LogIn className="h-[18px] w-[18px]" aria-hidden="true" />
+        </button>
+      );
+    }
     return (
       <div className="p-2">
         <div className="text-sm font-extrabold text-[#0F172A]">Join WorkR</div>
@@ -116,8 +143,23 @@ export default function UserProfileSidebar() {
         <div
           id={menuId}
           role="menu"
-          className="absolute bottom-[calc(100%+10px)] left-0 right-0 z-30 rounded-2xl border border-[#E4E8F0] bg-white p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.16)]"
+          style={compact && menuPos ? { left: menuPos.left, bottom: menuPos.bottom } : undefined}
+          className={cn(
+            "z-50 rounded-2xl border border-[#E4E8F0] bg-white p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.16)]",
+            compact ? "fixed w-[260px]" : "absolute bottom-[calc(100%+10px)] left-0 right-0",
+          )}
         >
+          {compact && (
+            <div className="flex items-center gap-3 px-3 pb-1 pt-2.5">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#EAF0FD] text-xs font-extrabold text-[#1A3FAF]">
+                {getInitials(data.fullName)}
+              </span>
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-bold text-[#0F172A]">{data.fullName}</span>
+                <span className="block truncate text-xs text-[#5B6478]">{data.email}</span>
+              </span>
+            </div>
+          )}
           <div className="px-3 pb-3 pt-2.5">
             <div className="flex items-center justify-between text-xs font-semibold text-[#5B6478]">
               <span>Profile strength</span>
@@ -155,24 +197,32 @@ export default function UserProfileSidebar() {
       )}
 
       <button
+        ref={buttonRef}
         type="button"
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={open ? menuId : undefined}
-        onClick={() => setOpen((v) => !v)}
+        aria-label={compact ? `Account: ${data.fullName}` : undefined}
+        title={compact ? data.fullName : undefined}
+        onClick={toggleMenu}
         className={cn(
-          "flex w-full cursor-pointer items-center gap-3 rounded-xl p-1.5 text-left transition-colors hover:bg-[#F4F6FA]",
+          "flex cursor-pointer items-center rounded-xl text-left transition-colors hover:bg-[#F4F6FA]",
+          compact ? "p-0.5" : "w-full gap-3 p-1.5",
           (open || onProfile) && "bg-[#F4F6FA]",
         )}
       >
         <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#EAF0FD] text-sm font-extrabold text-[#1A3FAF]">
           {getInitials(data.fullName)}
         </span>
-        <span className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-bold text-[#0F172A]">{data.fullName}</span>
-          <span className="block truncate text-xs text-[#5B6478]">{data.email}</span>
-        </span>
-        <ChevronsUpDown className="h-4 w-4 shrink-0 text-[#8A93A6]" aria-hidden="true" />
+        {!compact && (
+          <>
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-bold text-[#0F172A]">{data.fullName}</span>
+              <span className="block truncate text-xs text-[#5B6478]">{data.email}</span>
+            </span>
+            <ChevronsUpDown className="h-4 w-4 shrink-0 text-[#8A93A6]" aria-hidden="true" />
+          </>
+        )}
       </button>
     </div>
   );

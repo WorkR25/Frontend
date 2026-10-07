@@ -20,6 +20,7 @@ import  showSearchCandidatesSlice  from "@/features/showSearchCandidates/showSea
 import  showSearchCandidatesByNameSlice from "@/features/showSearchCandidates/showSearchCandidatesByName";
 import  showSearchCandidatesByEmailSlice from "@/features/showSearchCandidates/showSearchCandidatesByEmail";
 import  showAddRolesFormSlice  from "@/features/showAddRolesForm/showAddRolesFormSlice";
+import sidebarCollapsed from "@/features/sidebarCollapsed/sidebarCollapsedSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -45,6 +46,7 @@ export const makeStore = () => {
     showSearchCandidatesByName: showSearchCandidatesByNameSlice,
     showSearchCandidatesByEmail: showSearchCandidatesByEmailSlice,
     showAddRolesForm: showAddRolesFormSlice,
+    sidebarCollapsed: sidebarCollapsed,
   },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({

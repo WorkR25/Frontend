@@ -610,7 +610,7 @@
 import { JSX, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import UserProfileSidebar from "../UserProfileSidebar";
 import { mainMenuCollapsedToogle } from "@/features/mainMenuCollapsed/mainMenuCollapsed";
 import { isSidebarOpenToogle } from "@/features/isSidebarOpen/isSidebarOpenSlice";
@@ -620,6 +620,8 @@ import useGetUserRoles from "@/utils/useGetUserRoles";
 import { dashboardSidebarTabs } from "./dashboard.utis";
 import { OnClickFnType } from "./dashboard.utils";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { toggleSidebarCollapsed } from "@/features/sidebarCollapsed/sidebarCollapsedSlice";
+import { cn } from "@/utils/cn";
 
 const mainMenuTabId: { [key: string]: number } = {
   jobs: 1,
@@ -633,7 +635,12 @@ type SidebarTab = {
   onClickFn: OnClickFnType;
 };
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar({
+  variant = "desktop",
+}: {
+  /** "desktop" = docked sidebar that can collapse to a rail; "mobile" = slide-in drawer. */
+  variant?: "desktop" | "mobile";
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -646,6 +653,9 @@ export default function DashboardSidebar() {
   const showJobCreateForm = useAppSelector(
     (state) => state.showJobCreateForm.value,
   );
+  const railSetting = useAppSelector((state) => state.sidebarCollapsed.value);
+  // Only the docked desktop sidebar collapses; the mobile drawer is always full width.
+  const collapsed = variant === "desktop" && railSetting;
 
   const [role, setRole] = useState("jobseeker");
   const [mainMenuActiveTab, setMainMenuActiveTab] = useState<number | null>(
@@ -758,202 +768,227 @@ export default function DashboardSidebar() {
     { name: "Help Center", icon: "", link: "/help-center" },
   ];
 
-  const getMainTabClasses = (isActive: boolean) =>
-    [
-      "group flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-3 text-left text-[15px] sm:text-[16px] font-medium transition-all duration-200",
+  const tabClasses = (isActive: boolean) =>
+    cn(
+      "group flex w-full cursor-pointer items-center rounded-xl text-left font-medium transition-all duration-200",
+      collapsed ? "h-11 justify-center px-0" : "gap-3 px-3 py-3 text-[15px] sm:text-[16px]",
       isActive
         ? "bg-[#142463] font-bold text-white shadow-[0_6px_16px_rgba(20,36,99,0.22)]"
         : "text-[#344054] hover:bg-[#EEF2FA] hover:text-[#1A3FAF]",
-    ].join(" ");
+    );
 
-  const getSubTabClasses = () =>
-    "group flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-3 text-left text-[15px] sm:text-[16px] font-medium text-[#344054] transition-all duration-200 hover:bg-[#EEF2FA] hover:text-[#1A3FAF]";
+  const sectionHeader = (label: string, isCollapsed: boolean, onToggle: () => void) =>
+    collapsed ? (
+      <div className="mx-2 h-px bg-[#EEF1F6]" role="separator" aria-label={label} />
+    ) : (
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={!isCollapsed}
+        className="flex w-full cursor-pointer items-center justify-between rounded-lg px-2 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#5B6478] hover:text-[#0F172A]"
+      >
+        <span>{label}</span>
+        <ChevronDown
+          className={cn("h-4 w-4 transition-transform duration-300", isCollapsed && "-rotate-90")}
+          aria-hidden="true"
+        />
+      </button>
+    );
+
+  const sectionBody = (isCollapsed: boolean, maxH: string, children: React.ReactNode) => (
+    <div
+      className={cn(
+        "overflow-hidden transition-all duration-300",
+        !collapsed && isCollapsed ? "max-h-0 opacity-0" : `${maxH} opacity-100`,
+      )}
+    >
+      <div className="space-y-1">{children}</div>
+    </div>
+  );
+
+  const toggleLabel =
+    variant === "mobile" ? "Close menu" : collapsed ? "Expand sidebar" : "Collapse sidebar";
+
+  const toggleButton = (
+    <button
+      type="button"
+      aria-label={toggleLabel}
+      title={variant === "desktop" ? `${toggleLabel} (Ctrl/⌘ + B)` : toggleLabel}
+      className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-[#E5EAF2] bg-white text-[#5B6478] shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-colors hover:bg-[#F4F6FA] hover:text-[#0F172A]"
+      onClick={() =>
+        variant === "mobile"
+          ? dispatch(isSidebarOpenToogle(false))
+          : dispatch(toggleSidebarCollapsed())
+      }
+    >
+      {collapsed ? (
+        <PanelLeftOpen className="h-[18px] w-[18px]" aria-hidden="true" />
+      ) : (
+        <PanelLeftClose className="h-[18px] w-[18px]" aria-hidden="true" />
+      )}
+    </button>
+  );
 
   return (
     <div
       ref={sidebarRef}
-      className="flex h-full flex-col overflow-hidden bg-white px-2 font-plus-jakarta"
+      className={cn(
+        "flex h-full flex-col overflow-hidden bg-white font-plus-jakarta",
+        collapsed ? "px-0" : "px-2",
+      )}
     >
       <div className="shrink-0 pt-4">
-        <div className="flex items-center justify-between">
-          <Image
-            src="/WorkR-Full-Logo2.png"
-            alt="WorkR logo"
-            width={92}
-            height={92}
-            priority
-            className="h-auto w-auto"
-          />
-
-          <button
-            type="button"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-[#E5EAF2] bg-white shadow-[0_4px_12px_rgba(15,23,42,0.06)] transition-all duration-200 hover:bg-[#F8FAFC]"
-            onClick={() => dispatch(isSidebarOpenToogle(false))}
-          >
+        {collapsed ? (
+          <div className="flex flex-col items-center gap-3">
+            <Image src="/WorkR-Logo2.png" alt="WorkR" width={36} height={36} priority className="h-9 w-9" />
+            {/* Keep the full logo loaded so expanding doesn't flash */}
+            <Image src="/WorkR-Full-Logo2.png" alt="" width={92} height={92} priority className="hidden" aria-hidden="true" />
+            {toggleButton}
+          </div>
+        ) : (
+          <div className="flex items-center justify-between">
+            <Image src="/WorkR-Logo2.png" alt="" width={36} height={36} priority className="hidden" aria-hidden="true" />
             <Image
-              src="/Close Sidebar Icon.svg"
-              alt="Close sidebar"
-              width={15}
-              height={15}
+              src="/WorkR-Full-Logo2.png"
+              alt="WorkR logo"
+              width={92}
+              height={92}
               priority
+              className="h-auto w-auto"
             />
-          </button>
-        </div>
+            {toggleButton}
+          </div>
+        )}
 
         <div className="mt-4">
-          <div className="flex w-full items-center rounded-2xl border border-[#E5EAF2] bg-white px-4 py-3 shadow-[0_6px_18px_rgba(15,23,42,0.06)]">
-            <Search className="h-5 w-5 shrink-0 text-[#98A2B3]" />
-            <div className="relative ml-3 w-full">
-              <span className="absolute -top-3 left-[48%] -translate-x-1/2 rounded-full bg-[#FFF4F4] px-2 py-[2px] text-[10px] font-semibold text-[#DC2626]">
-                Coming Soon
-              </span>
-              <input
-                disabled
-                type="text"
-                placeholder="Quick search..."
-                className="w-full bg-transparent text-[15px] text-[#667085] outline-none placeholder:text-[#98A2B3]"
-              />
+          {collapsed ? (
+            <div
+              aria-disabled="true"
+              aria-label="Quick search, coming soon"
+              title="Quick search · coming soon"
+              className="relative mx-auto flex h-11 w-11 cursor-not-allowed items-center justify-center rounded-xl border border-[#E4E8F0] bg-[#F7F8FB] text-[#8A93A6]"
+            >
+              <Search className="h-[18px] w-[18px]" aria-hidden="true" />
+              <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-[#7C5CE6]" aria-hidden="true" />
             </div>
-          </div>
+          ) : (
+            <div
+              aria-disabled="true"
+              title="Quick search is coming soon"
+              className="flex h-11 w-full cursor-not-allowed items-center gap-2.5 rounded-xl border border-[#E4E8F0] bg-[#F7F8FB] px-3.5 text-[#8A93A6]"
+            >
+              <Search className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
+              <span className="flex-1 truncate text-sm font-medium">Quick search</span>
+              <span className="shrink-0 rounded-full bg-[#F1EDFF] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-[#5B3CC4]">
+                Soon
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="hide-scrollbar mt-5 flex-1 overflow-y-auto pb-4">
-        <aside className="space-y-3">
-          <div className="flex items-center justify-between px-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#5B6478]">
-            <span>Main</span>
-            <ChevronDown
-              className={`h-4 w-4 cursor-pointer transition-transform duration-300 ${
-                mainMenuCollapsed ? "rotate-180" : ""
-              }`}
-              onClick={() => dispatch(mainMenuCollapsedToogle())}
-            />
-          </div>
-
-          <div
-            className={`overflow-hidden transition-all duration-300 ${
-              mainMenuCollapsed
-                ? "max-h-0 opacity-0"
-                : "max-h-[500px] opacity-100"
-            }`}
-          >
-            <div className="space-y-1">
-              {newMainMenuTabs[role]?.map((tab, index) => {
-                const isActive = mainMenuActiveTab === index;
-
-                return (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      setMainMenuActiveTab(index);
-                      dispatch(isSidebarOpenToogle(false));
-                      tab.onClickFn(dispatch, router, tab.link, isSuccess);
-                    }}
-                    className={getMainTabClasses(isActive)}
+      <nav aria-label="Dashboard" className="hide-scrollbar mt-5 flex-1 overflow-y-auto pb-4">
+        <section className="space-y-3">
+          {sectionHeader("Main", mainMenuCollapsed, () => dispatch(mainMenuCollapsedToogle()))}
+          {sectionBody(
+            mainMenuCollapsed,
+            "max-h-[500px]",
+            newMainMenuTabs[role]?.map((tab, index) => {
+              const isActive = mainMenuActiveTab === index;
+              return (
+                <button
+                  key={index}
+                  type="button"
+                  title={collapsed ? tab.name : undefined}
+                  aria-label={collapsed ? tab.name : undefined}
+                  aria-current={isActive ? "page" : undefined}
+                  onClick={() => {
+                    setMainMenuActiveTab(index);
+                    dispatch(isSidebarOpenToogle(false));
+                    tab.onClickFn(dispatch, router, tab.link, isSuccess);
+                  }}
+                  className={tabClasses(isActive)}
+                >
+                  <span
+                    className={cn(
+                      "flex shrink-0 items-center justify-center",
+                      isActive ? "text-white" : "text-[#344054] group-hover:text-[#1A3FAF]",
+                    )}
                   >
-                    <span
-                      className={`flex shrink-0 items-center justify-center ${
-                        isActive
-                          ? "text-white"
-                          : "text-[#344054] group-hover:text-[#1A3FAF]"
-                      }`}
-                    >
-                      {tab.icon}
-                    </span>
-                    <span>{tab.name}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </aside>
+                    {tab.icon}
+                  </span>
+                  {!collapsed && <span className="truncate">{tab.name}</span>}
+                </button>
+              );
+            }),
+          )}
+        </section>
 
         {newCreationTabs[role]?.length > 0 && (
           <section className="mt-6 space-y-3">
-            <div className="flex items-center justify-between px-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#5B6478]">
-              <span>Creation</span>
-              <ChevronDown
-                className={`h-4 w-4 cursor-pointer transition-transform duration-300 ${
-                  creationMenuCollapsed ? "rotate-180" : ""
-                }`}
-                onClick={() => setCreationMenuCollapsed((prev) => !prev)}
-              />
-            </div>
-
-            <div
-              className={`overflow-hidden transition-all duration-300 ${
-                creationMenuCollapsed
-                  ? "max-h-0 opacity-0"
-                  : "max-h-[900px] opacity-100"
-              }`}
-            >
-              <div className="space-y-1">
-                {newCreationTabs[role]?.map((tab, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      tab.onClickFn(dispatch, router, tab.link, isSuccess);
-                      dispatch(isSidebarOpenToogle(false));
-                    }}
-                    className={getSubTabClasses()}
-                  >
-                    <span className="flex shrink-0 items-center justify-center text-[#344054] group-hover:text-[#1A3FAF]">
-                      {tab.icon}
-                    </span>
-                    <span>{tab.name}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
+            {sectionHeader("Creation", creationMenuCollapsed, () => setCreationMenuCollapsed((prev) => !prev))}
+            {sectionBody(
+              creationMenuCollapsed,
+              "max-h-[900px]",
+              newCreationTabs[role]?.map((tab, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  title={collapsed ? tab.name : undefined}
+                  aria-label={collapsed ? tab.name : undefined}
+                  onClick={() => {
+                    tab.onClickFn(dispatch, router, tab.link, isSuccess);
+                    dispatch(isSidebarOpenToogle(false));
+                  }}
+                  className={tabClasses(false)}
+                >
+                  <span className="flex shrink-0 items-center justify-center text-[#344054] group-hover:text-[#1A3FAF]">
+                    {tab.icon}
+                  </span>
+                  {!collapsed && <span className="truncate">{tab.name}</span>}
+                </button>
+              )),
+            )}
           </section>
         )}
 
-        <section className="mt-6 space-y-3">
-          <div className="flex items-center justify-between px-2 text-[11px] font-bold uppercase tracking-[0.12em] text-[#5B6478]">
-            <span>Others</span>
-            <ChevronDown
-              className={`h-4 w-4 cursor-pointer transition-transform duration-300 ${
-                othersMenuCollapsed ? "rotate-180" : ""
-              }`}
-              onClick={() => setOthersMenuCollapsed((prev) => !prev)}
-            />
-          </div>
-
-          <div
-            className={`overflow-hidden transition-all duration-300 ${
-              othersMenuCollapsed
-                ? "max-h-0 opacity-0"
-                : "max-h-[300px] opacity-100"
-            }`}
-          >
-            <div className="space-y-1">
-              {otherMenuTabs.map((tab, index) => (
+        {/* "Others" items have no icons and aren't live yet, so they're left out of the rail. */}
+        {!collapsed && (
+          <section className="mt-6 space-y-3">
+            {sectionHeader("Others", othersMenuCollapsed, () => setOthersMenuCollapsed((prev) => !prev))}
+            {sectionBody(
+              othersMenuCollapsed,
+              "max-h-[300px]",
+              otherMenuTabs.map((tab, index) => (
                 <button
                   key={index}
+                  type="button"
                   onClick={() => {
                     setOtherMenuActiveTab(index);
                     router.push(`${pathname}${tab.link}`);
                   }}
-                  className="group flex w-full cursor-not-allowed items-center gap-3 rounded-xl px-3 py-3 text-left text-[15px] sm:text-[16px] font-medium text-[#98A2B3] opacity-70"
+                  className="flex w-full cursor-not-allowed items-center justify-between gap-3 rounded-xl px-3 py-3 text-left text-[15px] font-medium text-[#98A2B3] sm:text-[16px]"
                   disabled
                 >
-                  <span>{tab.icon}</span>
-                  <div className="flex items-center gap-2">
-                    <span>{tab.name}</span>
-                    <span className="rounded-full bg-[#FFF4F4] px-2 py-[2px] text-[10px] font-semibold text-[#DC2626]">
-                      Coming Soon
-                    </span>
-                  </div>
+                  <span className="truncate">{tab.name}</span>
+                  <span className="shrink-0 rounded-full bg-[#F1EDFF] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-[#5B3CC4]">
+                    Soon
+                  </span>
                 </button>
-              ))}
-            </div>
-          </div>
-        </section>
-      </div>
+              )),
+            )}
+          </section>
+        )}
+      </nav>
 
       <div className="shrink-0 pb-5 pt-3">
-        <div className="rounded-2xl border border-[#E7ECF3] bg-white p-2 shadow-[0_10px_24px_rgba(15,23,42,0.06)]">
-          <UserProfileSidebar />
+        <div
+          className={cn(
+            "rounded-2xl border border-[#E7ECF3] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.06)]",
+            collapsed ? "mx-auto w-fit p-1" : "p-2",
+          )}
+        >
+          <UserProfileSidebar compact={collapsed} />
         </div>
       </div>
     </div>

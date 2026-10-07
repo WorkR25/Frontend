@@ -16,14 +16,20 @@ import UpdateJobForm from "@/components/updateJob/UpdateJobForm";
 import ViewApplicants from "@/components/viewApplicants/ViewApplicants";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { setLoginRequiredDialogBox } from "@/features/loginRequiredDialogBox/loginRequiredDialogBoxSlice";
+import {
+  setSidebarCollapsed,
+  toggleSidebarCollapsed,
+} from "@/features/sidebarCollapsed/sidebarCollapsedSlice";
+import { cn } from "@/utils/cn";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function DashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const isSidebarOpen = useAppSelector((state) => state.isSidebarOpen.value);
+  const sidebarCollapsed = useAppSelector((state) => state.sidebarCollapsed.value);
 
   const showJobApplicants = useAppSelector((state) => {
     return state.showJobApplicants.value;
@@ -123,6 +129,37 @@ export default function DashboardLayout({
     if (token) {
       dispatch(setAuthJwtToken(token));
     }
+  }, [dispatch]);
+
+  // Remember the desktop sidebar's collapsed state between visits.
+  const sidebarPrefLoaded = useRef(false);
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("workr.sidebarCollapsed") === "1") {
+        dispatch(setSidebarCollapsed(true));
+      }
+    } catch {}
+    sidebarPrefLoaded.current = true;
+  }, [dispatch]);
+  useEffect(() => {
+    if (!sidebarPrefLoaded.current) return;
+    try {
+      localStorage.setItem("workr.sidebarCollapsed", sidebarCollapsed ? "1" : "0");
+    } catch {}
+  }, [sidebarCollapsed]);
+
+  // Ctrl/⌘ + B toggles the sidebar.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === "b") {
+        const target = e.target as HTMLElement | null;
+        if (target?.closest("input, textarea, [contenteditable=true]")) return;
+        e.preventDefault();
+        dispatch(toggleSidebarCollapsed());
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [dispatch]);
   // const { isError, isPending } = useGetUser(jwtToken);
 
@@ -268,18 +305,21 @@ export default function DashboardLayout({
         className={"dashboard-layout bg-[#F4F6FA] flex h-full w-full"}
       >
         <div
-          className={`dashboard-layout hidden sm:block basis-1/5 max-w-[300px] bg-white border-r border-[#E4E8F0] overflow-y-scroll hide-scrollbar px-3`}
+          className={cn(
+            "dashboard-layout hidden shrink-0 overflow-hidden border-r border-[#E4E8F0] bg-white transition-[width] duration-300 ease-in-out sm:block",
+            sidebarCollapsed ? "w-[84px] px-3" : "w-[248px] px-3 lg:w-[280px]",
+          )}
         >
-          <DashboardSidebar />
+          <DashboardSidebar variant="desktop" />
         </div>
         <div
           className={`dashboard-layout absolute rounded-r-2xl bg-white shadow-xl h-full w-[75%] sm:hidden overflow-y-scroll px-5 z-50 transform transition-transform duration-300 ease-in-out ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <DashboardSidebar />
+          <DashboardSidebar variant="mobile" />
         </div>
-        <div className="dashboard-layout w-full h-full sm:basis-4/5 sm:flex-1 overflow-hidden">
+        <div className="dashboard-layout h-full w-full min-w-0 overflow-hidden sm:flex-1">
           {/* {showEditSkills.value && (
             <div className="dashboard-layout absolute sm:hidden px-5 hide-scrollbar flex justify-center z-40 h-screen w-full sm:w-[79%] bg-white overflow-y-auto">
               <div className="dashboard-layout w-full min-h-full">
