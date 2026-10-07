@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, X } from "lucide-react";
+import { Loader2, Search, X } from "lucide-react";
 import { KeyboardEvent, useEffect, useId, useRef, useState } from "react";
 import CompanyLogo from "@/components/CompanyLogo";
 import { HiringCompany } from "@/types/GetJobType";
@@ -14,6 +14,8 @@ type ExploreHeroProps = {
   onClear: () => void;
   onPickCompany: (company: HiringCompany) => void;
   suggestions: HiringCompany[];
+  /** True while the list belongs to older text and a fresh lookup is on its way. */
+  suggestionsStale?: boolean;
   /** False once the typed text is an already-picked company. */
   suggestionsEnabled: boolean;
   trending: HiringCompany[];
@@ -28,6 +30,7 @@ export default function ExploreHero({
   onClear,
   onPickCompany,
   suggestions,
+  suggestionsStale = false,
   suggestionsEnabled,
   trending,
 }: ExploreHeroProps) {
@@ -164,8 +167,14 @@ export default function ExploreHero({
               aria-label="Matching companies"
               className="absolute inset-x-0 top-[68px] z-30 rounded-2xl border border-[#E4E8F0] bg-white p-2 text-[#0F172A] shadow-[0_24px_48px_rgba(16,32,80,0.22)]"
             >
-              <div className="px-2.5 pb-2 pt-1.5 text-xs font-bold tracking-[0.08em] text-[#5B6478]">
+              <div className="flex items-center justify-between px-2.5 pb-2 pt-1.5 text-xs font-bold tracking-[0.08em] text-[#5B6478]">
                 COMPANIES
+                {suggestionsStale && (
+                  <span className="flex items-center gap-1.5 font-semibold normal-case tracking-normal text-[#8A93A6]">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+                    Searching…
+                  </span>
+                )}
               </div>
               {suggestions.map((company, index) => (
                 <button
@@ -178,8 +187,9 @@ export default function ExploreHero({
                   onClick={() => pick(company)}
                   onMouseEnter={() => setActiveIndex(index)}
                   className={cn(
-                    "flex w-full cursor-pointer items-center gap-3 rounded-[10px] p-2.5 text-left",
+                    "flex w-full cursor-pointer items-center gap-3 rounded-[10px] p-2.5 text-left transition-opacity",
                     index === activeIndex ? "bg-[#F2F5FC]" : "bg-transparent",
+                    suggestionsStale && "opacity-50",
                   )}
                 >
                   <CompanyLogo

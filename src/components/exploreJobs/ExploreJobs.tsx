@@ -1,7 +1,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CompanyLogo from "@/components/CompanyLogo";
 import JobCard from "@/components/JobCard";
@@ -25,7 +25,6 @@ function isJobListTab(value: string | null): value is JobListTab {
 }
 
 export default function ExploreJobs() {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
@@ -52,9 +51,12 @@ export default function ExploreJobs() {
         else next.delete(key);
       });
       const qs = next.toString();
-      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      // Update the URL in place (Next.js syncs useSearchParams with the History API).
+      // router.replace() would run a navigation, which moves focus out of the search box
+      // mid-typing and drops the next keystrokes.
+      window.history.replaceState(null, "", qs ? `${pathname}?${qs}` : pathname);
     },
-    [pathname, router, searchParams],
+    [pathname, searchParams],
   );
 
   // ---- Search box ----------------------------------------------------------
@@ -88,8 +90,19 @@ export default function ExploreJobs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery]);
 
-  const suggestionQuery = useDebounce(query.trim(), 200);
-  const { data: suggestions = [] } = useGetHiringCompanies(suggestionQuery, 6, suggestionQuery.length > 0);
+  const typed = query.trim();
+  const suggestionQuery = useDebounce(typed, 200);
+  const { data: suggestionData, isFetching: suggestionsFetching } = useGetHiringCompanies(
+    suggestionQuery,
+    6,
+    suggestionQuery.length > 0,
+  );
+  // Only show results for real typed text: the "" key is the cached trending list.
+  const suggestions = useMemo(
+    () => (typed && suggestionQuery ? suggestionData ?? [] : []),
+    [typed, suggestionQuery, suggestionData],
+  );
+  const suggestionsStale = !!typed && (suggestionQuery !== typed || suggestionsFetching);
   const { data: trending = [] } = useGetHiringCompanies("", 6);
 
   const pickCompany = (company: HiringCompany) => {
@@ -105,7 +118,7 @@ export default function ExploreJobs() {
   const clearAll = () => {
     setQuery("");
     lastPushedCompany.current = "";
-    router.replace(pathname, { scroll: false });
+    window.history.replaceState(null, "", pathname);
   };
 
   // ---- Jobs ------------------------------------------------------------------
@@ -186,6 +199,7 @@ export default function ExploreJobs() {
           onClear={clearSearch}
           onPickCompany={pickCompany}
           suggestions={suggestions}
+          suggestionsStale={suggestionsStale}
           suggestionsEnabled={!(pickedCompany && query.trim() === pickedCompany)}
           trending={trending}
         />
