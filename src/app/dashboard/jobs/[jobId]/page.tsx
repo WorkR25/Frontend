@@ -138,7 +138,13 @@ export default function Page({ params }: { params: Promise<{ jobId: string }> })
             </h2>
             <JobDescription description={job.description} />
 
-            <ApplyCta jobId={numericJobId} applyLink={job.apply_link} companyName={job.company.name} />
+            <ApplyCta
+              jobId={numericJobId}
+              applyLink={job.apply_link}
+              companyName={job.company.name}
+              jobTitle={job.jobTitle.title}
+              companyLogo={job.company.logo}
+            />
           </article>
 
           <aside className="flex min-w-0 flex-[1_1_320px] flex-col gap-5">

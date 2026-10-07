@@ -35,7 +35,7 @@ export default function JobDetailsCard({
   apply_link,
   specification,
 }: JobDetailsCardProps) {
-  const { apply, requestReferral, share, save } = useJobActions(jobId, apply_link);
+  const { apply, requestReferral, share, save } = useJobActions(jobId, apply_link, { title, companyName, companyLogo: img });
   const isRemote = city?.trim().toLowerCase() === "remote";
 
   return (

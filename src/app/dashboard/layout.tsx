@@ -84,6 +84,9 @@ export default function DashboardLayout({
   const loginRequiredDialogBox = useAppSelector(
     (state) => state.setLoginRequiredDialogBox.value,
   );
+  const loginRequiredContext = useAppSelector(
+    (state) => state.setLoginRequiredDialogBox.context,
+  );
 
   const showAddRolesForm = useAppSelector(
     (state) => state.showAddRolesForm.value,
@@ -180,6 +183,7 @@ export default function DashboardLayout({
     <div className="dashboard-layout text-black  h-[100%] w-[100%] bg-[#F5F5F5]">
       <ConfirmLoginDialog
         isOpen={loginRequiredDialogBox}
+        context={loginRequiredContext}
         onClose={() => {
           dispatch(setLoginRequiredDialogBox(false));
         }}

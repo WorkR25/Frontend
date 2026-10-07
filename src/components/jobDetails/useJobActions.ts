@@ -3,13 +3,17 @@
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
-import { setLoginRequiredDialogBox } from "@/features/loginRequiredDialogBox/loginRequiredDialogBoxSlice";
+import { openLoginRequired } from "@/features/loginRequiredDialogBox/loginRequiredDialogBoxSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import useCreateApplication from "@/utils/useCreateApplication";
 import useGetUser from "@/utils/useGetUser";
 
 /** Apply / referral / share actions shared by the job hero and the closing CTA. */
-export default function useJobActions(jobId: number, applyLink: string) {
+export default function useJobActions(
+  jobId: number,
+  applyLink: string,
+  job?: { title?: string; companyName?: string; companyLogo?: string | null },
+) {
   const dispatch = useAppDispatch();
   const jwtToken = useAppSelector((state) => state.authJwtToken.value);
 
@@ -25,7 +29,7 @@ export default function useJobActions(jobId: number, applyLink: string) {
 
   const apply = () => {
     if (!isLoggedIn) {
-      dispatch(setLoginRequiredDialogBox(true));
+      dispatch(openLoginRequired({ reason: "apply", jobTitle: job?.title, companyName: job?.companyName, companyLogo: job?.companyLogo }));
       return;
     }
     mutate({ jobId, jwtToken });
@@ -38,7 +42,7 @@ export default function useJobActions(jobId: number, applyLink: string) {
 
   const requestReferral = () => {
     if (!isLoggedIn) {
-      dispatch(setLoginRequiredDialogBox(true));
+      dispatch(openLoginRequired({ reason: "referral", jobTitle: job?.title, companyName: job?.companyName, companyLogo: job?.companyLogo }));
       return;
     }
     toast.success("Request is submitted successfully");

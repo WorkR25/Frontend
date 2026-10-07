@@ -7,12 +7,16 @@ export default function ApplyCta({
   jobId,
   applyLink,
   companyName,
+  jobTitle,
+  companyLogo,
 }: {
   jobId: number;
   applyLink: string;
   companyName: string;
+  jobTitle?: string;
+  companyLogo?: string | null;
 }) {
-  const { apply, requestReferral } = useJobActions(jobId, applyLink);
+  const { apply, requestReferral } = useJobActions(jobId, applyLink, { title: jobTitle, companyName, companyLogo });
 
   return (
     <div className="mt-9 flex flex-wrap items-center justify-between gap-5 rounded-[20px] bg-[#142463] bg-[radial-gradient(rgba(255,255,255,0.09)_1.2px,transparent_1.2px)] bg-[size:22px_22px] p-6 text-white sm:p-7">
