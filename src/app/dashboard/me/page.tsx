@@ -17,7 +17,7 @@ import useGetUser from "@/utils/useGetUser";
 function Skeleton() {
   return (
     <div className="flex flex-col gap-6" aria-busy="true" aria-label="Loading your profile">
-      <div className="h-[220px] animate-pulse rounded-[22px] bg-white" />
+      <div className="h-[150px] animate-pulse rounded-[22px] bg-white" />
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
         <div className="flex flex-col gap-6">
           <div className="h-[360px] animate-pulse rounded-[22px] bg-white" />
