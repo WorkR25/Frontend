@@ -172,7 +172,7 @@ export default function DashboardLayout({
 
   return (
     // {h-[100vh]}
-    <div className="dashboard-layout text-black  h-[100%] w-[100%] bg-[#F5F5F5]">
+    <div className="dashboard-layout relative h-screen h-dvh w-full overflow-hidden bg-[#F5F5F5] text-black">
       <ConfirmLoginDialog
         isOpen={loginRequiredDialogBox}
         context={loginRequiredContext}
@@ -300,7 +300,7 @@ export default function DashboardLayout({
         }`}
       ></div> */}
       <div
-        className={"dashboard-layout bg-[#F4F6FA] flex h-full w-full"}
+        className={"dashboard-layout flex h-full min-h-0 w-full bg-[#F4F6FA]"}
       >
         <div
           className={cn(
@@ -317,7 +317,7 @@ export default function DashboardLayout({
         >
           <DashboardSidebar variant="mobile" />
         </div>
-        <div className="dashboard-layout h-full w-full min-w-0 overflow-hidden sm:flex-1">
+        <div className="dashboard-layout h-full min-h-0 w-full min-w-0 overflow-hidden sm:flex-1">
           {/* {showEditSkills.value && (
             <div className="dashboard-layout absolute sm:hidden px-5 hide-scrollbar flex justify-center z-40 h-screen w-full sm:w-[79%] bg-white overflow-y-auto">
               <div className="dashboard-layout w-full min-h-full">
