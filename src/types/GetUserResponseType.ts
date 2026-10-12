@@ -1,4 +1,5 @@
 import { Skills } from "./JobDetailsType";
+import { NurtureStatusType } from "./NurtureStatusType";
 
 export type GetUserResponseType = {
   id: number;
@@ -21,4 +22,6 @@ export type GetUserResponseType = {
     domain: string | null;
   };
   skills: Skills[];
+  /** Only the admin candidates list sends this: null = could not be loaded, undefined = not part of this response. */
+  nurture?: NurtureStatusType | null;
 };

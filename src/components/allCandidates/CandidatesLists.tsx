@@ -15,6 +15,7 @@ import { GetUserResponseType } from "@/types/GetUserResponseType";
 import { cn } from "@/utils/cn";
 import { getCompanyMonogram, getCompanyTint } from "@/utils/companyBrand";
 import { timeAgo } from "@/utils/getTime";
+import NurtureStatusCell from "./NurtureStatusCell";
 
 export type CandidateType = "Student" | "Working Professional";
 
@@ -65,20 +66,24 @@ function ContactLine({
 
 const GRID_STUDENT = "md:grid-cols-[minmax(0,1.3fr)_minmax(0,1.5fr)_minmax(0,1fr)_110px_96px]";
 const GRID_WORKING = "md:grid-cols-[minmax(0,1.3fr)_minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1fr)_96px]";
+// Working professionals with the nurture sequence column
+const GRID_WORKING_NURTURE = "md:grid-cols-[minmax(0,1.2fr)_minmax(0,1.4fr)_minmax(0,1.1fr)_minmax(0,0.8fr)_minmax(0,1.7fr)_88px]";
 
-export function CandidateTableHeader({ type }: { type: CandidateType }) {
+export function CandidateTableHeader({ type, showNurture = false }: { type: CandidateType; showNurture?: boolean }) {
   const working = type === "Working Professional";
+  const nurture = working && showNurture;
   return (
     <div
       className={cn(
         "hidden gap-4 border border-transparent px-5 pb-2 text-xs font-bold tracking-[0.08em] text-[#5B6478] md:grid",
-        working ? GRID_WORKING : GRID_STUDENT,
+        nurture ? GRID_WORKING_NURTURE : working ? GRID_WORKING : GRID_STUDENT,
       )}
     >
       <span>CANDIDATE</span>
       <span>CONTACT</span>
       <span>{working ? "CURRENT ROLE" : "DOMAIN"}</span>
       <span>{working ? "DOMAIN" : "GRADUATION"}</span>
+      {nurture && <span>SEQUENCE</span>}
       <span className="text-right">LINKS</span>
     </div>
   );
@@ -90,6 +95,7 @@ export function CandidateRow({
   showType = false,
   gridClassName,
   subtitle,
+  showNurture = false,
 }: {
   user: Candidate;
   type: CandidateType;
@@ -98,8 +104,11 @@ export function CandidateRow({
   gridClassName?: string;
   /** Replaces the "Joined …" line under the name. */
   subtitle?: string;
+  /** Show the nurture sequence column (working professionals in the admin All candidates list). */
+  showNurture?: boolean;
 }) {
   const working = type === "Working Professional";
+  const nurture = working && showNurture;
   const name = user.fullName?.trim() || "Unnamed";
   const tint = getCompanyTint(name);
   const joinedAt = user.created_at ?? user.createdAt;
@@ -111,7 +120,7 @@ export function CandidateRow({
     <article
       className={cn(
         "grid grid-cols-1 items-center gap-3 rounded-2xl border border-[#E4E8F0] bg-white p-4 transition-colors hover:border-[#C5D3F2] md:gap-4 md:px-5",
-        gridClassName ?? (working ? GRID_WORKING : GRID_STUDENT),
+        gridClassName ?? (nurture ? GRID_WORKING_NURTURE : working ? GRID_WORKING : GRID_STUDENT),
       )}
     >
       <div className="flex min-w-0 items-center gap-3">
@@ -187,6 +196,8 @@ export function CandidateRow({
           {user.graduationYear ?? <span className="font-normal text-[#A3ACBD]">—</span>}
         </div>
       )}
+
+      {nurture && <NurtureStatusCell nurture={user.nurture} />}
 
       <div className="flex items-center gap-1.5 md:justify-end">
         {user.profile?.resumeUrl ? (
