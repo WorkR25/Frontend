@@ -136,6 +136,7 @@ export function CandidateRow({
   const nurture = working && showNurture;
   const panelId = useId();
   const [expanded, setExpanded] = useState(false);
+  const [opened, setOpened] = useState(false); // keeps the panel mounted after first open so it can animate closed
   const applications = useCandidateApplications(user.id, showApplied);
   const name = user.fullName?.trim() || "Unnamed";
   const tint = getCompanyTint(name);
@@ -236,7 +237,10 @@ export function CandidateRow({
       {showApplied && (
         <div className="flex items-center gap-2 md:block">
           <span className="text-xs font-bold tracking-[0.08em] text-[#5B6478] md:hidden">APPLIED</span>
-          <AppliedCell query={applications} expanded={expanded} onToggle={() => setExpanded((v) => !v)} panelId={panelId} />
+          <AppliedCell query={applications} expanded={expanded} onToggle={() => {
+              setOpened(true);
+              setExpanded((v) => !v);
+            }} panelId={panelId} />
         </div>
       )}
 
@@ -275,7 +279,7 @@ export function CandidateRow({
         )}
       </div>
     </article>
-    {showApplied && expanded && <ApplicationsPanel query={applications} id={panelId} name={name} />}
+    {showApplied && opened && <ApplicationsPanel query={applications} id={panelId} name={name} expanded={expanded} />}
     </div>
   );
 }
