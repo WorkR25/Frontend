@@ -10,11 +10,14 @@ import {
   Phone,
   SearchX,
 } from "lucide-react";
+import { useId, useState } from "react";
 import { toast } from "sonner";
 import { GetUserResponseType } from "@/types/GetUserResponseType";
 import { cn } from "@/utils/cn";
 import { getCompanyMonogram, getCompanyTint } from "@/utils/companyBrand";
 import { timeAgo } from "@/utils/getTime";
+import useCandidateApplications from "@/utils/useCandidateApplications";
+import { AppliedCell, ApplicationsPanel } from "./CandidateApplications";
 import NurtureStatusCell from "./NurtureStatusCell";
 
 export type CandidateType = "Student" | "Working Professional";
@@ -68,15 +71,33 @@ const GRID_STUDENT = "md:grid-cols-[minmax(0,1.3fr)_minmax(0,1.5fr)_minmax(0,1fr
 const GRID_WORKING = "md:grid-cols-[minmax(0,1.3fr)_minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1fr)_96px]";
 // Working professionals with the nurture sequence column
 const GRID_WORKING_NURTURE = "md:grid-cols-[minmax(0,1.2fr)_minmax(0,1.4fr)_minmax(0,1.1fr)_minmax(0,0.8fr)_minmax(0,1.7fr)_88px]";
+// Same grids with an "Applied" column (number of jobs the candidate applied to) before the links
+const GRID_STUDENT_APPLIED = "md:grid-cols-[minmax(0,1.3fr)_minmax(0,1.5fr)_minmax(0,1fr)_100px_104px_96px]";
+const GRID_WORKING_APPLIED = "md:grid-cols-[minmax(0,1.3fr)_minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1fr)_104px_96px]";
+const GRID_WORKING_NURTURE_APPLIED =
+  "md:grid-cols-[minmax(0,1.15fr)_minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,0.7fr)_minmax(0,1.5fr)_104px_88px]";
 
-export function CandidateTableHeader({ type, showNurture = false }: { type: CandidateType; showNurture?: boolean }) {
+const pickGrid = (working: boolean, nurture: boolean, applied: boolean) =>
+  applied
+    ? nurture ? GRID_WORKING_NURTURE_APPLIED : working ? GRID_WORKING_APPLIED : GRID_STUDENT_APPLIED
+    : nurture ? GRID_WORKING_NURTURE : working ? GRID_WORKING : GRID_STUDENT;
+
+export function CandidateTableHeader({
+  type,
+  showNurture = false,
+  showApplied = false,
+}: {
+  type: CandidateType;
+  showNurture?: boolean;
+  showApplied?: boolean;
+}) {
   const working = type === "Working Professional";
   const nurture = working && showNurture;
   return (
     <div
       className={cn(
         "hidden gap-4 border border-transparent px-5 pb-2 text-xs font-bold tracking-[0.08em] text-[#5B6478] md:grid",
-        nurture ? GRID_WORKING_NURTURE : working ? GRID_WORKING : GRID_STUDENT,
+        pickGrid(working, nurture, showApplied),
       )}
     >
       <span>CANDIDATE</span>
@@ -84,6 +105,7 @@ export function CandidateTableHeader({ type, showNurture = false }: { type: Cand
       <span>{working ? "CURRENT ROLE" : "DOMAIN"}</span>
       <span>{working ? "DOMAIN" : "GRADUATION"}</span>
       {nurture && <span>SEQUENCE</span>}
+      {showApplied && <span>APPLIED</span>}
       <span className="text-right">LINKS</span>
     </div>
   );
@@ -96,6 +118,7 @@ export function CandidateRow({
   gridClassName,
   subtitle,
   showNurture = false,
+  showApplied = false,
 }: {
   user: Candidate;
   type: CandidateType;
@@ -106,9 +129,14 @@ export function CandidateRow({
   subtitle?: string;
   /** Show the nurture sequence column (working professionals in the admin All candidates list). */
   showNurture?: boolean;
+  /** Show how many jobs the candidate applied to (with an expandable list). Needs the Job-Service history API. */
+  showApplied?: boolean;
 }) {
   const working = type === "Working Professional";
   const nurture = working && showNurture;
+  const panelId = useId();
+  const [expanded, setExpanded] = useState(false);
+  const applications = useCandidateApplications(user.id, showApplied);
   const name = user.fullName?.trim() || "Unnamed";
   const tint = getCompanyTint(name);
   const joinedAt = user.created_at ?? user.createdAt;
@@ -117,10 +145,16 @@ export function CandidateRow({
   const years = user.profile?.yearsOfExperience;
 
   return (
+    <div
+      className={cn(
+        "overflow-hidden rounded-2xl border bg-white transition-colors hover:border-[#C5D3F2]",
+        expanded ? "border-[#C5D3F2]" : "border-[#E4E8F0]",
+      )}
+    >
     <article
       className={cn(
-        "grid grid-cols-1 items-center gap-3 rounded-2xl border border-[#E4E8F0] bg-white p-4 transition-colors hover:border-[#C5D3F2] md:gap-4 md:px-5",
-        gridClassName ?? (nurture ? GRID_WORKING_NURTURE : working ? GRID_WORKING : GRID_STUDENT),
+        "grid grid-cols-1 items-center gap-3 p-4 md:gap-4 md:px-5",
+        gridClassName ?? pickGrid(working, nurture, showApplied),
       )}
     >
       <div className="flex min-w-0 items-center gap-3">
@@ -199,6 +233,13 @@ export function CandidateRow({
 
       {nurture && <NurtureStatusCell nurture={user.nurture} />}
 
+      {showApplied && (
+        <div className="flex items-center gap-2 md:block">
+          <span className="text-xs font-bold tracking-[0.08em] text-[#5B6478] md:hidden">APPLIED</span>
+          <AppliedCell query={applications} expanded={expanded} onToggle={() => setExpanded((v) => !v)} panelId={panelId} />
+        </div>
+      )}
+
       <div className="flex items-center gap-1.5 md:justify-end">
         {user.profile?.resumeUrl ? (
           <a
@@ -234,6 +275,8 @@ export function CandidateRow({
         )}
       </div>
     </article>
+    {showApplied && expanded && <ApplicationsPanel query={applications} id={panelId} name={name} />}
+    </div>
   );
 }
 

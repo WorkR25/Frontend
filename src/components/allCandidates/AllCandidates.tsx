@@ -138,7 +138,7 @@ export default function AllCandidates() {
         </div>
       </div>
 
-      <CandidateTableHeader type={type} showNurture={type === "Working Professional"} />
+      <CandidateTableHeader type={type} showNurture={type === "Working Professional"} showApplied />
 
       {isError && !data ? (
         <div className="flex flex-col items-center gap-3 rounded-2xl border border-[#E4E8F0] bg-white px-6 py-12 text-center">
@@ -162,7 +162,7 @@ export default function AllCandidates() {
       ) : (
         <div className={cn("flex flex-col gap-2.5 transition-opacity", isFetching && "opacity-60")}>
           {records.map((user) => (
-            <CandidateRow key={user.id} user={user} type={type} showNurture={type === "Working Professional"} />
+            <CandidateRow key={user.id} user={user} type={type} showNurture={type === "Working Professional"} showApplied />
           ))}
         </div>
       )}
