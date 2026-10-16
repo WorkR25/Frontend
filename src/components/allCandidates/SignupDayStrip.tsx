@@ -56,6 +56,7 @@ export default function SignupDayStrip({
   onLoadOlder,
 }: Props) {
   const scroller = useRef<HTMLDivElement>(null);
+  const dateInput = useRef<HTMLInputElement>(null);
   const max = Math.max(1, ...(days ?? []).map((d) => d.total));
 
   // Keep the chosen day in view (e.g. after jumping to a date or loading older days).
@@ -86,18 +87,43 @@ export default function SignupDayStrip({
             <History className="h-3.5 w-3.5" aria-hidden="true" />
             All time
           </button>
-          <label className="relative flex h-9 cursor-pointer items-center gap-1.5 rounded-xl border-[1.5px] border-[#E4E8F0] bg-white px-3 text-[13px] font-bold text-[#344054] transition-colors focus-within:border-[#2451D6] hover:border-[#C5D3F2]">
-            <CalendarDays className="h-3.5 w-3.5 text-[#5B6478]" aria-hidden="true" />
-            <span>Jump to date</span>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => {
+                // A hidden date field only opens its calendar when its tiny built-in icon is clicked, so open it explicitly.
+                const input = dateInput.current;
+                if (!input) return;
+                try {
+                  input.showPicker();
+                } catch {
+                  input.focus();
+                  input.click();
+                }
+              }}
+              aria-haspopup="dialog"
+              className={cn(
+                "flex h-9 cursor-pointer items-center gap-1.5 rounded-xl border-[1.5px] px-3 text-[13px] font-bold transition-colors",
+                selected !== ALL_TIME && !days?.some((d) => d.date === selected)
+                  ? "border-[#B9CBF3] bg-[#F4F8FF] text-[#1A3FAF]"
+                  : "border-[#E4E8F0] bg-white text-[#344054] hover:border-[#C5D3F2]",
+              )}
+            >
+              <CalendarDays className="h-3.5 w-3.5 text-[#5B6478]" aria-hidden="true" />
+              {selected !== ALL_TIME && !days?.some((d) => d.date === selected) ? formatDayLong(selected) : "Jump to date"}
+            </button>
+            {/* Kept under the button so the calendar opens right beneath it. */}
             <input
+              ref={dateInput}
               type="date"
               max={today}
               value={selected === ALL_TIME ? "" : selected}
               onChange={(e) => e.target.value && onSelect(e.target.value)}
-              aria-label="Jump to a date"
-              className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+              tabIndex={-1}
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 h-full w-full opacity-0"
             />
-          </label>
+          </div>
           <div className="hidden gap-1 sm:flex">
             <button
               type="button"
