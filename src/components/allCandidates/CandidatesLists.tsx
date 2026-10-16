@@ -37,7 +37,7 @@ function formatCtc(ctc: string | null | undefined) {
   return /^\d+(\.\d+)?$/.test(t) ? `${t} LPA` : t;
 }
 
-function ContactLine({
+export function ContactLine({
   icon,
   value,
   href,

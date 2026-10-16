@@ -18,6 +18,8 @@ import {
   CandidateTableHeader,
   CandidateType,
 } from "./CandidatesLists";
+import CandidatesViewSwitch, { CandidatesView } from "./CandidatesViewSwitch";
+import NurtureLeadsModal from "./NurtureLeadsModal";
 import SignupDayStrip, { ALL_TIME, DaySelection, dayName, formatDayLong, istTodayKey } from "./SignupDayStrip";
 
 const PAGE_SIZE = 20;
@@ -29,7 +31,7 @@ const TABS: { type: CandidateType; label: string; icon: React.ReactNode }[] = [
 
 const formatCount = (n?: number) => (n == null ? "…" : n.toLocaleString("en-IN"));
 
-export default function AllCandidates() {
+function SignupsModal({ view, onViewChange }: { view: CandidatesView; onViewChange: (view: CandidatesView) => void }) {
   const dispatch = useAppDispatch();
   const jwtToken = useAppSelector((state) => state.authJwtToken.value);
 
@@ -110,6 +112,7 @@ export default function AllCandidates() {
       }
     >
       <div ref={listTopRef} className="scroll-mt-6" />
+      <CandidatesViewSwitch view={view} onChange={onViewChange} />
       <SignupDayStrip
         days={dayList}
         loading={daily.isPending}
@@ -236,5 +239,15 @@ export default function AllCandidates() {
         </div>
       )}
     </FormModal>
+  );
+}
+
+/** The All candidates pop-up: sign-ups by day, or the working professionals in the nurture sequence. */
+export default function AllCandidates() {
+  const [view, setView] = useState<CandidatesView>("signups");
+  return view === "signups" ? (
+    <SignupsModal view={view} onViewChange={setView} />
+  ) : (
+    <NurtureLeadsModal view={view} onViewChange={setView} />
   );
 }
