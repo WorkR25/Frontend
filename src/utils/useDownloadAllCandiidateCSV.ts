@@ -1,14 +1,14 @@
 import { userServiceApi } from "@/lib/axios.config";
 import { useMutation } from "@tanstack/react-query";
 
-export function useDownloadCandidatesCsv({jwtToken, details}: {jwtToken: string, details: string}) {
+export function useDownloadCandidatesCsv({jwtToken, details, date}: {jwtToken: string, details: string, date?: string}) {
   return useMutation({
-    mutationFn: () => downloadCSV({ jwtToken, details })
+    mutationFn: () => downloadCSV({ jwtToken, details, date })
   });
 }
 
-const downloadCSV = async ({jwtToken, details}: {jwtToken: string, details: string}) => {
-  const res = await userServiceApi.get("/users/all-candiates/csv?details=" + details, {
+const downloadCSV = async ({jwtToken, details, date}: {jwtToken: string, details: string, date?: string}) => {
+  const res = await userServiceApi.get("/users/all-candiates/csv?details=" + details + (date ? "&date=" + date : ""), {
     responseType: "blob",
     headers:{
       Authorization: jwtToken
@@ -23,7 +23,7 @@ const downloadCSV = async ({jwtToken, details}: {jwtToken: string, details: stri
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = "candidates.csv";
+  a.download = date ? `candidates-${date}.csv` : "candidates.csv";
   a.click();
 
   window.URL.revokeObjectURL(url);

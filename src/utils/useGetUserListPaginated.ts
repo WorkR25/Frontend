@@ -1,11 +1,11 @@
 import { userServiceApi } from "@/lib/axios.config";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
-const useGetUserListPagination = (authJwtToken: string | null, page: number, limit: number, details: string) => {
+const useGetUserListPagination = (authJwtToken: string | null, page: number, limit: number, details: string, date?: string) => {
   return useQuery({
-    queryKey: ["useGetUserListPagination", authJwtToken ?? "", details, `${page}`, `${limit}`],
+    queryKey: ["useGetUserListPagination", authJwtToken ?? "", details, `${page}`, `${limit}`, date ?? "all"],
     queryFn: () => {
-      return getUserListPagination(authJwtToken, page, limit, details );
+      return getUserListPagination(authJwtToken, page, limit, details, date);
     },
     enabled: !!authJwtToken,
     refetchOnWindowFocus: false,
@@ -14,9 +14,10 @@ const useGetUserListPagination = (authJwtToken: string | null, page: number, lim
   });
 };
 
-const getUserListPagination = async (authJwtToken: string | null, page: number, limit: number, details: string) => {
+/** `date` (YYYY-MM-DD, Indian calendar day) limits the list to people who signed up that day. */
+const getUserListPagination = async (authJwtToken: string | null, page: number, limit: number, details: string, date?: string) => {
   try {
-    const response = await userServiceApi.get(`/users/pages?page=${page}&limit=${limit}&details=${details}`, {
+    const response = await userServiceApi.get(`/users/pages?page=${page}&limit=${limit}&details=${details}${date ? `&date=${date}` : ""}`, {
       headers: {
         Authorization: authJwtToken,
       },

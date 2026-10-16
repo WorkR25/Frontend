@@ -298,14 +298,18 @@ export function CandidateRowSkeleton() {
   );
 }
 
-export function CandidatesEmpty({ type }: { type: CandidateType }) {
+export function CandidatesEmpty({ type, dayLabel }: { type: CandidateType; dayLabel?: string }) {
   return (
     <div className="flex flex-col items-center gap-2 rounded-2xl border border-dashed border-[#C9D2E3] bg-white px-6 py-14 text-center">
       <SearchX className="h-7 w-7 text-[#8A93A6]" aria-hidden="true" />
       <p className="text-base font-bold text-[#0F172A]">
-        No {type === "Student" ? "students" : "working professionals"} yet
+        {dayLabel
+          ? `No ${type === "Student" ? "students" : "working professionals"} signed up ${dayLabel}`
+          : `No ${type === "Student" ? "students" : "working professionals"} yet`}
       </p>
-      <p className="text-sm text-[#5B6478]">New sign-ups will show up here.</p>
+      <p className="text-sm text-[#5B6478]">
+        {dayLabel ? "Pick another day above, or choose All time." : "New sign-ups will show up here."}
+      </p>
     </div>
   );
 }
