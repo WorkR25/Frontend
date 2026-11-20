@@ -10,6 +10,8 @@ import DashboardTopbarLogoutButton from "@/components/dashboard/DashboardTopbarL
 import TodayDate from "@/components/dashboard/TodayDate";
 import { setAuthJwtToken } from "@/features/authJwtToken/authJwtTokenSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import useGetUser from "@/utils/useGetUser";
+import useGetUserRoles from "@/utils/useGetUserRoles";
 import { HiringCompany, JOB_LIST_TABS, JobListTab } from "@/types/GetJobType";
 import { useDebounce } from "@/utils/useDebounce";
 import useExploreJobs from "@/utils/useExploreJobs";
@@ -19,6 +21,9 @@ import JobTabs, { JOB_TAB_LABELS } from "./JobTabs";
 import JobsPagination from "./JobsPagination";
 
 const PAGE_SIZE = 12;
+
+// Roles allowed to access job search features.
+const ALLOWED_SEARCH_ROLES = ["admin"];
 
 function isJobListTab(value: string | null): value is JobListTab {
   return !!value && (JOB_LIST_TABS as readonly string[]).includes(value);
@@ -31,6 +36,11 @@ export default function ExploreJobs() {
   const dispatch = useAppDispatch();
   const jwtToken = useAppSelector((state) => state.authJwtToken.value);
   const scrollRef = useRef<HTMLDivElement>(null);
+  // Identify whether the logged-in user can access job search.
+  const { data: userData } = useGetUser(jwtToken);
+  const { data: userRoles } = useGetUserRoles(jwtToken, userData?.id);
+  const canSearch = userRoles?.some((role) => ALLOWED_SEARCH_ROLES.includes(role)) ?? false;
+    
 
   useEffect(() => {
     const token = localStorage.getItem("AuthJwtToken");
@@ -81,16 +91,25 @@ export default function ExploreJobs() {
     [updateParams],
   );
 
-  // Live results while typing.
+  // Live results while typing (Admin only).
   const debouncedQuery = useDebounce(query.trim(), 350);
-  useEffect(() => {
-    if (debouncedQuery !== urlCompany) commitCompany(debouncedQuery);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery]);
 
-  const suggestionQuery = useDebounce(query.trim(), 200);
-  const { data: suggestions = [] } = useGetHiringCompanies(suggestionQuery, 6, suggestionQuery.length > 0);
-  const { data: trending = [] } = useGetHiringCompanies("", 6);
+  useEffect(() => {
+    if (canSearch && debouncedQuery !== urlCompany) {
+      commitCompany(debouncedQuery);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery, canSearch]);
+    const suggestionQuery = useDebounce(query.trim(), 200);
+  
+  // Fetch company suggestions and trending companies only for Admin.
+  const { data: suggestions = [] } = useGetHiringCompanies(
+    suggestionQuery,
+    6,
+    canSearch && suggestionQuery.length > 0,
+  );
+
+  const { data: trending = [] } = useGetHiringCompanies("", 6, canSearch);
 
   const pickCompany = (company: HiringCompany) => {
     setQuery(company.name);
@@ -109,14 +128,15 @@ export default function ExploreJobs() {
   };
 
   // ---- Jobs ------------------------------------------------------------------
-  const { data, isPending, isError, refetch, isFetching } = useExploreJobs(jwtToken, {
-    page,
-    limit: PAGE_SIZE,
-    company: urlCompanyId ? undefined : urlCompany || undefined,
-    companyId: urlCompanyId,
-    tab,
-    counts: true,
-  });
+  // Everyone can browse jobs; only Admin can apply search filters.
+const { data, isPending, isError, refetch, isFetching } = useExploreJobs(jwtToken, {
+  page,
+  limit: PAGE_SIZE,
+  company: canSearch ? (urlCompanyId ? undefined : urlCompany || undefined) : undefined,
+  companyId: canSearch ? urlCompanyId : undefined,
+  tab: canSearch ? tab : "all",
+  counts: canSearch,
+}, !!jwtToken);
 
   const jobs = useMemo(() => data?.records ?? [], [data]);
   const totalPages = data?.pagination.totalPages ?? 0;
@@ -134,7 +154,7 @@ export default function ExploreJobs() {
     scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const pickedCompany = urlCompanyId ? urlCompany : null;
+  const pickedCompany = canSearch && urlCompanyId ? urlCompany : null;
   const pickedLogo = useMemo(() => {
     if (!pickedCompany) return null;
     return (
@@ -145,17 +165,17 @@ export default function ExploreJobs() {
   }, [pickedCompany, suggestions, trending, jobs, urlCompanyId]);
 
   const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
-  let resultsTitle = tab === "all" ? "Latest jobs" : JOB_TAB_LABELS[tab];
+  let resultsTitle = canSearch && tab !== "all" ? JOB_TAB_LABELS[tab] : "Latest jobs";
   let resultsSub =
     totalPages > 1 ? `Newest roles first · page ${page} of ${totalPages}` : "Newest roles first";
   if (data && pickedCompany) {
     resultsTitle = `${plural(totalCount, "open role", "open roles")} at ${pickedCompany}`;
     resultsSub = `Every job ${pickedCompany} has posted on WorkR, newest first`;
-  } else if (data && urlCompany) {
+  } else if (data && canSearch && urlCompany) {
     resultsTitle = `${plural(totalCount, "job", "jobs")} at companies matching “${urlCompany}”`;
     resultsSub = "Pick a company from the list to narrow it down";
   }
-  const hasFilter = !!urlCompany || tab !== "all";
+  const hasFilter = canSearch && (!!urlCompany || tab !== "all");
 
   return (
     <div
@@ -179,27 +199,33 @@ export default function ExploreJobs() {
           </div>
         </header>
 
-        <ExploreHero
-          query={query}
-          onQueryChange={setQuery}
-          onSubmit={() => commitCompany(query.trim())}
-          onClear={clearSearch}
-          onPickCompany={pickCompany}
-          suggestions={suggestions}
-          suggestionsEnabled={!(pickedCompany && query.trim() === pickedCompany)}
-          trending={trending}
-        />
-
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <JobTabs
-            active={tab}
-            counts={data?.counts}
-            onChange={(next) => updateParams({ tab: next === "all" ? null : next, page: null })}
+        {/* Admin-only company search and trending section */}
+        {canSearch && (
+          <ExploreHero
+            query={query}
+            onQueryChange={setQuery}
+            onSubmit={() => commitCompany(query.trim())}
+            onClear={clearSearch}
+            onPickCompany={pickCompany}
+            suggestions={suggestions}
+            suggestionsEnabled={!(pickedCompany && query.trim() === pickedCompany)}
+            trending={trending}
           />
-          <div className="flex h-10 items-center gap-1.5 rounded-full border border-[#E4E8F0] bg-white px-3.5 text-sm text-[#5B6478]">
-            Sort by <strong className="text-[#0F172A]">Newest</strong>
+        )}
+
+
+        {canSearch && (
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <JobTabs
+              active={tab}
+              counts={data?.counts}
+              onChange={(next) => updateParams({ tab: next === "all" ? null : next, page: null })}
+            />
+            <div className="flex h-10 items-center gap-1.5 rounded-full border border-[#E4E8F0] bg-white px-3.5 text-sm text-[#5B6478]">
+              Sort by <strong className="text-[#0F172A]">Newest</strong>
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3">
@@ -260,7 +286,9 @@ export default function ExploreJobs() {
               <Search className="h-[26px] w-[26px]" aria-hidden="true" />
             </div>
             <p className="text-lg font-bold">
-              {urlCompany ? `No jobs found for “${urlCompany}”` : "No jobs match this filter yet"}
+              {canSearch && urlCompany
+                ? `No jobs found for “${urlCompany}”`
+                : "No jobs available right now"}
             </p>
             <p className="max-w-[380px] text-sm text-[#5B6478]">
               {urlCompany
